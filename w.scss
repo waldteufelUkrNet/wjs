@@ -1,0 +1,33 @@
+////////////////////////////////////////////////////////////////////////////////
+/* ↓↓↓ tabs ↓↓↓ */
+.wjs-tab {
+  &__headers-wrapper {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  &__header {
+    cursor: pointer;
+    user-select: none;
+    &_active {
+      cursor: default;
+    }
+  }
+  &__bodies-wrapper {
+  }
+  &__body {
+    display: none;
+    &_active {
+      display: block;
+    }
+  }
+}
+/* ↑↑↑ tabs ↑↑↑ */
+////////////////////////////////////////////////////////////////////////////////
+/* ↓↓↓ scroll table with fix header ↓↓↓ */
+// у кастомному файлі потрібно вказувати висоту
+.wjs-scrollTable-wrapper {
+  overflow: auto;
+}
+/* ↑↑↑ scroll table with fix header ↑↑↑ */
+////////////////////////////////////////////////////////////////////////////////
