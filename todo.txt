@@ -1,0 +1,212 @@
+
+// вставити акордеон з jsfiddle
+// andrey/platform-cfd01 тут є таблиця з прокруткою і фіксованою шапкою / валідація за допомогою data-фтрибутів
+// свій скролл
+// класи у форматі wjs-
+// функції/змінні з префіксом w
+
+
+мої спроби скролу:
+js:
+let container = document.querySelectorAll('.wjs-scroll');
+setScroll( container );
+
+function setScroll(elem){
+  let container = elem,
+      content   = elem.querySelector('.wjs-scroll-content'),
+      line      = elem.querySelector('.wjs-scroll-line'),
+      thumb     = elem.querySelector('.wjs-scroll-thumb');
+
+  /* ↓↓↓ ПРОКРУТКА КОЛІЩАТКОМ МИШІ ↓↓↓ */
+  // елемент з overflow:hidden не має onscroll
+  container.addEventListener('wheel', function (event) {
+    let maxContentScroll = content.clientHeight - container.clientHeight;
+    let maxThumbScroll   = line.clientHeight - thumb.clientHeight;
+    let scrollStep       = container.clientHeight/10;
+    let contentPosition  = parseFloat( getComputedStyle(content).top );
+
+    // розрахунок прокрутки
+    if (event.deltaY > 0) { // wheel down
+      contentPosition -= scrollStep;
+    } else {
+      contentPosition += scrollStep;
+    }
+
+    // контроль меж прокрутки
+    if ( contentPosition > 0 ) {
+      contentPosition = 0;
+    }
+    if ( Math.abs(contentPosition) > maxContentScroll ) {
+      contentPosition = -maxContentScroll;
+    }
+
+    // прокрутка елементів
+    content.style.top = contentPosition + 'px';
+    thumb.style.top = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px'
+  });
+  /* ↑↑↑ /ПРОКРУТКА КОЛІЩАТКОМ МИШІ ↑↑↑ */
+
+  /* ↓↓↓ ПРОКРУТКА ПОВЗУНКОМ ↓↓↓ */
+  // Drag'n'Drop
+  thumb.addEventListener('mousedown', function (event) {
+    let startClientY          = event.clientY;
+    let thumbStartAbsPosition = parseFloat( getComputedStyle(thumb).top );
+    let thumbTopFixPosition   = thumb.getBoundingClientRect().top;
+    let maxThumbScroll        = line.clientHeight - thumb.clientHeight;
+    let maxContentScroll      = content.clientHeight - container.clientHeight;
+    let contentPosition       = parseFloat( getComputedStyle(content).top );
+
+    function onMouseMove(event) {
+      let shift = event.clientY - startClientY;
+
+      let thumbCurrentAbsPosition = thumbStartAbsPosition + shift;
+      if (thumbCurrentAbsPosition < 0) {
+        thumbCurrentAbsPosition = 0;
+      }
+      if ( thumbCurrentAbsPosition > maxThumbScroll) {
+        thumbCurrentAbsPosition = maxThumbScroll;
+      }
+
+      thumb.style.top = thumbCurrentAbsPosition + 'px';
+
+      let currentContentScroll = -maxContentScroll * thumbCurrentAbsPosition / maxThumbScroll;
+      content.style.top = currentContentScroll + 'px';
+    }
+
+    function onMouseUp() {
+      document.removeEventListener('mousemove', onMouseMove);
+      thumb.onmouseup = null;
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+
+  thumb.ondragstart = function() {
+    return false;
+  };
+  /* ↑↑↑ /ПРОКРУТКА ПОВЗУНКОМ ↑↑↑ */
+
+  /* ↓↓↓ ЕМУЛЯЦІЯ SWIPE ДЛЯ ТЕЛЕФОНІВ ↓↓↓ */
+  // touchstart/touchend
+  let touchstartY = 0,
+      touchendY   = 0;
+
+  container.addEventListener('touchstart', function(event) {
+    touchstartY = event.changedTouches[0].screenY;
+  }, false);
+
+  container.addEventListener('touchend', function(event) {
+    touchendY = event.changedTouches[0].screenY;
+
+    let maxContentScroll = content.clientHeight - container.clientHeight;
+    let maxThumbScroll   = line.clientHeight - thumb.clientHeight;
+    let scrollStep       = container.clientHeight/2;
+    let contentPosition  = parseFloat( getComputedStyle(content).top );
+
+    // розрахунок прокрутки
+    if (touchendY < touchstartY) { // swipe down
+      contentPosition -= scrollStep;
+    }
+    if (touchendY > touchstartY) {
+      contentPosition += scrollStep;
+    }
+
+    // контроль меж прокрутки
+    if ( contentPosition > 0 ) {
+      contentPosition = 0;
+    }
+    if ( Math.abs(contentPosition) > maxContentScroll ) {
+      contentPosition = -maxContentScroll;
+    }
+
+    // прокрутка елементів
+    content.style.top = contentPosition + 'px';
+    thumb.style.top = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px'
+
+  }, false);
+  /* ↑↑↑ /ЕМУЛЯЦІЯ SWIPE ДЛЯ ТЕЛЕФОНІВ ↑↑↑ */
+}
+
+css
+.wjs-scroll {
+  border: 1px solid grey;
+  margin:  50px auto;
+  text-align: justify;
+  padding: 20px;
+  max-width: 90%;
+
+  width: 400px;
+  height: 400px;
+  overflow: hidden;
+  position: relative;
+}
+
+.wjs-scroll:hover .wjs-scroll-line {opacity: .5;}
+.wjs-scroll:hover .wjs-scroll-thumb {opacity: .8;}
+
+.wjs-scroll-content {
+  position: absolute;
+
+  width: calc(100% - 20px);
+  top: 10px;
+
+  left: 50%;
+  transform: translate(-50%);
+  transition: top .3s;
+}
+
+.wjs-scroll-wrapper {
+  height  : 100%;
+  width   : 16px;
+  position: absolute;
+  top     : 0;
+  right   : 0;
+}
+
+.wjs-scroll-wrapper:hover .wjs-scroll-line {opacity: .7; width: 12px;}
+.wjs-scroll-wrapper:hover .wjs-scroll-thumb {opacity: 1;}
+
+.wjs-scroll-line {
+  background-color: dodgerblue;
+
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform:  translate(-50%);
+  height: calc(100% - 10px);
+  width: 4px;
+  border-radius: 4px;
+  opacity: .3;
+  transition: opacity .3s, width .3s;
+}
+
+.wjs-scroll-thumb {
+  background-color: blue;
+
+  width: 10px;
+  height: 30px;
+  border-radius: 4px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%);
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity .3s, top .3s;
+}
+
+html
+  <div class='wjs-scroll'>
+    <div class='wjs-scroll-content'>
+      <p>start ...</p>
+      <p> Lorem ipsum dolquod incidunt obcaecati voluptatum debitis ex expedita nihil!
+      </p>
+      <p>... end</p>
+    </div>
+    <div class='wjs-scroll-wrapper'>
+      <div class='wjs-scroll-line'>
+        <div class='wjs-scroll-thumb'></div>
+      </div>
+    </div>
+  </div>

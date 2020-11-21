@@ -1,4 +1,5 @@
 "use strict";
+
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ переключення вкладок ↓↓↓ */
   document.addEventListener('click', wSwitchTab);
@@ -17,7 +18,7 @@
 
     CSS-клас .wjs-tab__body_active переключає display: none/block
    * ]
-   * @param  {[object]} event [об'єкт події]
+   * @param {[object]} event [об'єкт події]
    */
   function wSwitchTab(event) {
     if ( !event.target.classList.contains('wjs-tab__header') ||
