@@ -1,0 +1,28 @@
+// let item = {
+//   "checkbox"     : "true",
+//   "id"           : "1",
+//   "name"         : "Вася Пупкин",
+//   "loginStatus"  : "offline/online",
+//   "workStatus"   : "New/Fraud/Charge Backs/Refund/Not intrested/Call back/In progress/No answer/No answer1/No answer2/No answer3/No answer4/No answer5/Pre deposit/Замена/No ansver 15/comission/VIP/Мусор Сейлов/Мусор Ретена/Depositor",
+//   "specStatus"   : "specStatus1/specStatus2",
+//   "phone"        : "",
+//   "email"        : "",
+//   "company"      : "Site Registration/TSL/Import/OneStep2/M15/M16/TON/Im_JETsignals/J-Signals/Commission/EU_ALL/LeadBolid/ARC/ORI",
+//   "broker"       : "Admin Admin/Boos Admin/Ret Box/Sal Box/Anastasia Miller/Vladislav Medvedev/refund refund/Max Zakharov/trashBox nekrasov/temp2 temp2/Alexandr Melnikov/Daniil Nekrasov/Alexander Korolev/Yaroslav Zubov/Andrey Bykov/Yaroslav Gorinin/Diana Gornaya/drop drop/trashBox melnik/Egor Kosinskiy/Egor Abramov/Alexandr Barinov/Vlada Safronova/Alisa Vershynina/Anton Korenev/Alena Goeva",
+//   "brokerType"   : "retention/sales",
+//   "platform"     : "CFD/binary",
+//   "verification" : "без верификации/частичная верификация/полная верификация",
+//   "country"      : "Germany",
+//   "language"     : "ru/en/de",
+//   "deposits"     : "true/false"
+//   "balance"      : "123456.78",
+//   "currency"     : "USD/EUR/RUB",
+//   "activity"     : "true/false",
+//   "lastActivity" : "DATE",
+//   "isTradeAble"  : "true/false",
+//   "registration" : "DATE",
+//   "lastNoteDate" : "DATE",
+//   "lastNoteText" : "lorem",
+//   "accountType"  : "start/busines/premium/ultimatum/не указан",
+//   "command"      : "sales1/sales2/retentions1/retentions2"
+// };

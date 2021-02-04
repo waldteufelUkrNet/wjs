@@ -1,0 +1,53 @@
+@import "fonts";
+@import "reset";
+@import "style_general";
+
+////////////////////////////////////////////////////////////////////////////////
+/* ↓↓↓ tabs ↓↓↓ */
+// main
+.wjs-tab {
+  &__headers-wrapper {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  &__header {
+    cursor: pointer;
+    user-select: none;
+    &_active {
+      cursor: default;
+    }
+  }
+  &__bodies-wrapper {
+  }
+  &__body {
+    display: none;
+    &_active {
+      display: block;
+    }
+  }
+}
+
+// customisation
+.wjs-tab {
+  margin: 20px;
+  &__headers-wrapper {}
+  &__header {
+    border: 1px solid steelblue;
+    padding: 6px 12px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    &_active {
+      background-color: lightgrey;
+    }
+  }
+  &__bodies-wrapper {
+    border: 1px solid grey;
+    padding: 15px;
+  }
+  &__body {
+    &_active {}
+  }
+}
+/* ↑↑↑ tabs ↑↑↑ */
+////////////////////////////////////////////////////////////////////////////////
