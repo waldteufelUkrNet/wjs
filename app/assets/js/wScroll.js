@@ -3,42 +3,73 @@
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ скрол ↓↓↓ */
   // document.addEventListener('click', wSwitchTab);
-
-  /**
-   * [wFoo descryption]
-   * @param {[type]} arg [descryption]
-   */
-  // function wFoo(arg) {
-
-  // }
 /* ↑↑↑ /скрол ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
 
 let container = document.querySelector('.wjs-scroll');
-setScroll(container);
+setScroll(container,{bottom:true,right:true});
 
-function setScroll(elem) {
+/**
+ * [wFoo descryption]
+ * @param {[type]} arg [descryption]
+ */
+function setScroll(elem, params = {}) {
+  // console.log("elem", elem);
+  // console.log("params", params);
+
   let container = elem,
       content   = elem.querySelector('.wjs-scroll__content');
 
-  let lineR, lineL, lineT, lineB,
-      thumbR, thumbL, thumbT, thumbB;
+  if ( content.clientWidth <= container.clientWidth
+    && content.clientHeight <= container.clientHeight ) {
+    // контент вміщається в контейнер, прокрутка не потрібна
+    return
+  }
 
-  if ( elem.querySelector('.wjs-scroll__line_right') ) {
-    lineR  = elem.querySelector('.wjs-scroll__line_right');
-    thumbR = elem.querySelector('.wjs-scroll__thumb_right');
+  let lineT, lineB, thumbT, thumbB,
+      lineR, lineL, thumbR, thumbL;
+
+  let settingsString = elem.dataset.scroll;
+
+  if ( content.clientWidth > container.clientWidth ) {
+
+    if ( params.top || settingsString.match(/top/i) ) {
+      wAddScrollLine('top');
+      lineL  = elem.querySelector('.wjs-scroll__line_top');
+      thumbL = elem.querySelector('.wjs-scroll__thumb_top');
+    }
+
+    if ( params.bottom || settingsString.match(/bottom/i) ) {
+      wAddScrollLine('bottom');
+      lineR  = elem.querySelector('.wjs-scroll__line_bottom');
+      thumbR = elem.querySelector('.wjs-scroll__thumb_bottom');
+    }
   }
-  if ( elem.querySelector('.wjs-scroll__line_right') ) {
-    lineL  = elem.querySelector('.wjs-scroll__line_left');
-    thumbL = elem.querySelector('.wjs-scroll__thumb_left');
+
+  if ( content.clientHeight > container.clientHeight ) {
+
+    if ( params.left || settingsString.match(/left/i) ) {
+      wAddScrollLine('left');
+      lineL  = elem.querySelector('.wjs-scroll__line_left');
+      thumbL = elem.querySelector('.wjs-scroll__thumb_left');
+    }
+
+    if ( params.right || settingsString.match(/right/i) ) {
+      wAddScrollLine('right');
+      lineR  = elem.querySelector('.wjs-scroll__line_right');
+      thumbR = elem.querySelector('.wjs-scroll__thumb_right');
+    }
   }
-  if ( elem.querySelector('.wjs-scroll__line_right') ) {
-    lineT  = elem.querySelector('.wjs-scroll__line_top');
-    thumbT = elem.querySelector('.wjs-scroll__thumb_top');
-  }
-  if ( elem.querySelector('.wjs-scroll__line_right') ) {
-    lineB  = elem.querySelector('.wjs-scroll__line_bottom');
-    thumbB = elem.querySelector('.wjs-scroll__thumb_bottom');
+
+  function wAddScrollLine(name) {
+    let html = '\
+                <div class="wjs-scroll__wrapper wjs-scroll__wrapper_' + name + '">\
+                  <div class="wjs-scroll__line wjs-scroll__line_' + name + '">\
+                    <div class="wjs-scroll__thumb wjs-scroll__thumb_' + name + '"></div>\
+                  </div>\
+                </div>\
+               ';
+    elem.insertAdjacentHTML('afterBegin', html);
   }
 
   /* ↓↓↓ ПРОКРУТКА КОЛІЩАТКОМ МИШІ ↓↓↓ */
@@ -128,7 +159,6 @@ function setScroll(elem) {
 
   /* ↓↓↓ ПРОКРУТКА ПОВЗУНКОМ ↓↓↓ */
     // Drag'n'Drop
-
     if ( elem.querySelector('.wjs-scroll__thumb_right') ) {
       elem.querySelector('.wjs-scroll__thumb_right').addEventListener('mousedown', verticalThumbScroll);
       elem.querySelector('.wjs-scroll__thumb_right').ondragstart = function() {return false;};
@@ -149,8 +179,8 @@ function setScroll(elem) {
     function verticalThumbScroll(event) {
       let thumb = elem.querySelector('.wjs-scroll__thumb_right')
                || elem.querySelector('.wjs-scroll__thumb_left');
-        let line = elem.querySelector('.wjs-scroll__line_right')
-                || elem.querySelector('.wjs-scroll__line_left');
+      let line = elem.querySelector('.wjs-scroll__line_right')
+              || elem.querySelector('.wjs-scroll__line_left');
 
       let startClientY          = event.clientY;
       let thumbStartAbsPosition = parseFloat( getComputedStyle(thumb).top );
@@ -193,8 +223,8 @@ function setScroll(elem) {
     function gorizontalThumbScroll(event) {
       let thumb = elem.querySelector('.wjs-scroll__thumb_bottom')
                || elem.querySelector('.wjs-scroll__thumb_top');
-        let line = elem.querySelector('.wjs-scroll__line_bottom')
-                || elem.querySelector('.wjs-scroll__line_top');
+      let line = elem.querySelector('.wjs-scroll__line_bottom')
+              || elem.querySelector('.wjs-scroll__line_top');
 
       let startClientX          = event.clientX;
       let thumbStartAbsPosition = parseFloat( getComputedStyle(thumb).left );
@@ -235,43 +265,43 @@ function setScroll(elem) {
     }
   /* ↑↑↑ /ПРОКРУТКА ПОВЗУНКОМ ↑↑↑ */
 
-  /* ↓↓↓ ЕМУЛЯЦІЯ SWIPE ДЛЯ ТЕЛЕФОНІВ ↓↓↓ */
-  // touchstart/touchend
-  // let touchstartY = 0,
-  //     touchendY   = 0;
+  // /* ↓↓↓ ЕМУЛЯЦІЯ SWIPE ДЛЯ ТЕЛЕФОНІВ ↓↓↓ */
+  //   // touchstart/touchend
+  //   let touchstartY = 0,
+  //       touchendY   = 0;
 
-  // container.addEventListener('touchstart', function(event) {
-  //   touchstartY = event.changedTouches[0].screenY;
-  // }, false);
+  //   container.addEventListener('touchstart', function(event) {
+  //     touchstartY = event.changedTouches[0].screenY;
+  //   }, false);
 
-  // container.addEventListener('touchend', function(event) {
-  //   touchendY = event.changedTouches[0].screenY;
+  //   container.addEventListener('touchend', function(event) {
+  //     touchendY = event.changedTouches[0].screenY;
 
-  //   let maxContentScroll = content.clientHeight - container.clientHeight;
-  //   let maxThumbScroll   = line.clientHeight - thumb.clientHeight;
-  //   let scrollStep       = container.clientHeight/2;
-  //   let contentPosition  = parseFloat( getComputedStyle(content).top );
+  //     let maxContentScroll = content.clientHeight - container.clientHeight;
+  //     let maxThumbScroll   = line.clientHeight - thumb.clientHeight;
+  //     let scrollStep       = container.clientHeight/2;
+  //     let contentPosition  = parseFloat( getComputedStyle(content).top );
 
-  //   // розрахунок прокрутки
-  //   if (touchendY < touchstartY) { // swipe down
-  //     contentPosition -= scrollStep;
-  //   }
-  //   if (touchendY > touchstartY) {
-  //     contentPosition += scrollStep;
-  //   }
+  //     // розрахунок прокрутки
+  //     if (touchendY < touchstartY) { // swipe down
+  //       contentPosition -= scrollStep;
+  //     }
+  //     if (touchendY > touchstartY) {
+  //       contentPosition += scrollStep;
+  //     }
 
-  //   // контроль меж прокрутки
-  //   if ( contentPosition > 0 ) {
-  //     contentPosition = 0;
-  //   }
-  //   if ( Math.abs(contentPosition) > maxContentScroll ) {
-  //     contentPosition = -maxContentScroll;
-  //   }
+  //     // контроль меж прокрутки
+  //     if ( contentPosition > 0 ) {
+  //       contentPosition = 0;
+  //     }
+  //     if ( Math.abs(contentPosition) > maxContentScroll ) {
+  //       contentPosition = -maxContentScroll;
+  //     }
 
-  //   // прокрутка елементів
-  //   content.style.top = contentPosition + 'px';
-  //   thumb.style.top = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px'
+  //     // прокрутка елементів
+  //     content.style.top = contentPosition + 'px';
+  //     thumb.style.top = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px'
 
-  // }, false);
-  /* ↑↑↑ /ЕМУЛЯЦІЯ SWIPE ДЛЯ ТЕЛЕФОНІВ ↑↑↑ */
+  //   }, false);
+  // /* ↑↑↑ /ЕМУЛЯЦІЯ SWIPE ДЛЯ ТЕЛЕФОНІВ ↑↑↑ */
 }
