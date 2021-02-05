@@ -14,8 +14,6 @@ setScroll(container,{bottom:true,right:true});
  * @param {[type]} arg [descryption]
  */
 function setScroll(elem, params = {}) {
-  // console.log("elem", elem);
-  // console.log("params", params);
 
   let container = elem,
       content   = elem.querySelector('.wjs-scroll__content');
@@ -31,6 +29,7 @@ function setScroll(elem, params = {}) {
 
   let settingsString = elem.dataset.scroll;
 
+  // додавання полос прокрутки по горизонталі
   if ( content.clientWidth > container.clientWidth ) {
 
     if ( params.top || settingsString.match(/top/i) ) {
@@ -46,6 +45,7 @@ function setScroll(elem, params = {}) {
     }
   }
 
+  // додавання полос прокрутки по вертикалі
   if ( content.clientHeight > container.clientHeight ) {
 
     if ( params.left || settingsString.match(/left/i) ) {
@@ -265,43 +265,132 @@ function setScroll(elem, params = {}) {
     }
   /* ↑↑↑ /ПРОКРУТКА ПОВЗУНКОМ ↑↑↑ */
 
-  // /* ↓↓↓ ЕМУЛЯЦІЯ SWIPE ДЛЯ ТЕЛЕФОНІВ ↓↓↓ */
-  //   // touchstart/touchend
-  //   let touchstartY = 0,
-  //       touchendY   = 0;
+  /* ↓↓↓ ЕМУЛЯЦІЯ SWIPE ДЛЯ ТЕЛЕФОНІВ ↓↓↓ */
+    // touchstart/touchend
+    let touchstartY = 0,
+        touchendY   = 0,
+        touchstartX = 0,
+        touchendX   = 0;
 
-  //   container.addEventListener('touchstart', function(event) {
-  //     touchstartY = event.changedTouches[0].screenY;
-  //   }, false);
+    container.addEventListener('touchstart', function(event) {
+      touchstartY = event.changedTouches[0].screenY;
+      touchstartX = event.changedTouches[0].screenX;
+    }, false);
 
-  //   container.addEventListener('touchend', function(event) {
-  //     touchendY = event.changedTouches[0].screenY;
+    container.addEventListener('touchend', function(event) {
+      touchendY = event.changedTouches[0].screenY;
+      touchendX = event.changedTouches[0].screenX;
 
-  //     let maxContentScroll = content.clientHeight - container.clientHeight;
-  //     let maxThumbScroll   = line.clientHeight - thumb.clientHeight;
-  //     let scrollStep       = container.clientHeight/2;
-  //     let contentPosition  = parseFloat( getComputedStyle(content).top );
+      let deltaY = Math.abs(touchendY - touchstartY),
+          deltaX = Math.abs(touchendX - touchstartX);
 
-  //     // розрахунок прокрутки
-  //     if (touchendY < touchstartY) { // swipe down
-  //       contentPosition -= scrollStep;
-  //     }
-  //     if (touchendY > touchstartY) {
-  //       contentPosition += scrollStep;
-  //     }
+      if (deltaX > deltaY) {
+        // горизонтальний скрол
 
-  //     // контроль меж прокрутки
-  //     if ( contentPosition > 0 ) {
-  //       contentPosition = 0;
-  //     }
-  //     if ( Math.abs(contentPosition) > maxContentScroll ) {
-  //       contentPosition = -maxContentScroll;
-  //     }
+        let line = elem.querySelector('.wjs-scroll__line_bottom')
+                || elem.querySelector('.wjs-scroll__line_top');
 
-  //     // прокрутка елементів
-  //     content.style.top = contentPosition + 'px';
-  //     thumb.style.top = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px'
+        let thumb = elem.querySelector('.wjs-scroll__thumb_bottom')
+                 || elem.querySelector('.wjs-scroll__thumb_top');
 
-  //   }, false);
-  // /* ↑↑↑ /ЕМУЛЯЦІЯ SWIPE ДЛЯ ТЕЛЕФОНІВ ↑↑↑ */
+        let maxContentScroll = content.clientWidth - container.clientWidth,
+            maxThumbScroll   = line.clientWidth - thumb.clientWidth,
+            scrollStep       = container.clientWidth/4,
+            contentPosition  = parseFloat( getComputedStyle(content).left );
+
+        // якщо свайп інтенсивний - збільшити швидкість прокрутки
+        if ( (deltaX/container.clientWidth) > 0.45 ) {
+          scrollStep = container.clientWidth/2;
+        }
+        if ( (deltaX/container.clientWidth) > 0.6 ) {
+          scrollStep = container.clientWidth/1;
+        }
+        if ( (deltaX/container.clientWidth) > 0.75 ) {
+          scrollStep = container.clientWidth/0.5;
+        }
+        if ( (deltaX/container.clientWidth) > 0.9 ) {
+          scrollStep = container.clientWidth/0.2;
+        }
+
+        // розрахунок прокрутки
+        if (touchendX < touchstartX) { // swipe down
+          contentPosition -= scrollStep;
+        }
+        if (touchendX > touchstartX) {
+          contentPosition += scrollStep;
+        }
+
+        // контроль меж прокрутки
+        if ( contentPosition > 0 ) {
+          contentPosition = 0;
+        }
+        if ( Math.abs(contentPosition) > maxContentScroll ) {
+          contentPosition = -maxContentScroll;
+        }
+
+        // прокрутка елементів
+        content.style.left = contentPosition + 'px';
+        if ( elem.querySelector('.wjs-scroll__thumb_bottom') ) {
+          elem.querySelector('.wjs-scroll__thumb_bottom').style.left = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px';
+        }
+        if ( elem.querySelector('.wjs-scroll__thumb_top') ) {
+          elem.querySelector('.wjs-scroll__thumb_top').style.left = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px';
+        }
+      } else {
+        // вертикальний скрол
+
+        let line = elem.querySelector('.wjs-scroll__line_right')
+                || elem.querySelector('.wjs-scroll__line_left');
+
+        let thumb = elem.querySelector('.wjs-scroll__thumb_right')
+                 || elem.querySelector('.wjs-scroll__thumb_left');
+
+        let maxContentScroll = content.clientHeight - container.clientHeight,
+            maxThumbScroll   = line.clientHeight - thumb.clientHeight,
+            scrollStep       = container.clientHeight/4,
+            contentPosition  = parseFloat( getComputedStyle(content).top );
+
+        // якщо свайп інтенсивний - збільшити швидкість прокрутки
+        if ( (deltaY/container.clientHeight) > 0.45 ) {
+          scrollStep = container.clientHeight/2;
+        }
+        if ( (deltaY/container.clientHeight) > 0.6 ) {
+          scrollStep = container.clientHeight/1;
+        }
+        if ( (deltaY/container.clientHeight) > 0.75 ) {
+          scrollStep = container.clientHeight/0.5;
+        }
+        if ( (deltaY/container.clientHeight) > 0.9 ) {
+          scrollStep = container.clientHeight/0.2;
+        }
+
+        // розрахунок прокрутки
+        if (touchendY < touchstartY) { // swipe down
+          contentPosition -= scrollStep;
+        }
+        if (touchendY > touchstartY) {
+          contentPosition += scrollStep;
+        }
+
+        // контроль меж прокрутки
+        if ( contentPosition > 0 ) {
+          contentPosition = 0;
+        }
+        if ( Math.abs(contentPosition) > maxContentScroll ) {
+          contentPosition = -maxContentScroll;
+        }
+
+        // прокрутка елементів
+        content.style.top = contentPosition + 'px';
+        if ( elem.querySelector('.wjs-scroll__thumb_right') ) {
+          elem.querySelector('.wjs-scroll__thumb_right').style.top = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px';
+        }
+        if ( elem.querySelector('.wjs-scroll__thumb_left') ) {
+          elem.querySelector('.wjs-scroll__thumb_left').style.top = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px';
+        }
+
+      }
+
+    }, false);
+  /* ↑↑↑ /ЕМУЛЯЦІЯ SWIPE ДЛЯ ТЕЛЕФОНІВ ↑↑↑ */
 }

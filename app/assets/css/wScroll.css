@@ -127,9 +127,9 @@ a, a:hover {
 
 .wjs-scroll__content {
   position: absolute;
-  -webkit-transition: top .5s, left .5s;
-  -o-transition: top .5s, left .5s;
-  transition: top .5s, left .5s;
+  -webkit-transition: top .3s, left .3s;
+  -o-transition: top .3s, left .3s;
+  transition: top .3s, left .3s;
 }
 
 .wjs-scroll__wrapper {
