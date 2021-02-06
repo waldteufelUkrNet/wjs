@@ -1,0 +1,43 @@
+@import "fonts";
+@import "reset";
+@import "style_general";
+
+////////////////////////////////////////////////////////////////////////////////
+/* ↓↓↓ standart scroll ↓↓↓ */
+// main
+.wjs-scroll-standart {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.wjs-content {}
+
+// customisation
+.wjs-scroll-standart {
+  border: 1px dotted red;
+  width: 800px;
+  height: 600px;
+  margin: 150px auto;
+}
+.wjs-content {}
+/* ↑↑↑ standart scroll ↑↑↑ */
+////////////////////////////////////////////////////////////////////////////////
+
+.container { margin: 50px auto; border: 1px dotted red;
+    width: 300px;
+    height: 200px;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+.content {
+    width: 800px;
+}
+.topscroll {
+    position: absolute;
+    width: 300px;
+    height: auto;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+.fake {
+    height: .01px;
+}

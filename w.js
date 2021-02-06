@@ -2,51 +2,19 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ прокручувана таблиця з фіксованою шапкою ↓↓↓ */
-let scrollTables = document.querySelectorAll('.wjs-scrollTable-wrapper');
+  let scrollTables = document.querySelectorAll('.wjs-scrollTable-wrapper');
 
-// навішування обробника через цикл, з передачею контексту
-for (let i = 0; i < scrollTables.length; i++) {
-  (function(n, domObj){
-    scrollTables[n].onscroll = function() {
-      scrollTableHandler(domObj);
-    };
-  }(i, scrollTables[i]));
-}
+  // навішування обробника через цикл, з передачею контексту
+  for (let i = 0; i < scrollTables.length; i++) {
+    (function(n, domObj){
+      scrollTables[n].onscroll = function() {
+        scrollTableHandler(domObj);
+      };
+    }(i, scrollTables[i]));
+  }
 /* ↑↑↑ /прокручувана таблиця з фіксованою шапкою ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ functions declaration ↓↓↓ */
-
-  /**
-   * [addOnEventToObject додає циклом on-обробники в масив або об'єкт елементів,
-   * передає контекст у обробник]
-   * @param {[String]}       event     [назва події]
-   * @param {[Object/Array]} targetObj [сукупність DOM-елементів]
-   * @param {[Function]}     handler   [функція-обробник]
-   */
-  function addOnEventToObject(event, targetObj, handler) {
-    let e = 'on' + event;
-    for (let i = 0; i < targetObj.length; i++) {
-      (function(n){
-        targetObj[n][e] = function() {
-          handler(this);
-        };
-      }(i));
-    }
-  }
-
-  /**
-   * [addEventListenerToObject додає циклом обробники в масив/об'єкт елементів]
-   * @param {[String]}       event     [назва події]
-   * @param {[Object/Array]} targetObj [сукупність DOM-елементів]
-   * @param {[Function]}     handler   [функція-обробник]
-   */
-  function addEventListenerToObject(event, targetObj, handler) {
-    for ( let i = 0; i < targetObj.length; i++ ) {
-      (function(n){
-        targetObj[n].addEventListener(event, handler);
-      }(i));
-    }
-  }
 
   /**
    * [ajax створює асинхронний запит і отриманий результат перенаправляє

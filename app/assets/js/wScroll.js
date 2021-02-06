@@ -2,12 +2,30 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ скрол ↓↓↓ */
-  // document.addEventListener('click', wSwitchTab);
+
+  // ініціалізація
+  document.addEventListener('DOMContentLoaded', function(){
+
+    if ( !document.querySelector('.wjs-scroll') ) return;
+
+    let arrOfScrollableElements = document.querySelectorAll('.wjs-scroll');
+    for (let elem of arrOfScrollableElements) {
+      setScroll(elem);
+    }
+  });
+
+  // слідкування за змінами в сторінці (елемент може повністю влізти на
+  // сторінку або навпаки), відповідно скрол повинен пропасти/з'явитися
+  window.addEventListener('resize', function(){
+    console.log('resize');
+  });
+
+  // mutation observer
+
 /* ↑↑↑ /скрол ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
 
-let container = document.querySelector('.wjs-scroll');
-setScroll(container,{bottom:true,right:true});
+
 
 /**
  * [wFoo descryption]
@@ -18,16 +36,16 @@ function setScroll(elem, params = {}) {
   let container = elem,
       content   = elem.querySelector('.wjs-scroll__content');
 
+  // контент вміщається в контейнер, прокрутка не потрібна
   if ( content.clientWidth <= container.clientWidth
     && content.clientHeight <= container.clientHeight ) {
-    // контент вміщається в контейнер, прокрутка не потрібна
     return
   }
 
   let lineT, lineB, thumbT, thumbB,
       lineR, lineL, thumbR, thumbL;
 
-  let settingsString = elem.dataset.scroll;
+  let settingsString = elem.dataset.scroll || '';
 
   // додавання полос прокрутки по горизонталі
   if ( content.clientWidth > container.clientWidth ) {
@@ -38,7 +56,12 @@ function setScroll(elem, params = {}) {
       thumbL = elem.querySelector('.wjs-scroll__thumb_top');
     }
 
-    if ( params.bottom || settingsString.match(/bottom/i) ) {
+    if ( params.bottom
+      || settingsString.match(/bottom/i)
+      || (!params.bottom
+        && !params.top
+        && !settingsString.match(/bottom/i)
+        && !settingsString.match(/top/i)) ) {
       wAddScrollLine('bottom');
       lineR  = elem.querySelector('.wjs-scroll__line_bottom');
       thumbR = elem.querySelector('.wjs-scroll__thumb_bottom');
@@ -54,7 +77,12 @@ function setScroll(elem, params = {}) {
       thumbL = elem.querySelector('.wjs-scroll__thumb_left');
     }
 
-    if ( params.right || settingsString.match(/right/i) ) {
+    if ( params.right
+      || settingsString.match(/right/i)
+      || (!params.left
+        && !params.right
+        && !settingsString.match(/left/i)
+        && !settingsString.match(/right/i)) ) {
       wAddScrollLine('right');
       lineR  = elem.querySelector('.wjs-scroll__line_right');
       thumbR = elem.querySelector('.wjs-scroll__thumb_right');
@@ -116,6 +144,7 @@ function setScroll(elem, params = {}) {
         }
       } else {
         // вертикальний скрол
+        document.body.style.overflow = 'hidden';
         let scrollStep       = container.clientHeight/10,
             contentPosition  = parseFloat( getComputedStyle(content).top ),
             maxContentScroll = content.clientHeight - container.clientHeight,
@@ -139,9 +168,11 @@ function setScroll(elem, params = {}) {
         // контроль меж прокрутки
         if ( contentPosition > 0 ) {
           contentPosition = 0;
+          document.body.style.overflow = '';
         }
         if ( Math.abs(contentPosition) > maxContentScroll ) {
           contentPosition = -maxContentScroll;
+          document.body.style.overflow = '';
         }
 
         // прокрутка елементів
@@ -275,9 +306,26 @@ function setScroll(elem, params = {}) {
     container.addEventListener('touchstart', function(event) {
       touchstartY = event.changedTouches[0].screenY;
       touchstartX = event.changedTouches[0].screenX;
+
+      // якщо у документа є прокрутка, вона спрацює і кастомно-скрольний
+      // елемент може прокрутитися за межі екрану
+      // document.body.style.overflow = 'hidden';
+
+let contentTop = content.getBoundingClientRect().top;
+let containerTop = container.getBoundingClientRect().top;
+// alert(`
+// contentTop: ${contentTop},
+// containerTop: ${containerTop},
+// deltaT: ${contentTop - containerTop},
+// contentH: ${content.clientHeight},
+// containerH: ${container.clientHeight},
+// deltaH: ${content.clientHeight - container.clientHeight}
+// `);
+
     }, false);
 
     container.addEventListener('touchend', function(event) {
+
       touchendY = event.changedTouches[0].screenY;
       touchendX = event.changedTouches[0].screenX;
 
@@ -388,9 +436,8 @@ function setScroll(elem, params = {}) {
         if ( elem.querySelector('.wjs-scroll__thumb_left') ) {
           elem.querySelector('.wjs-scroll__thumb_left').style.top = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px';
         }
-
       }
-
+      // document.body.style.overflow = '';
     }, false);
   /* ↑↑↑ /ЕМУЛЯЦІЯ SWIPE ДЛЯ ТЕЛЕФОНІВ ↑↑↑ */
 }

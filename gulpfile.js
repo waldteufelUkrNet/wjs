@@ -33,22 +33,22 @@ const gulp         = require('gulp'),                  //
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ TASKS ↓↓↓ */
 // index.pug -> index.html
-// gulp.task('pug', function() {
-//   return gulp.src('app/assets/pug/index.pug')
-//     // .pipe(changed('app/', {extension: '.html'}))
-//     .pipe(pug({
-//       pretty : true
-//     }))
-//     .on('error', notify.onError({
-//       message : 'Error: <%= error.message %>',
-//       title   : 'PUG error'
-//     }))
-//     .pipe(gulp.dest('app/'))
-// });
+gulp.task('pug', function() {
+  return gulp.src('app/index.pug')
+    // .pipe(changed('app/', {extension: '.html'}))
+    .pipe(pug({
+      pretty : true
+    }))
+    .on('error', notify.onError({
+      message : 'Error: <%= error.message %>',
+      title   : 'PUG error'
+    }))
+    .pipe(gulp.dest('app/'))
+});
 
 // pug -> html
 gulp.task('pug-pages', function() {
-  return gulp.src(['app/assets/pug/*.pug', '!app/assets/pug/index.pug'])
+  return gulp.src(['app/assets/pug/*.pug', '!app/index.pug'])
     // .pipe(changed('app/', {extension: '.html'}))
     .pipe(pug({
       pretty : true
@@ -102,13 +102,14 @@ gulp.task('js', function() {
 
 // watching & live reload
 gulp.task('watch', gulp.parallel(
-  gulp.series('sass', 'js', 'pug-pages', 'browser-sync'),
+  gulp.series('sass', 'js', 'pug', 'pug-pages', 'browser-sync'),
   function() {
     gulp.watch(['app/assets/scss/**/*.+(scss|sass)'], gulp.series('sass'));
 
     gulp.watch(['app/assets/js-expanded/*.js'], gulp.series('js'));
 
-    gulp.watch(['app/assets/pug/*.pug', '!app/assets/pug/index.pug'], gulp.series('pug-pages'));
+    gulp.watch(['app/index.pug'], gulp.series('pug'));
+    gulp.watch(['app/assets/pug/*.pug', '!app/index.pug'], gulp.series('pug-pages'));
 
     gulp.watch('app/assets/html/*.html').on('change',  browserSync.reload);
   }
