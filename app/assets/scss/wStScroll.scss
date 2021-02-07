@@ -7,37 +7,44 @@
 // main
 .wjs-scroll-standart {
   overflow-y: scroll;
-  overflow-x: hidden;
+  overflow-x: scroll;
+  // position: relative;
 }
-.wjs-content {}
+
+.wjs-scroll-standart__top {
+  position: absolute;
+  height: auto;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.wjs-scroll-standart-inner__top {
+  height: .01px;
+}
+
+.wjs-scroll-standart__left {
+  position: absolute;
+  width: auto;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.wjs-scroll-standart-inner__left {
+  width: .01px;
+}
+
+.wjs-content {
+}
 
 // customisation
 .wjs-scroll-standart {
+  max-width: 800px;
+  max-height: 500px;
+  margin: 20px auto;
   border: 1px dotted red;
-  width: 800px;
-  height: 600px;
-  margin: 150px auto;
 }
+.wjs-scroll-standart__top {}
+.wjs-scroll-standart-inner__top {}
 .wjs-content {}
 /* ↑↑↑ standart scroll ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
-
-.container { margin: 50px auto; border: 1px dotted red;
-    width: 300px;
-    height: 200px;
-    overflow-x: scroll;
-    overflow-y: hidden;
-}
-.content {
-    width: 800px;
-}
-.topscroll {
-    position: absolute;
-    width: 300px;
-    height: auto;
-    overflow-x: scroll;
-    overflow-y: hidden;
-}
-.fake {
-    height: .01px;
-}
