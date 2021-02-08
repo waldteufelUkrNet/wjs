@@ -114,7 +114,111 @@ function setScroll(elem, params = {}) {
   /* ↑↑↑ /ПРОКРУТКА КОЛІЩАТКОМ МИШІ ↑↑↑ */
 
   /* ↓↓↓ ПРОКРУТКА ПОВЗУНКОМ ↓↓↓ */
+    // Drag'n'Drop
+    if ( elem.querySelector('.wjs-scroll__thumb_right') ) {
+      elem.querySelector('.wjs-scroll__thumb_right').addEventListener('mousedown', verticalThumbScroll);
+      elem.querySelector('.wjs-scroll__thumb_right').ondragstart = function() {return false;};
+    }
+    if ( elem.querySelector('.wjs-scroll__thumb_left') ) {
+      elem.querySelector('.wjs-scroll__thumb_left').addEventListener('mousedown', verticalThumbScroll);
+      elem.querySelector('.wjs-scroll__thumb_left').ondragstart = function() {return false;};
+    }
+    if ( elem.querySelector('.wjs-scroll__thumb_top') ) {
+      elem.querySelector('.wjs-scroll__thumb_top').addEventListener('mousedown', gorizontalThumbScroll);
+      elem.querySelector('.wjs-scroll__thumb_top').ondragstart = function() {return false;};
+    }
+    if ( elem.querySelector('.wjs-scroll__thumb_bottom') ) {
+      elem.querySelector('.wjs-scroll__thumb_bottom').addEventListener('mousedown', gorizontalThumbScroll);
+      elem.querySelector('.wjs-scroll__thumb_bottom').ondragstart = function() {return false;};
+    }
 
+    function verticalThumbScroll(event) {
+      let thumb = elem.querySelector('.wjs-scroll__thumb_right')
+               || elem.querySelector('.wjs-scroll__thumb_left');
+      let line = elem.querySelector('.wjs-scroll__line_right')
+              || elem.querySelector('.wjs-scroll__line_left');
+
+      let startClientY          = event.clientY;
+      let thumbStartAbsPosition = parseFloat( getComputedStyle(thumb).top );
+      let thumbTopFixPosition   = thumb.getBoundingClientRect().top;
+      let maxThumbScroll        = line.clientHeight - thumb.clientHeight;
+      let maxContentScroll      = content.clientHeight - container.clientHeight;
+      // let contentPosition       = parseFloat( getComputedStyle(content).top );
+
+      function onMouseMove(event) {
+        let shift = event.clientY - startClientY;
+
+        let thumbCurrentAbsPosition = thumbStartAbsPosition + shift;
+        if (thumbCurrentAbsPosition < 0) {
+          thumbCurrentAbsPosition = 0;
+        }
+        if ( thumbCurrentAbsPosition > maxThumbScroll) {
+          thumbCurrentAbsPosition = maxThumbScroll;
+        }
+
+        let currentContentScroll = -maxContentScroll * thumbCurrentAbsPosition / maxThumbScroll;
+        content.style.top = currentContentScroll + 'px';
+
+        if ( elem.querySelector('.wjs-scroll__thumb_right') ) {
+          elem.querySelector('.wjs-scroll__thumb_right').style.top = thumbCurrentAbsPosition + 'px';
+        }
+        if ( elem.querySelector('.wjs-scroll__thumb_left') ) {
+          elem.querySelector('.wjs-scroll__thumb_left').style.top = thumbCurrentAbsPosition + 'px';
+        }
+      }
+
+      function onMouseUp() {
+        document.removeEventListener('mousemove', onMouseMove);
+        thumb.onmouseup = null;
+      };
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    }
+
+    function gorizontalThumbScroll(event) {
+      let thumb = elem.querySelector('.wjs-scroll__thumb_bottom')
+               || elem.querySelector('.wjs-scroll__thumb_top');
+      let line = elem.querySelector('.wjs-scroll__line_bottom')
+              || elem.querySelector('.wjs-scroll__line_top');
+
+      let startClientX          = event.clientX;
+      let thumbStartAbsPosition = parseFloat( getComputedStyle(thumb).left );
+      let thumbLeftFixPosition  = thumb.getBoundingClientRect().left;
+      let maxThumbScroll        = line.clientWidth - thumb.clientWidth;
+      let maxContentScroll      = content.clientWidth - container.clientWidth;
+      let contentPosition       = parseFloat( getComputedStyle(content).left );
+
+      function onMouseMove(event) {
+        let shift = event.clientX - startClientX;
+
+        let thumbCurrentAbsPosition = thumbStartAbsPosition + shift;
+        if (thumbCurrentAbsPosition < 0) {
+          thumbCurrentAbsPosition = 0;
+        }
+        if ( thumbCurrentAbsPosition > maxThumbScroll) {
+          thumbCurrentAbsPosition = maxThumbScroll;
+        }
+
+        let currentContentScroll = -maxContentScroll * thumbCurrentAbsPosition / maxThumbScroll;
+        content.style.left = currentContentScroll + 'px';
+
+        if ( elem.querySelector('.wjs-scroll__thumb_bottom') ) {
+          elem.querySelector('.wjs-scroll__thumb_bottom').style.left = thumbCurrentAbsPosition + 'px';
+        }
+        if ( elem.querySelector('.wjs-scroll__thumb_top') ) {
+          elem.querySelector('.wjs-scroll__thumb_top').style.left = thumbCurrentAbsPosition + 'px';
+        }
+      }
+
+      function onMouseUp() {
+        document.removeEventListener('mousemove', onMouseMove);
+        thumb.onmouseup = null;
+      };
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    }
   /* ↑↑↑ /ПРОКРУТКА ПОВЗУНКОМ ↑↑↑ */
 
   function wAddScrollLine(name) {
