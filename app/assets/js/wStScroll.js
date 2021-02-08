@@ -12,7 +12,6 @@
 /* ↑↑↑ прокрутка ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
 function setStandartScroll(elem, param = {}) {
-  console.log("setStandartScroll");
   let settingsString = elem.dataset.scroll || '';
 
   // якщо не вказано, які додаткові прокрутки робити
@@ -47,7 +46,7 @@ function setStandartScroll(elem, param = {}) {
       let height = child.clientHeight || 0;
       if (height > contentHeight) contentHeight = height;
     }
-    content.style.height = contentHeight + 'px';
+    content.style.minHeight = contentHeight + 'px';
     leftScrollInner.style.height = contentHeight + 'px';
 
     leftScroll.style.height = container.clientHeight + 'px';
@@ -92,7 +91,7 @@ function setStandartScroll(elem, param = {}) {
       let width = child.clientWidth || 0;
       if (width > contentWidth) contentWidth = width;
     }
-    content.style.width = contentWidth + 'px';
+    content.style.minWidth = contentWidth + 'px';
     // ширина верхньої прокрутки із урахуванням лівої
     topScrollInner.style.width = contentWidth + +getComputedStyle(content).marginLeft.slice(0,-2) + 'px';
 
@@ -113,7 +112,7 @@ function setStandartScroll(elem, param = {}) {
     // якщо є верхня прокрутка, то ліву треба перерахувати (додати висоту верхньої)
     if ( elem.querySelector('.wjs-scroll-standart__left') ) {
       let leftScrollInner = elem.querySelector('.wjs-scroll-standart-inner__left');
-      leftScrollInner.style.height = leftScrollInner.clientHeight + topScroll.offsetHeight + 'px';
+      leftScrollInner.style.height = content.clientHeight + topScroll.offsetHeight + 'px';
     }
   }
 
@@ -139,15 +138,15 @@ function setStandartScrollOnAllElements(){
 }
 
 function handleMutation(mutationRecordList, observer) {
-  // observer.disconnect();
-  // let elem = mutationRecordList[mutationRecordList.length-1].target.closest('.wjs-scroll-standart');
-  // setStandartScroll(elem);
+  observer.disconnect();
+  let elem = mutationRecordList[mutationRecordList.length-1].target.closest('.wjs-scroll-standart');
+  setStandartScroll(elem);
 }
 
-// setTimeout(function(){
-//   document.getElementById('test1').style.width = '200px';
-// },3000);
+setTimeout(function(){
+  document.getElementById('test1').style.width = '200px';
+},3000);
 
-// setTimeout(function(){
-//   document.getElementById('test2').style.height = '200px';
-// },6000);
+setTimeout(function(){
+  document.getElementById('test2').style.height = '200px';
+},6000);
