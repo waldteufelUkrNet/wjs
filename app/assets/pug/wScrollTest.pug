@@ -12,7 +12,7 @@ html(lang='ru')
     script(defer src="../js/wScrollTest.js")
   body(style='font-family:rcl')
 
-  .wjs-scroll(data-scroll='right bottom')
+  .wjs-scroll(data-scroll='left top bottom right')
     //- .wjs-scroll__wrapper.wjs-scroll__wrapper_right
     //-   .wjs-scroll__line.wjs-scroll__line_right
     //-     .wjs-scroll__thumb.wjs-scroll__thumb_right
@@ -40,3 +40,25 @@ html(lang='ru')
 
   .info(style='border: 1px solid lightgrey; margin: 15px; padding: 15px; font-family:c')
     h1(style="font-weight:900") INFO
+    p - Під час завантаження сторінки скрипт шукає усі елементи з класом .wjs-scroll і додає потрібні прокрутки відповідно до вказаних в атрибуті (data-scroll='left top bottom right').
+    p - Якщо атрибуту нема, скрипт по дефолту додає прокрутку справа і знизу (якщо вони потрібні).
+    p - При динамічному додаванні на сторінку елементу зі скролом потрібно викликати ф-ю wSetScroll(elem, {left:true,top:true,bottom:true,right:true}).
+    p - На мобільних пристроях можливо буде видно рідну прокрутку мобільного браузера (тонкі сірі полосочки). Це не ґандж, а особливості кастомізації стилів. Щоб дефолтної прокрутки не було видно, потрібно прибрати прозорість і зменшити ширину поліс проклутки, щоб вони собою закрили дефолтні полоси.
+    p Скрипт видозмінює HTML: додає на початок елементу з класом .wjs-scroll елементи, які емулюють прокрутку.
+    p Повна версія HTML після компіляції:
+    br
+    pre
+      |  .wjs-scroll(data-scroll='left top bottom right')
+      |    .wjs-scroll__wrapper.wjs-scroll__wrapper_right
+      |      .wjs-scroll__line.wjs-scroll__line_right
+      |        .wjs-scroll__thumb.wjs-scroll__thumb_right
+      |    .wjs-scroll__wrapper.wjs-scroll__wrapper_left
+      |      .wjs-scroll__line.wjs-scroll__line_left
+      |        .wjs-scroll__thumb.wjs-scroll__thumb_left
+      |    .wjs-scroll__wrapper.wjs-scroll__wrapper_top
+      |      .wjs-scroll__line.wjs-scroll__line_top
+      |        .wjs-scroll__thumb.wjs-scroll__thumb_top(title='shift+wheel')
+      |    .wjs-scroll__wrapper.wjs-scroll__wrapper_bottom
+      |      .wjs-scroll__line.wjs-scroll__line_bottom
+      |        .wjs-scroll__thumb.wjs-scroll__thumb_bottom(title='shift+wheel')
+      |    .wjs-scroll__content lorem...

@@ -54,6 +54,14 @@
         .wjs-scroll__thumb {opacity: 1; height: 18px;}
       }
     }
+    &_active-v {
+      .wjs-scroll__line {opacity: .7; width: 20px;}
+      .wjs-scroll__thumb {opacity: 1; width: 18px;}
+    }
+    &_active-h {
+      .wjs-scroll__line {opacity: .7; height: 20px;}
+      .wjs-scroll__thumb {opacity: 1; height: 18px;}
+    }
   }
   &__line {
     position: absolute;
@@ -80,7 +88,7 @@
     position: absolute;
     cursor: pointer;
     opacity: 0.5;
-    transition: opacity .3s, top .3s, left .3s, width .3s, height .3s;
+    transition: opacity .3s, width .3s, height .3s, left .1s;
     &_right,
     &_left {
       top: 1px;

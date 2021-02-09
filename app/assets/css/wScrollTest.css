@@ -202,6 +202,26 @@ a, a:hover {
   height: 18px;
 }
 
+.wjs-scroll__wrapper_active-v .wjs-scroll__line {
+  opacity: .7;
+  width: 20px;
+}
+
+.wjs-scroll__wrapper_active-v .wjs-scroll__thumb {
+  opacity: 1;
+  width: 18px;
+}
+
+.wjs-scroll__wrapper_active-h .wjs-scroll__line {
+  opacity: .7;
+  height: 20px;
+}
+
+.wjs-scroll__wrapper_active-h .wjs-scroll__thumb {
+  opacity: 1;
+  height: 18px;
+}
+
 .wjs-scroll__line {
   position: absolute;
   opacity: .3;
@@ -234,9 +254,9 @@ a, a:hover {
   position: absolute;
   cursor: pointer;
   opacity: 0.5;
-  -webkit-transition: opacity .3s, top .3s, left .3s, width .3s, height .3s;
-  -o-transition: opacity .3s, top .3s, left .3s, width .3s, height .3s;
-  transition: opacity .3s, top .3s, left .3s, width .3s, height .3s;
+  -webkit-transition: opacity .3s, width .3s, height .3s, left .1s;
+  -o-transition: opacity .3s, width .3s, height .3s, left .1s;
+  transition: opacity .3s, width .3s, height .3s, left .1s;
 }
 
 .wjs-scroll__thumb_right, .wjs-scroll__thumb_left {

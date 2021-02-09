@@ -1,17 +1,42 @@
 "use strict";
 
 ////////////////////////////////////////////////////////////////////////////////
-/* ↓↓↓ скрол ↓↓↓ */
-let container = document.querySelector('.wjs-scroll');
-setScroll(container, {top:true,left:true});
-/* ↑↑↑ /скрол ↑↑↑ */
-///////////////////////////////////////////////////////////////////////////////
+/* ↓↓↓ custom scroll ↓↓↓ */
 
+  // ініціалізація
+  document.addEventListener('DOMContentLoaded', function(){
+
+    if ( !document.querySelector('.wjs-scroll') ) return;
+
+    let arrOfScrollableElements = document.querySelectorAll('.wjs-scroll');
+    for (let elem of arrOfScrollableElements) {
+      wSetScroll(elem);
+    }
+  });
+
+  // слідкування за змінами в сторінці (елемент може повністю влізти на
+  // сторінку або навпаки), відповідно скрол повинен пропасти/з'явитися
+  window.addEventListener('resize', function(){
+    if ( !document.querySelector('.wjs-scroll') ) return;
+
+    let arrOfScrollableElements = document.querySelectorAll('.wjs-scroll');
+    for (let elem of arrOfScrollableElements) {
+      wSetScroll(elem);
+    }
+  });
+/* ↑↑↑ custom scroll ↑↑↑ */
+////////////////////////////////////////////////////////////////////////////////
+/* ↓↓↓ functions declaration ↓↓↓ */
 /**
- * [wFoo descryption]
- * @param {[type]} arg [descryption]
+ * [wSetScroll відповідає за кастомну прокрутку:
+ * 1. зчитує з атрибутів елемента, які прокрутки потрібно додати,
+ * 2. слідкує за прокруткою елемента і поправляє положення повзунків прокрутки
+ * 3. слідкує за положенням повзунків прокрутки і поправляє прокрутку елемента]
+ * @param {[DOM-object]} elem [елемент DOM з класом .wjs-scroll]
+ * @param {[object]} params [набір налаштувань для одиночного запуску функції
+ * формат даних: {top:boolean,bottom:boolean,left:boolean,right:boolean}]
  */
-function setScroll(elem, params = {}) {
+function wSetScroll(elem, params = {}) {
   let container = elem,
       content   = elem.querySelector('.wjs-scroll__content');
 
@@ -35,11 +60,13 @@ function setScroll(elem, params = {}) {
     if ( content.scrollWidth > content.clientWidth ) {
 
       if ( params.top || settingsString.match(/top/i) ) {
-        wAddScrollLine('top');
-        lineT  = elem.querySelector('.wjs-scroll__line_top');
-        thumbT = elem.querySelector('.wjs-scroll__thumb_top');
+        if ( !elem.querySelector('.wjs-scroll__line_top') ) {
+          wAddScrollLine('top');
+          lineT  = elem.querySelector('.wjs-scroll__line_top');
+          thumbT = elem.querySelector('.wjs-scroll__thumb_top');
 
-        thumbT.style.width = lineT.clientWidth*content.clientWidth/content.scrollWidth + 'px';
+          thumbT.style.width = lineT.clientWidth*content.clientWidth/content.scrollWidth + 'px';
+        }
       }
 
       if ( params.bottom
@@ -47,12 +74,14 @@ function setScroll(elem, params = {}) {
         || (!params.bottom
           && !params.top
           && !settingsString.match(/bottom/i)
-          && !settingsString.match(/top/i)) ) {
-        wAddScrollLine('bottom');
-        lineB  = elem.querySelector('.wjs-scroll__line_bottom');
-        thumbB = elem.querySelector('.wjs-scroll__thumb_bottom');
+          && !settingsString.match(/top/i) ) ) {
+        if ( !elem.querySelector('.wjs-scroll__line_bottom') ) {
+          wAddScrollLine('bottom');
+          lineB  = elem.querySelector('.wjs-scroll__line_bottom');
+          thumbB = elem.querySelector('.wjs-scroll__thumb_bottom');
 
-        thumbB.style.width = lineB.clientWidth*content.clientWidth/content.scrollWidth + 'px';
+          thumbB.style.width = lineB.clientWidth*content.clientWidth/content.scrollWidth + 'px';
+        }
       }
     }
 
@@ -60,11 +89,13 @@ function setScroll(elem, params = {}) {
     if ( content.scrollHeight > content.clientHeight ) {
 
       if ( params.left || settingsString.match(/left/i) ) {
-        wAddScrollLine('left');
-        lineL  = elem.querySelector('.wjs-scroll__line_left');
-        thumbL = elem.querySelector('.wjs-scroll__thumb_left');
+        if ( !elem.querySelector('.wjs-scroll__line_left') ) {
+          wAddScrollLine('left');
+          lineL  = elem.querySelector('.wjs-scroll__line_left');
+          thumbL = elem.querySelector('.wjs-scroll__thumb_left');
 
-        thumbL.style.height = lineL.clientHeight*content.clientHeight/content.scrollHeight + 'px';
+          thumbL.style.height = lineL.clientHeight*content.clientHeight/content.scrollHeight + 'px';
+        }
       }
 
       if ( params.right
@@ -72,12 +103,14 @@ function setScroll(elem, params = {}) {
         || (!params.left
           && !params.right
           && !settingsString.match(/left/i)
-          && !settingsString.match(/right/i)) ) {
-        wAddScrollLine('right');
-        lineR  = elem.querySelector('.wjs-scroll__line_right');
-        thumbR = elem.querySelector('.wjs-scroll__thumb_right');
+          && !settingsString.match(/right/i) ) ) {
+        if ( !elem.querySelector('.wjs-scroll__line_right') ) {
+          wAddScrollLine('right');
+          lineR  = elem.querySelector('.wjs-scroll__line_right');
+          thumbR = elem.querySelector('.wjs-scroll__thumb_right');
 
-        thumbR.style.height = lineR.clientHeight*content.clientHeight/content.scrollHeight + 'px';
+          thumbR.style.height = lineR.clientHeight*content.clientHeight/content.scrollHeight + 'px';
+        }
       }
     }
   /* ↑↑↑ ДОДАВАННЯ ПОЛОС ПРОКРУТКИ ↑↑↑ */
@@ -85,10 +118,26 @@ function setScroll(elem, params = {}) {
   /* ↓↓↓ ПРОКРУТКА КОЛІЩАТКОМ МИШІ ↓↓↓ */
     content.onscroll = function (event) {
 
+      // кожного разу після повторного виклику функції формується нове
+      // лексичне оточення, тому ці змінні потрібно постійно перепризначати
+      lineL  = elem.querySelector('.wjs-scroll__line_left');
+      thumbL = elem.querySelector('.wjs-scroll__thumb_left');
+      lineR  = elem.querySelector('.wjs-scroll__line_right');
+      thumbR = elem.querySelector('.wjs-scroll__thumb_right');
+      lineT  = elem.querySelector('.wjs-scroll__line_top');
+      thumbT = elem.querySelector('.wjs-scroll__thumb_top');
+      lineB  = elem.querySelector('.wjs-scroll__line_bottom');
+      thumbB = elem.querySelector('.wjs-scroll__thumb_bottom');
+
       // вертикальний скрол
       let maxContentYScroll = content.scrollHeight - content.clientHeight;
-      let maxThumbYScroll = lineR.clientHeight - thumbR.clientHeight
-                            || lineL.clientHeight - thumbL.clientHeight;
+      let maxThumbYScroll;
+
+      if (lineL) {
+        maxThumbYScroll = lineL.clientHeight - thumbL.clientHeight;
+      } else {
+        maxThumbYScroll = lineR.clientHeight - thumbR.clientHeight;
+      }
 
       let thumbCurrentTop = maxThumbYScroll*content.scrollTop/maxContentYScroll;
       if (thumbR) {
@@ -100,8 +149,13 @@ function setScroll(elem, params = {}) {
 
       // горизонтальний скрол
       let maxContentXScroll = content.scrollWidth - content.clientWidth;
-      let maxThumbXScroll = lineB.clientWidth - thumbB.clientWidth
-                            || lineT.clientWidth- thumbT.clientWidth;
+      let maxThumbXScroll;
+
+      if (lineT) {
+        maxThumbXScroll = lineT.clientWidth- thumbT.clientWidth;
+      } else {
+        maxThumbXScroll = lineB.clientWidth - thumbB.clientWidth;
+      }
 
       let thumbCurrentLeft = maxThumbXScroll*content.scrollLeft/maxContentXScroll;
       if (thumbB) {
@@ -138,12 +192,13 @@ function setScroll(elem, params = {}) {
       let line = elem.querySelector('.wjs-scroll__line_right')
               || elem.querySelector('.wjs-scroll__line_left');
 
+      event.target.closest('.wjs-scroll__wrapper').classList.add('wjs-scroll__wrapper_active-v');
+
       let startClientY          = event.clientY;
       let thumbStartAbsPosition = parseFloat( getComputedStyle(thumb).top );
       let thumbTopFixPosition   = thumb.getBoundingClientRect().top;
       let maxThumbScroll        = line.clientHeight - thumb.clientHeight;
-      let maxContentScroll      = content.clientHeight - container.clientHeight;
-      // let contentPosition       = parseFloat( getComputedStyle(content).top );
+      let maxContentScroll      = content.scrollHeight - content.clientHeight;
 
       function onMouseMove(event) {
         let shift = event.clientY - startClientY;
@@ -156,8 +211,7 @@ function setScroll(elem, params = {}) {
           thumbCurrentAbsPosition = maxThumbScroll;
         }
 
-        let currentContentScroll = -maxContentScroll * thumbCurrentAbsPosition / maxThumbScroll;
-        content.style.top = currentContentScroll + 'px';
+        content.scrollTop = parseFloat( getComputedStyle(thumb).top )*maxContentScroll/maxThumbScroll;
 
         if ( elem.querySelector('.wjs-scroll__thumb_right') ) {
           elem.querySelector('.wjs-scroll__thumb_right').style.top = thumbCurrentAbsPosition + 'px';
@@ -170,6 +224,7 @@ function setScroll(elem, params = {}) {
       function onMouseUp() {
         document.removeEventListener('mousemove', onMouseMove);
         thumb.onmouseup = null;
+        event.target.closest('.wjs-scroll__wrapper').classList.remove('wjs-scroll__wrapper_active-v');
       };
 
       document.addEventListener('mousemove', onMouseMove);
@@ -182,12 +237,13 @@ function setScroll(elem, params = {}) {
       let line = elem.querySelector('.wjs-scroll__line_bottom')
               || elem.querySelector('.wjs-scroll__line_top');
 
+      event.target.closest('.wjs-scroll__wrapper').classList.add('wjs-scroll__wrapper_active-h');
+
       let startClientX          = event.clientX;
       let thumbStartAbsPosition = parseFloat( getComputedStyle(thumb).left );
       let thumbLeftFixPosition  = thumb.getBoundingClientRect().left;
       let maxThumbScroll        = line.clientWidth - thumb.clientWidth;
-      let maxContentScroll      = content.clientWidth - container.clientWidth;
-      let contentPosition       = parseFloat( getComputedStyle(content).left );
+      let maxContentScroll      = content.scrollWidth - content.clientWidth;
 
       function onMouseMove(event) {
         let shift = event.clientX - startClientX;
@@ -200,8 +256,8 @@ function setScroll(elem, params = {}) {
           thumbCurrentAbsPosition = maxThumbScroll;
         }
 
-        let currentContentScroll = -maxContentScroll * thumbCurrentAbsPosition / maxThumbScroll;
-        content.style.left = currentContentScroll + 'px';
+        content.scrollLeft = parseFloat( getComputedStyle(thumb).left )*maxContentScroll/maxThumbScroll;
+
 
         if ( elem.querySelector('.wjs-scroll__thumb_bottom') ) {
           elem.querySelector('.wjs-scroll__thumb_bottom').style.left = thumbCurrentAbsPosition + 'px';
@@ -214,6 +270,7 @@ function setScroll(elem, params = {}) {
       function onMouseUp() {
         document.removeEventListener('mousemove', onMouseMove);
         thumb.onmouseup = null;
+        event.target.closest('.wjs-scroll__wrapper').classList.remove('wjs-scroll__wrapper_active-h');
       };
 
       document.addEventListener('mousemove', onMouseMove);
@@ -232,3 +289,5 @@ function setScroll(elem, params = {}) {
     elem.insertAdjacentHTML('afterBegin', html);
   }
 }
+/* ↑↑↑ functions declaration ↑↑↑ */
+////////////////////////////////////////////////////////////////////////////////
