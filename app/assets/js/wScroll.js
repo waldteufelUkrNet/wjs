@@ -42,10 +42,6 @@ function wSetScroll(elem, params = {}) {
       content   = elem.querySelector('.wjs-scroll__content');
 
   /* ↓↓↓ ПІДГОТОВКА ↓↓↓ */
-    // заборона прокрутки (якщо потрібно)
-    let overflowXProhibition = elem.dataset.scrollHidden.match(/horizontal/i)
-                               || params.overflowXHidden;
-    console.log("overflowXProhibition", overflowXProhibition);
 
     // корекція розміру контенту: його внутрішній рзмір має бути таким, як і
     // сам контейнер, а скрол повинен бути прихований за межами контейнеру.
@@ -54,6 +50,22 @@ function wSetScroll(elem, params = {}) {
 
     content.style.height = container.clientHeight + scrollLineHeight + 'px';
     content.style.width  = container.clientWidth + scrollLineWidth + 'px';
+
+    // заборона прокрутки (якщо потрібно)
+    let settingsString2 = elem.dataset.scrollHidden;
+    let overflowXProhibition = settingsString2.match(/horizontal/i)
+                               || params.overflowXHidden;
+    let overflowYProhibition = settingsString2.match(/vertical/i)
+                               || params.overflowYHidden;
+
+    if (overflowXProhibition && overflowYProhibition) {
+      content.style.overflow = 'hidden';
+      return
+    } else if (overflowXProhibition) {
+      content.style.overflowX = 'hidden';
+    } else if (overflowYProhibition) {
+      content.style.overflowY = 'hidden';
+    }
 
   /* ↑↑↑ /ПІДГОТОВКА ↑↑↑ */
 
@@ -64,7 +76,7 @@ function wSetScroll(elem, params = {}) {
     let settingsString = elem.dataset.scroll || '';
 
     // додавання полос прокрутки по горизонталі
-    if ( content.scrollWidth > content.clientWidth ) {
+    if ( !overflowXProhibition && (content.scrollWidth > content.clientWidth) ) {
 
       if ( params.top || settingsString.match(/top/i) ) {
         if ( !elem.querySelector('.wjs-scroll__line_top') ) {
@@ -93,7 +105,7 @@ function wSetScroll(elem, params = {}) {
     }
 
     // додавання полос прокрутки по вертикалі
-    if ( content.scrollHeight > content.clientHeight ) {
+    if ( !overflowYProhibition && (content.scrollHeight > content.clientHeight) ) {
 
       if ( params.left || settingsString.match(/left/i) ) {
         if ( !elem.querySelector('.wjs-scroll__line_left') ) {
@@ -142,7 +154,7 @@ function wSetScroll(elem, params = {}) {
 
       if (lineL) {
         maxThumbYScroll = lineL.clientHeight - thumbL.clientHeight;
-      } else {
+      } else if (lineR) {
         maxThumbYScroll = lineR.clientHeight - thumbR.clientHeight;
       }
 
@@ -160,7 +172,7 @@ function wSetScroll(elem, params = {}) {
 
       if (lineT) {
         maxThumbXScroll = lineT.clientWidth- thumbT.clientWidth;
-      } else {
+      } else if (lineB) {
         maxThumbXScroll = lineB.clientWidth - thumbB.clientWidth;
       }
 
