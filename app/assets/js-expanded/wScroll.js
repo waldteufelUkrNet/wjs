@@ -1,7 +1,7 @@
 "use strict";
 
 ////////////////////////////////////////////////////////////////////////////////
-/* ↓↓↓ скрол ↓↓↓ */
+/* ↓↓↓ custom scroll ↓↓↓ */
 
   // ініціалізація
   document.addEventListener('DOMContentLoaded', function(){
@@ -10,182 +10,168 @@
 
     let arrOfScrollableElements = document.querySelectorAll('.wjs-scroll');
     for (let elem of arrOfScrollableElements) {
-      setScroll(elem);
+      wSetScroll(elem);
     }
   });
 
   // слідкування за змінами в сторінці (елемент може повністю влізти на
   // сторінку або навпаки), відповідно скрол повинен пропасти/з'явитися
   window.addEventListener('resize', function(){
-    console.log('resize');
+    if ( !document.querySelector('.wjs-scroll') ) return;
+
+    let arrOfScrollableElements = document.querySelectorAll('.wjs-scroll');
+    for (let elem of arrOfScrollableElements) {
+      wSetScroll(elem);
+    }
   });
-
-  // mutation observer
-
-/* ↑↑↑ /скрол ↑↑↑ */
+/* ↑↑↑ custom scroll ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
-
-
-
+/* ↓↓↓ functions declaration ↓↓↓ */
 /**
- * [wFoo descryption]
- * @param {[type]} arg [descryption]
+ * [wSetScroll відповідає за кастомну прокрутку:
+ * 1. зчитує з атрибутів елемента, які прокрутки потрібно додати,
+ * 2. слідкує за прокруткою елемента і поправляє положення повзунків прокрутки
+ * 3. слідкує за положенням повзунків прокрутки і поправляє прокрутку елемента]
+ * @param {[DOM-object]} elem [елемент DOM з класом .wjs-scroll]
+ * @param {[object]} params [набір налаштувань для одиночного запуску функції
+ * формат даних: {top:boolean, bottom:boolean, left:boolean, right:boolean,
+ * overflowXHidden:boolean, overvlowYHidden:boolean}]
  */
-function setScroll(elem, params = {}) {
-
+function wSetScroll(elem, params = {}) {
   let container = elem,
       content   = elem.querySelector('.wjs-scroll__content');
 
-  // контент вміщається в контейнер, прокрутка не потрібна
-  if ( content.clientWidth <= container.clientWidth
-    && content.clientHeight <= container.clientHeight ) {
-    return
-  }
+  /* ↓↓↓ ПІДГОТОВКА ↓↓↓ */
+    // заборона прокрутки (якщо потрібно)
+    let overflowXProhibition = elem.dataset.scrollHidden.match(/horizontal/i)
+                               || params.overflowXHidden;
+    console.log("overflowXProhibition", overflowXProhibition);
 
-  let lineT, lineB, thumbT, thumbB,
-      lineR, lineL, thumbR, thumbL;
+    // корекція розміру контенту: його внутрішній рзмір має бути таким, як і
+    // сам контейнер, а скрол повинен бути прихований за межами контейнеру.
+    let scrollLineHeight = content.offsetHeight - content.clientHeight,
+        scrollLineWidth  = content.offsetWidth - content.clientWidth;
 
-  let settingsString = elem.dataset.scroll || '';
+    content.style.height = container.clientHeight + scrollLineHeight + 'px';
+    content.style.width  = container.clientWidth + scrollLineWidth + 'px';
 
-  // додавання полос прокрутки по горизонталі
-  if ( content.clientWidth > container.clientWidth ) {
+  /* ↑↑↑ /ПІДГОТОВКА ↑↑↑ */
 
-    if ( params.top || settingsString.match(/top/i) ) {
-      wAddScrollLine('top');
-      lineL  = elem.querySelector('.wjs-scroll__line_top');
-      thumbL = elem.querySelector('.wjs-scroll__thumb_top');
+  /* ↓↓↓ ДОДАВАННЯ ПОЛОС ПРОКРУТКИ ↓↓↓ */
+    let lineT, lineB, thumbT, thumbB,
+        lineR, lineL, thumbR, thumbL;
+
+    let settingsString = elem.dataset.scroll || '';
+
+    // додавання полос прокрутки по горизонталі
+    if ( content.scrollWidth > content.clientWidth ) {
+
+      if ( params.top || settingsString.match(/top/i) ) {
+        if ( !elem.querySelector('.wjs-scroll__line_top') ) {
+          wAddScrollLine('top');
+        }
+        lineT  = elem.querySelector('.wjs-scroll__line_top');
+        thumbT = elem.querySelector('.wjs-scroll__thumb_top');
+
+        thumbT.style.width = lineT.clientWidth*content.clientWidth/content.scrollWidth + 'px';
+      }
+
+      if ( params.bottom
+        || settingsString.match(/bottom/i)
+        || (!params.bottom
+          && !params.top
+          && !settingsString.match(/bottom/i)
+          && !settingsString.match(/top/i) ) ) {
+        if ( !elem.querySelector('.wjs-scroll__line_bottom') ) {
+          wAddScrollLine('bottom');
+        }
+        lineB  = elem.querySelector('.wjs-scroll__line_bottom');
+        thumbB = elem.querySelector('.wjs-scroll__thumb_bottom');
+
+        thumbB.style.width = lineB.clientWidth*content.clientWidth/content.scrollWidth + 'px';
+      }
     }
 
-    if ( params.bottom
-      || settingsString.match(/bottom/i)
-      || (!params.bottom
-        && !params.top
-        && !settingsString.match(/bottom/i)
-        && !settingsString.match(/top/i)) ) {
-      wAddScrollLine('bottom');
-      lineR  = elem.querySelector('.wjs-scroll__line_bottom');
-      thumbR = elem.querySelector('.wjs-scroll__thumb_bottom');
+    // додавання полос прокрутки по вертикалі
+    if ( content.scrollHeight > content.clientHeight ) {
+
+      if ( params.left || settingsString.match(/left/i) ) {
+        if ( !elem.querySelector('.wjs-scroll__line_left') ) {
+          wAddScrollLine('left');
+        }
+        lineL  = elem.querySelector('.wjs-scroll__line_left');
+        thumbL = elem.querySelector('.wjs-scroll__thumb_left');
+
+        thumbL.style.height = lineL.clientHeight*content.clientHeight/content.scrollHeight + 'px';
+      }
+
+      if ( params.right
+        || settingsString.match(/right/i)
+        || (!params.left
+          && !params.right
+          && !settingsString.match(/left/i)
+          && !settingsString.match(/right/i) ) ) {
+        if ( !elem.querySelector('.wjs-scroll__line_right') ) {
+          wAddScrollLine('right');
+        }
+        lineR  = elem.querySelector('.wjs-scroll__line_right');
+        thumbR = elem.querySelector('.wjs-scroll__thumb_right');
+
+        thumbR.style.height = lineR.clientHeight*content.clientHeight/content.scrollHeight + 'px';
+      }
     }
-  }
-
-  // додавання полос прокрутки по вертикалі
-  if ( content.clientHeight > container.clientHeight ) {
-
-    if ( params.left || settingsString.match(/left/i) ) {
-      wAddScrollLine('left');
-      lineL  = elem.querySelector('.wjs-scroll__line_left');
-      thumbL = elem.querySelector('.wjs-scroll__thumb_left');
-    }
-
-    if ( params.right
-      || settingsString.match(/right/i)
-      || (!params.left
-        && !params.right
-        && !settingsString.match(/left/i)
-        && !settingsString.match(/right/i)) ) {
-      wAddScrollLine('right');
-      lineR  = elem.querySelector('.wjs-scroll__line_right');
-      thumbR = elem.querySelector('.wjs-scroll__thumb_right');
-    }
-  }
-
-  function wAddScrollLine(name) {
-    let html = '\
-                <div class="wjs-scroll__wrapper wjs-scroll__wrapper_' + name + '">\
-                  <div class="wjs-scroll__line wjs-scroll__line_' + name + '">\
-                    <div class="wjs-scroll__thumb wjs-scroll__thumb_' + name + '"></div>\
-                  </div>\
-                </div>\
-               ';
-    elem.insertAdjacentHTML('afterBegin', html);
-  }
+  /* ↑↑↑ ДОДАВАННЯ ПОЛОС ПРОКРУТКИ ↑↑↑ */
 
   /* ↓↓↓ ПРОКРУТКА КОЛІЩАТКОМ МИШІ ↓↓↓ */
-    // елемент з overflow:hidden не має onscroll
-    container.addEventListener('wheel', function (event) {
+    content.onscroll = function (event) {
 
-      if (event.shiftKey) {
-        // горизонтальний скрол
-        let scrollStep       = container.clientWidth/10,
-            contentPosition  = parseFloat( getComputedStyle(content).left ),
-            maxContentScroll = content.clientWidth - container.clientWidth,
-            maxThumbScroll;
+      // кожного разу після повторного виклику функції формується нове
+      // лексичне оточення, тому ці змінні потрібно постійно перепризначати
+      lineL  = elem.querySelector('.wjs-scroll__line_left');
+      thumbL = elem.querySelector('.wjs-scroll__thumb_left');
+      lineR  = elem.querySelector('.wjs-scroll__line_right');
+      thumbR = elem.querySelector('.wjs-scroll__thumb_right');
+      lineT  = elem.querySelector('.wjs-scroll__line_top');
+      thumbT = elem.querySelector('.wjs-scroll__thumb_top');
+      lineB  = elem.querySelector('.wjs-scroll__line_bottom');
+      thumbB = elem.querySelector('.wjs-scroll__thumb_bottom');
 
-        let line = elem.querySelector('.wjs-scroll__line_bottom')
-                || elem.querySelector('.wjs-scroll__line_top');
+      // вертикальний скрол
+      let maxContentYScroll = content.scrollHeight - content.clientHeight;
+      let maxThumbYScroll;
 
-        let thumb = elem.querySelector('.wjs-scroll__thumb_bottom')
-                 || elem.querySelector('.wjs-scroll__thumb_top');
-        maxThumbScroll   = line.clientWidth - thumb.clientWidth;
-
-        // розрахунок прокрутки
-        if (event.deltaY > 0) {
-          contentPosition -= scrollStep;
-        } else {
-          contentPosition += scrollStep;
-        }
-
-        // контроль меж прокрутки
-        if ( contentPosition > 0 ) {
-          contentPosition = 0;
-        }
-        if ( Math.abs(contentPosition) > maxContentScroll ) {
-          contentPosition = -maxContentScroll;
-        }
-
-        // прокрутка елементів
-        content.style.left = contentPosition + 'px';
-
-        if ( elem.querySelector('.wjs-scroll__thumb_bottom') ) {
-          elem.querySelector('.wjs-scroll__thumb_bottom').style.left = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px';
-        }
-        if ( elem.querySelector('.wjs-scroll__thumb_top') ) {
-          elem.querySelector('.wjs-scroll__thumb_top').style.left = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px';
-        }
+      if (lineL) {
+        maxThumbYScroll = lineL.clientHeight - thumbL.clientHeight;
       } else {
-        // вертикальний скрол
-        document.body.style.overflow = 'hidden';
-        let scrollStep       = container.clientHeight/10,
-            contentPosition  = parseFloat( getComputedStyle(content).top ),
-            maxContentScroll = content.clientHeight - container.clientHeight,
-            maxThumbScroll;
-
-        let line = elem.querySelector('.wjs-scroll__line_right')
-                || elem.querySelector('.wjs-scroll__line_left');
-
-        let thumb = elem.querySelector('.wjs-scroll__thumb_right')
-                 || elem.querySelector('.wjs-scroll__thumb_left');
-        maxThumbScroll   = line.clientHeight - thumb.clientHeight;
-
-
-        // розрахунок прокрутки
-        if (event.deltaY > 0) {
-          contentPosition -= scrollStep;
-        } else {
-          contentPosition += scrollStep;
-        }
-
-        // контроль меж прокрутки
-        if ( contentPosition > 0 ) {
-          contentPosition = 0;
-          document.body.style.overflow = '';
-        }
-        if ( Math.abs(contentPosition) > maxContentScroll ) {
-          contentPosition = -maxContentScroll;
-          document.body.style.overflow = '';
-        }
-
-        // прокрутка елементів
-        content.style.top = contentPosition + 'px';
-
-        if ( elem.querySelector('.wjs-scroll__thumb_right') ) {
-          elem.querySelector('.wjs-scroll__thumb_right').style.top = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px';
-        }
-        if ( elem.querySelector('.wjs-scroll__thumb_left') ) {
-          elem.querySelector('.wjs-scroll__thumb_left').style.top = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px';
-        }
+        maxThumbYScroll = lineR.clientHeight - thumbR.clientHeight;
       }
-    });
+
+      let thumbCurrentTop = maxThumbYScroll*content.scrollTop/maxContentYScroll;
+      if (thumbR) {
+        thumbR.style.top = thumbCurrentTop + 'px';
+      }
+      if (thumbL) {
+        thumbL.style.top = thumbCurrentTop + 'px';
+      }
+
+      // горизонтальний скрол
+      let maxContentXScroll = content.scrollWidth - content.clientWidth;
+      let maxThumbXScroll;
+
+      if (lineT) {
+        maxThumbXScroll = lineT.clientWidth- thumbT.clientWidth;
+      } else {
+        maxThumbXScroll = lineB.clientWidth - thumbB.clientWidth;
+      }
+
+      let thumbCurrentLeft = maxThumbXScroll*content.scrollLeft/maxContentXScroll;
+      if (thumbB) {
+        thumbB.style.left = thumbCurrentLeft + 'px';
+      }
+      if (thumbT) {
+        thumbT.style.left = thumbCurrentLeft + 'px';
+      }
+    }
   /* ↑↑↑ /ПРОКРУТКА КОЛІЩАТКОМ МИШІ ↑↑↑ */
 
   /* ↓↓↓ ПРОКРУТКА ПОВЗУНКОМ ↓↓↓ */
@@ -213,12 +199,13 @@ function setScroll(elem, params = {}) {
       let line = elem.querySelector('.wjs-scroll__line_right')
               || elem.querySelector('.wjs-scroll__line_left');
 
+      event.target.closest('.wjs-scroll__wrapper').classList.add('wjs-scroll__wrapper_active-v');
+
       let startClientY          = event.clientY;
       let thumbStartAbsPosition = parseFloat( getComputedStyle(thumb).top );
       let thumbTopFixPosition   = thumb.getBoundingClientRect().top;
       let maxThumbScroll        = line.clientHeight - thumb.clientHeight;
-      let maxContentScroll      = content.clientHeight - container.clientHeight;
-      let contentPosition       = parseFloat( getComputedStyle(content).top );
+      let maxContentScroll      = content.scrollHeight - content.clientHeight;
 
       function onMouseMove(event) {
         let shift = event.clientY - startClientY;
@@ -231,8 +218,7 @@ function setScroll(elem, params = {}) {
           thumbCurrentAbsPosition = maxThumbScroll;
         }
 
-        let currentContentScroll = -maxContentScroll * thumbCurrentAbsPosition / maxThumbScroll;
-        content.style.top = currentContentScroll + 'px';
+        content.scrollTop = parseFloat( getComputedStyle(thumb).top )*maxContentScroll/maxThumbScroll;
 
         if ( elem.querySelector('.wjs-scroll__thumb_right') ) {
           elem.querySelector('.wjs-scroll__thumb_right').style.top = thumbCurrentAbsPosition + 'px';
@@ -245,6 +231,7 @@ function setScroll(elem, params = {}) {
       function onMouseUp() {
         document.removeEventListener('mousemove', onMouseMove);
         thumb.onmouseup = null;
+        event.target.closest('.wjs-scroll__wrapper').classList.remove('wjs-scroll__wrapper_active-v');
       };
 
       document.addEventListener('mousemove', onMouseMove);
@@ -257,12 +244,13 @@ function setScroll(elem, params = {}) {
       let line = elem.querySelector('.wjs-scroll__line_bottom')
               || elem.querySelector('.wjs-scroll__line_top');
 
+      event.target.closest('.wjs-scroll__wrapper').classList.add('wjs-scroll__wrapper_active-h');
+
       let startClientX          = event.clientX;
       let thumbStartAbsPosition = parseFloat( getComputedStyle(thumb).left );
       let thumbLeftFixPosition  = thumb.getBoundingClientRect().left;
       let maxThumbScroll        = line.clientWidth - thumb.clientWidth;
-      let maxContentScroll      = content.clientWidth - container.clientWidth;
-      let contentPosition       = parseFloat( getComputedStyle(content).left );
+      let maxContentScroll      = content.scrollWidth - content.clientWidth;
 
       function onMouseMove(event) {
         let shift = event.clientX - startClientX;
@@ -275,8 +263,8 @@ function setScroll(elem, params = {}) {
           thumbCurrentAbsPosition = maxThumbScroll;
         }
 
-        let currentContentScroll = -maxContentScroll * thumbCurrentAbsPosition / maxThumbScroll;
-        content.style.left = currentContentScroll + 'px';
+        content.scrollLeft = parseFloat( getComputedStyle(thumb).left )*maxContentScroll/maxThumbScroll;
+
 
         if ( elem.querySelector('.wjs-scroll__thumb_bottom') ) {
           elem.querySelector('.wjs-scroll__thumb_bottom').style.left = thumbCurrentAbsPosition + 'px';
@@ -289,6 +277,7 @@ function setScroll(elem, params = {}) {
       function onMouseUp() {
         document.removeEventListener('mousemove', onMouseMove);
         thumb.onmouseup = null;
+        event.target.closest('.wjs-scroll__wrapper').classList.remove('wjs-scroll__wrapper_active-h');
       };
 
       document.addEventListener('mousemove', onMouseMove);
@@ -296,148 +285,16 @@ function setScroll(elem, params = {}) {
     }
   /* ↑↑↑ /ПРОКРУТКА ПОВЗУНКОМ ↑↑↑ */
 
-  /* ↓↓↓ ЕМУЛЯЦІЯ SWIPE ДЛЯ ТЕЛЕФОНІВ ↓↓↓ */
-    // touchstart/touchend
-    let touchstartY = 0,
-        touchendY   = 0,
-        touchstartX = 0,
-        touchendX   = 0;
-
-    container.addEventListener('touchstart', function(event) {
-      touchstartY = event.changedTouches[0].screenY;
-      touchstartX = event.changedTouches[0].screenX;
-
-      // якщо у документа є прокрутка, вона спрацює і кастомно-скрольний
-      // елемент може прокрутитися за межі екрану
-      // document.body.style.overflow = 'hidden';
-
-let contentTop = content.getBoundingClientRect().top;
-let containerTop = container.getBoundingClientRect().top;
-// alert(`
-// contentTop: ${contentTop},
-// containerTop: ${containerTop},
-// deltaT: ${contentTop - containerTop},
-// contentH: ${content.clientHeight},
-// containerH: ${container.clientHeight},
-// deltaH: ${content.clientHeight - container.clientHeight}
-// `);
-
-    }, false);
-
-    container.addEventListener('touchend', function(event) {
-
-      touchendY = event.changedTouches[0].screenY;
-      touchendX = event.changedTouches[0].screenX;
-
-      let deltaY = Math.abs(touchendY - touchstartY),
-          deltaX = Math.abs(touchendX - touchstartX);
-
-      if (deltaX > deltaY) {
-        // горизонтальний скрол
-
-        let line = elem.querySelector('.wjs-scroll__line_bottom')
-                || elem.querySelector('.wjs-scroll__line_top');
-
-        let thumb = elem.querySelector('.wjs-scroll__thumb_bottom')
-                 || elem.querySelector('.wjs-scroll__thumb_top');
-
-        let maxContentScroll = content.clientWidth - container.clientWidth,
-            maxThumbScroll   = line.clientWidth - thumb.clientWidth,
-            scrollStep       = container.clientWidth/4,
-            contentPosition  = parseFloat( getComputedStyle(content).left );
-
-        // якщо свайп інтенсивний - збільшити швидкість прокрутки
-        if ( (deltaX/container.clientWidth) > 0.45 ) {
-          scrollStep = container.clientWidth/2;
-        }
-        if ( (deltaX/container.clientWidth) > 0.6 ) {
-          scrollStep = container.clientWidth/1;
-        }
-        if ( (deltaX/container.clientWidth) > 0.75 ) {
-          scrollStep = container.clientWidth/0.5;
-        }
-        if ( (deltaX/container.clientWidth) > 0.9 ) {
-          scrollStep = container.clientWidth/0.2;
-        }
-
-        // розрахунок прокрутки
-        if (touchendX < touchstartX) { // swipe down
-          contentPosition -= scrollStep;
-        }
-        if (touchendX > touchstartX) {
-          contentPosition += scrollStep;
-        }
-
-        // контроль меж прокрутки
-        if ( contentPosition > 0 ) {
-          contentPosition = 0;
-        }
-        if ( Math.abs(contentPosition) > maxContentScroll ) {
-          contentPosition = -maxContentScroll;
-        }
-
-        // прокрутка елементів
-        content.style.left = contentPosition + 'px';
-        if ( elem.querySelector('.wjs-scroll__thumb_bottom') ) {
-          elem.querySelector('.wjs-scroll__thumb_bottom').style.left = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px';
-        }
-        if ( elem.querySelector('.wjs-scroll__thumb_top') ) {
-          elem.querySelector('.wjs-scroll__thumb_top').style.left = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px';
-        }
-      } else {
-        // вертикальний скрол
-
-        let line = elem.querySelector('.wjs-scroll__line_right')
-                || elem.querySelector('.wjs-scroll__line_left');
-
-        let thumb = elem.querySelector('.wjs-scroll__thumb_right')
-                 || elem.querySelector('.wjs-scroll__thumb_left');
-
-        let maxContentScroll = content.clientHeight - container.clientHeight,
-            maxThumbScroll   = line.clientHeight - thumb.clientHeight,
-            scrollStep       = container.clientHeight/4,
-            contentPosition  = parseFloat( getComputedStyle(content).top );
-
-        // якщо свайп інтенсивний - збільшити швидкість прокрутки
-        if ( (deltaY/container.clientHeight) > 0.45 ) {
-          scrollStep = container.clientHeight/2;
-        }
-        if ( (deltaY/container.clientHeight) > 0.6 ) {
-          scrollStep = container.clientHeight/1;
-        }
-        if ( (deltaY/container.clientHeight) > 0.75 ) {
-          scrollStep = container.clientHeight/0.5;
-        }
-        if ( (deltaY/container.clientHeight) > 0.9 ) {
-          scrollStep = container.clientHeight/0.2;
-        }
-
-        // розрахунок прокрутки
-        if (touchendY < touchstartY) { // swipe down
-          contentPosition -= scrollStep;
-        }
-        if (touchendY > touchstartY) {
-          contentPosition += scrollStep;
-        }
-
-        // контроль меж прокрутки
-        if ( contentPosition > 0 ) {
-          contentPosition = 0;
-        }
-        if ( Math.abs(contentPosition) > maxContentScroll ) {
-          contentPosition = -maxContentScroll;
-        }
-
-        // прокрутка елементів
-        content.style.top = contentPosition + 'px';
-        if ( elem.querySelector('.wjs-scroll__thumb_right') ) {
-          elem.querySelector('.wjs-scroll__thumb_right').style.top = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px';
-        }
-        if ( elem.querySelector('.wjs-scroll__thumb_left') ) {
-          elem.querySelector('.wjs-scroll__thumb_left').style.top = Math.abs(contentPosition * maxThumbScroll / maxContentScroll) + 'px';
-        }
-      }
-      // document.body.style.overflow = '';
-    }, false);
-  /* ↑↑↑ /ЕМУЛЯЦІЯ SWIPE ДЛЯ ТЕЛЕФОНІВ ↑↑↑ */
+  function wAddScrollLine(name) {
+    let html = '\
+                <div class="wjs-scroll__wrapper wjs-scroll__wrapper_' + name + '">\
+                  <div class="wjs-scroll__line wjs-scroll__line_' + name + '">\
+                    <div class="wjs-scroll__thumb wjs-scroll__thumb_' + name + '"></div>\
+                  </div>\
+                </div>\
+               ';
+    elem.insertAdjacentHTML('afterBegin', html);
+  }
 }
+/* ↑↑↑ functions declaration ↑↑↑ */
+////////////////////////////////////////////////////////////////////////////////

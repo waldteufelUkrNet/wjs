@@ -119,14 +119,17 @@ a, a:hover {
   cursor: pointer;
 }
 
-/* ↓↓↓ custom scroll ↓↓↓ */
+/* ↓↓↓ tabs ↓↓↓ */
 .wjs-scroll {
   overflow: hidden;
   position: relative;
 }
 
 .wjs-scroll__content {
-  overflow: scroll;
+  position: absolute;
+  -webkit-transition: top .3s, left .3s;
+  -o-transition: top .3s, left .3s;
+  transition: top .3s, left .3s;
 }
 
 .wjs-scroll__wrapper {
@@ -202,36 +205,12 @@ a, a:hover {
   height: 18px;
 }
 
-.wjs-scroll__wrapper_active-v .wjs-scroll__line {
-  opacity: .7;
-  width: 20px;
-}
-
-.wjs-scroll__wrapper_active-v .wjs-scroll__thumb {
-  opacity: 1;
-  width: 18px;
-}
-
-.wjs-scroll__wrapper_active-h .wjs-scroll__line {
-  opacity: .7;
-  height: 20px;
-}
-
-.wjs-scroll__wrapper_active-h .wjs-scroll__thumb {
-  opacity: 1;
-  height: 18px;
-}
-
 .wjs-scroll__line {
   position: absolute;
   opacity: .3;
   -webkit-transition: opacity .3s, width .3s, height .3s;
   -o-transition: opacity .3s, width .3s, height .3s;
   transition: opacity .3s, width .3s, height .3s;
-  background-color: dodgerblue;
-  border: 1px solid dodgerblue;
-  -webkit-border-radius: 4px;
-          border-radius: 4px;
 }
 
 .wjs-scroll__line_right, .wjs-scroll__line_left {
@@ -258,13 +237,9 @@ a, a:hover {
   position: absolute;
   cursor: pointer;
   opacity: 0.5;
-  -webkit-transition: opacity .3s, width .3s, height .3s;
-  -o-transition: opacity .3s, width .3s, height .3s;
-  transition: opacity .3s, width .3s, height .3s;
-  border: 1px solid white;
-  -webkit-border-radius: 4px;
-          border-radius: 4px;
-  background-color: blue;
+  -webkit-transition: opacity .3s, top .3s, left .3s, width .3s, height .3s;
+  -o-transition: opacity .3s, top .3s, left .3s, width .3s, height .3s;
+  transition: opacity .3s, top .3s, left .3s, width .3s, height .3s;
 }
 
 .wjs-scroll__thumb_right, .wjs-scroll__thumb_left {
@@ -274,7 +249,7 @@ a, a:hover {
       -ms-transform: translate(-50%);
           transform: translate(-50%);
   width: 10px;
-  min-height: 30px;
+  height: 30px;
 }
 
 .wjs-scroll__thumb_top, .wjs-scroll__thumb_bottom {
@@ -283,7 +258,7 @@ a, a:hover {
   -webkit-transform: translate(0, -50%);
       -ms-transform: translate(0, -50%);
           transform: translate(0, -50%);
-  min-width: 30px;
+  width: 30px;
   height: 10px;
 }
 
@@ -295,4 +270,30 @@ a, a:hover {
   opacity: .8;
 }
 
-/* ↑↑↑ custom scroll ↑↑↑ */
+.wjs-scroll {
+  border: 1px solid grey;
+  margin: 20px auto;
+  text-align: justify;
+  max-width: 90%;
+  height: 400px;
+}
+
+.wjs-scroll__content {
+  padding: 15px;
+}
+
+.wjs-scroll__line {
+  background-color: dodgerblue;
+  border: 1px solid dodgerblue;
+  -webkit-border-radius: 4px;
+          border-radius: 4px;
+}
+
+.wjs-scroll__thumb {
+  border: 1px solid white;
+  -webkit-border-radius: 4px;
+          border-radius: 4px;
+  background-color: blue;
+}
+
+/* ↑↑↑ tabs ↑↑↑ */

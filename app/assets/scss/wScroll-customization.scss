@@ -1,0 +1,11 @@
+.wjs-scroll {
+  border: 1px solid grey;
+  margin:  20px auto;
+  text-align: justify;
+  max-width: 90%;
+  height: 400px;
+  &__content {
+    padding: 15px;
+    // overflow-y: hidden;
+  }
+}
