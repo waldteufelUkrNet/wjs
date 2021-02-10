@@ -43,16 +43,8 @@ function wSetScroll(elem, params = {}) {
 
   /* ↓↓↓ ПІДГОТОВКА ↓↓↓ */
 
-    // корекція розміру контенту: його внутрішній рзмір має бути таким, як і
-    // сам контейнер, а скрол повинен бути прихований за межами контейнеру.
-    let scrollLineHeight = content.offsetHeight - content.clientHeight,
-        scrollLineWidth  = content.offsetWidth - content.clientWidth;
-
-    content.style.height = container.clientHeight + scrollLineHeight + 'px';
-    content.style.width  = container.clientWidth + scrollLineWidth + 'px';
-
     // заборона прокрутки (якщо потрібно)
-    let settingsString2 = elem.dataset.scrollHidden;
+    let settingsString2 = elem.dataset.scrollHidden || '';
     let overflowXProhibition = settingsString2.match(/horizontal/i)
                                || params.overflowXHidden;
     let overflowYProhibition = settingsString2.match(/vertical/i)
@@ -66,7 +58,13 @@ function wSetScroll(elem, params = {}) {
     } else if (overflowYProhibition) {
       content.style.overflowY = 'hidden';
     }
+    // корекція розміру контенту: його внутрішній рзмір має бути таким, як і
+    // сам контейнер, а скрол повинен бути прихований за межами контейнеру.
+    let scrollLineHeight = content.offsetHeight - content.clientHeight,
+        scrollLineWidth  = content.offsetWidth - content.clientWidth;
 
+    content.style.height = container.clientHeight + scrollLineHeight + 'px';
+    content.style.width  = container.clientWidth + scrollLineWidth + 'px';
   /* ↑↑↑ /ПІДГОТОВКА ↑↑↑ */
 
   /* ↓↓↓ ДОДАВАННЯ ПОЛОС ПРОКРУТКИ ↓↓↓ */

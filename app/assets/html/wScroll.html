@@ -13,12 +13,14 @@
   <body style="font-family:rcl"></body>
   <div class="info" style="border: 1px solid lightgrey; margin: 15px; padding: 15px; font-family:c">
     <h1 style="font-weight:900">INFO</h1>
-    <p>- Під час завантаження сторінки скрипт шукає усі елементи з класом .wjs-scroll і додає потрібні прокрутки відповідно до вказаних в атрибуті (data-scroll='left top bottom right').</p>
-    <p>- Якщо атрибуту нема, скрипт по дефолту додає прокрутку справа і знизу (якщо вони потрібні).</p>
-    <p>- При динамічному додаванні на сторінку елементу зі скролом потрібно викликати ф-ю wSetScroll(elem, {left:true,top:true,bottom:true,right:true}).</p>
-    <p>- На мобільних пристроях можливо буде видно рідну прокрутку мобільного браузера (тонкі сірі полосочки). Це не ґандж, а особливості кастомізації стилів. Щоб дефолтної прокрутки не було видно, потрібно прибрати прозорість і зменшити ширину поліс проклутки, щоб вони змістилися блище до країв і закрили собою дефолтні полоси.</p>
-    <p>Скрипт видозмінює HTML: додає на початок елементу з класом .wjs-scroll елементи, які емулюють прокрутку.</p>
-    <p>Повна версія HTML після компіляції:</p><br>
+    <ol>
+      <li>Під час завантаження сторінки скрипт шукає усі елементи з класом .wjs-scroll і додає потрібні прокрутки відповідно до вказаних в атрибуті (data-scroll='left top bottom right') або забороняє прокрутку по вертикалі і/або горизонталі (data-scroll-hidden='horizontal vertical').</li>
+      <li>Якщо атрибуту data-scroll нема, скрипт по дефолту додає прокрутку справа і знизу (якщо вони потрібні).</li>
+      <li>При динамічному додаванні на сторінку елементу зі скролом потрібно викликати функцію wSetScroll(elem, {left:true, top:true, bottom:true, right:true, overflowXHidden:boolean, overvlowYHidden:boolean}).</li>
+      <li>На мобільних пристроях можливо буде видно рідну прокрутку мобільного браузера (тонкі сірі полосочки). Це не ґандж, а особливості кастомізації стилів. Щоб дефолтної прокрутки не було видно, потрібно прибрати прозорість і зменшити ширину поліс проклутки, щоб вони змістилися блище до країв і закрили собою дефолтні полоси.</li>
+      <li>Скрипт видозмінює HTML: додає на початок елементу з класом .wjs-scroll елементи, які емулюють прокрутку.</li>
+      <li>Повна версія HTML після компіляції:</li>
+    </ol><br>
     <pre> .wjs-scroll(data-scroll='left top bottom right')
    .wjs-scroll__wrapper.wjs-scroll__wrapper_right
      .wjs-scroll__line.wjs-scroll__line_right
@@ -34,7 +36,7 @@
        .wjs-scroll__thumb.wjs-scroll__thumb_bottom(title='shift+wheel')
    .wjs-scroll__content lorem...</pre>
   </div>
-  <div class="wjs-scroll" data-scroll="left top bottom right" data-scroll-hidden="horizontal">
+  <div class="wjs-scroll" data-scroll="left top bottom right">
     <div class="wjs-scroll__content">
       <p>start ...</p>
       <p style="background-color: cyan; padding: 6px; margin: 20px 0; width: 3000px">дууууже довгий текст для перевірки горизонтального скролу Lorem ipsum dolquod incidunt obcaecati voluptatum debitis ex expedita nihil! Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
