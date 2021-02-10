@@ -5,8 +5,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ custom scroll ↓↓↓ */
 .wjs-scroll {
-  // overflow: hidden;
   position: relative;
+  &__content-wrapper {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
   &__content {
     overflow: scroll;
   }

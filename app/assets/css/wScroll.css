@@ -124,6 +124,13 @@ a, a:hover {
   position: relative;
 }
 
+.wjs-scroll__content-wrapper {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
 .wjs-scroll__content {
   overflow: scroll;
 }

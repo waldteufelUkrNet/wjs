@@ -38,13 +38,14 @@
  * overflowXHidden:boolean, overvlowYHidden:boolean}]
  */
 function wSetScroll(elem, params = {}) {
-  let container = elem,
-      content   = elem.querySelector('.wjs-scroll__content');
+  let container      = elem,
+      contentWrapper = elem.querySelector('.wjs-scroll__content-wrapper'),
+      content        = elem.querySelector('.wjs-scroll__content');
 
   /* ↓↓↓ ПІДГОТОВКА ↓↓↓ */
 
     // заборона прокрутки (якщо потрібно)
-    let settingsString2 = elem.dataset.scrollHidden || '';
+    let settingsString2 = container.dataset.scrollHidden || '';
     let overflowXProhibition = settingsString2.match(/horizontal/i)
                                || params.overflowXHidden;
     let overflowYProhibition = settingsString2.match(/vertical/i)
@@ -63,47 +64,25 @@ function wSetScroll(elem, params = {}) {
     let scrollLineHeight = content.offsetHeight - content.clientHeight,
         scrollLineWidth  = content.offsetWidth - content.clientWidth;
 
-    content.style.height = container.clientHeight + scrollLineHeight + 'px';
-    content.style.width  = container.clientWidth + scrollLineWidth + 'px';
-
-    // цікавий баг із badding-bottom/right: якщо потрібно кастомізувати скроли,
-    // зробивши їх сталого розміру і не прозорими, потрібно виділити під них
-    // пусте місце в контенті. злыва і зверху padding працює, а нижній і правий
-    // не хочуть. Треба додавати пусті елементи з висотою/шириною, рівними
-    // padding-bottom/right.
-    let paddingBottom = getComputedStyle(content).paddingBottom
-        paddingRight  = getComputedStyle(content).paddingRight;
-
-    if ( content.querySelector('.wjs-scroll__content-padding-bottom-emulator') ) {
-      content.querySelector('.wjs-scroll__content-padding-bottom-emulator').remove();
-    } else {
-      let paddingElem = '<div class="wjs-scroll__content-padding-bottom-emulator" style="height:' + paddingBottom + '"></div>';
-      content.insertAdjacentHTML('beforeEnd', paddingElem);
-    }
-
-    if ( content.querySelector('.wjs-scroll__content-padding-right-emulator') ) {
-      content.querySelector('.wjs-scroll__content-padding-right-emulator').remove();
-    } else {
-      let paddingElem = '<div class="wjs-scroll__content-padding-right-emulator" style="width:' + paddingBottom + '"></div>';
-      content.insertAdjacentHTML('beforeEnd', paddingElem);
-    }
+    content.style.height = contentWrapper.clientHeight + scrollLineHeight + 'px';
+    content.style.width  = contentWrapper.clientWidth + scrollLineWidth + 'px';
   /* ↑↑↑ /ПІДГОТОВКА ↑↑↑ */
 
   /* ↓↓↓ ДОДАВАННЯ ПОЛОС ПРОКРУТКИ ↓↓↓ */
     let lineT, lineB, thumbT, thumbB,
         lineR, lineL, thumbR, thumbL;
 
-    let settingsString = elem.dataset.scroll || '';
+    let settingsString = container.dataset.scroll || '';
 
     // додавання полос прокрутки по горизонталі
     if ( !overflowXProhibition && (content.scrollWidth > content.clientWidth) ) {
 
       if ( params.top || settingsString.match(/top/i) ) {
-        if ( !elem.querySelector('.wjs-scroll__line_top') ) {
+        if ( !container.querySelector('.wjs-scroll__line_top') ) {
           wAddScrollLine('top');
         }
-        lineT  = elem.querySelector('.wjs-scroll__line_top');
-        thumbT = elem.querySelector('.wjs-scroll__thumb_top');
+        lineT  = container.querySelector('.wjs-scroll__line_top');
+        thumbT = container.querySelector('.wjs-scroll__thumb_top');
 
         thumbT.style.width = lineT.clientWidth*content.clientWidth/content.scrollWidth + 'px';
       }
@@ -114,11 +93,11 @@ function wSetScroll(elem, params = {}) {
           && !params.top
           && !settingsString.match(/bottom/i)
           && !settingsString.match(/top/i) ) ) {
-        if ( !elem.querySelector('.wjs-scroll__line_bottom') ) {
+        if ( !container.querySelector('.wjs-scroll__line_bottom') ) {
           wAddScrollLine('bottom');
         }
-        lineB  = elem.querySelector('.wjs-scroll__line_bottom');
-        thumbB = elem.querySelector('.wjs-scroll__thumb_bottom');
+        lineB  = container.querySelector('.wjs-scroll__line_bottom');
+        thumbB = container.querySelector('.wjs-scroll__thumb_bottom');
 
         thumbB.style.width = lineB.clientWidth*content.clientWidth/content.scrollWidth + 'px';
       }
@@ -128,11 +107,11 @@ function wSetScroll(elem, params = {}) {
     if ( !overflowYProhibition && (content.scrollHeight > content.clientHeight) ) {
 
       if ( params.left || settingsString.match(/left/i) ) {
-        if ( !elem.querySelector('.wjs-scroll__line_left') ) {
+        if ( !container.querySelector('.wjs-scroll__line_left') ) {
           wAddScrollLine('left');
         }
-        lineL  = elem.querySelector('.wjs-scroll__line_left');
-        thumbL = elem.querySelector('.wjs-scroll__thumb_left');
+        lineL  = container.querySelector('.wjs-scroll__line_left');
+        thumbL = container.querySelector('.wjs-scroll__thumb_left');
 
         thumbL.style.height = lineL.clientHeight*content.clientHeight/content.scrollHeight + 'px';
       }
@@ -143,11 +122,11 @@ function wSetScroll(elem, params = {}) {
           && !params.right
           && !settingsString.match(/left/i)
           && !settingsString.match(/right/i) ) ) {
-        if ( !elem.querySelector('.wjs-scroll__line_right') ) {
+        if ( !container.querySelector('.wjs-scroll__line_right') ) {
           wAddScrollLine('right');
         }
-        lineR  = elem.querySelector('.wjs-scroll__line_right');
-        thumbR = elem.querySelector('.wjs-scroll__thumb_right');
+        lineR  = container.querySelector('.wjs-scroll__line_right');
+        thumbR = container.querySelector('.wjs-scroll__thumb_right');
 
         thumbR.style.height = lineR.clientHeight*content.clientHeight/content.scrollHeight + 'px';
       }
@@ -159,14 +138,14 @@ function wSetScroll(elem, params = {}) {
 
       // кожного разу після повторного виклику функції формується нове
       // лексичне оточення, тому ці змінні потрібно постійно перепризначати
-      lineL  = elem.querySelector('.wjs-scroll__line_left');
-      thumbL = elem.querySelector('.wjs-scroll__thumb_left');
-      lineR  = elem.querySelector('.wjs-scroll__line_right');
-      thumbR = elem.querySelector('.wjs-scroll__thumb_right');
-      lineT  = elem.querySelector('.wjs-scroll__line_top');
-      thumbT = elem.querySelector('.wjs-scroll__thumb_top');
-      lineB  = elem.querySelector('.wjs-scroll__line_bottom');
-      thumbB = elem.querySelector('.wjs-scroll__thumb_bottom');
+      lineL  = container.querySelector('.wjs-scroll__line_left');
+      thumbL = container.querySelector('.wjs-scroll__thumb_left');
+      lineR  = container.querySelector('.wjs-scroll__line_right');
+      thumbR = container.querySelector('.wjs-scroll__thumb_right');
+      lineT  = container.querySelector('.wjs-scroll__line_top');
+      thumbT = container.querySelector('.wjs-scroll__thumb_top');
+      lineB  = container.querySelector('.wjs-scroll__line_bottom');
+      thumbB = container.querySelector('.wjs-scroll__thumb_bottom');
 
       // вертикальний скрол
       let maxContentYScroll = content.scrollHeight - content.clientHeight;
@@ -208,28 +187,28 @@ function wSetScroll(elem, params = {}) {
 
   /* ↓↓↓ ПРОКРУТКА ПОВЗУНКОМ ↓↓↓ */
     // Drag'n'Drop
-    if ( elem.querySelector('.wjs-scroll__thumb_right') ) {
-      elem.querySelector('.wjs-scroll__thumb_right').addEventListener('mousedown', verticalThumbScroll);
-      elem.querySelector('.wjs-scroll__thumb_right').ondragstart = function() {return false;};
+    if ( container.querySelector('.wjs-scroll__thumb_right') ) {
+      container.querySelector('.wjs-scroll__thumb_right').addEventListener('mousedown', verticalThumbScroll);
+      container.querySelector('.wjs-scroll__thumb_right').ondragstart = function() {return false;};
     }
-    if ( elem.querySelector('.wjs-scroll__thumb_left') ) {
-      elem.querySelector('.wjs-scroll__thumb_left').addEventListener('mousedown', verticalThumbScroll);
-      elem.querySelector('.wjs-scroll__thumb_left').ondragstart = function() {return false;};
+    if ( container.querySelector('.wjs-scroll__thumb_left') ) {
+      container.querySelector('.wjs-scroll__thumb_left').addEventListener('mousedown', verticalThumbScroll);
+      container.querySelector('.wjs-scroll__thumb_left').ondragstart = function() {return false;};
     }
-    if ( elem.querySelector('.wjs-scroll__thumb_top') ) {
-      elem.querySelector('.wjs-scroll__thumb_top').addEventListener('mousedown', gorizontalThumbScroll);
-      elem.querySelector('.wjs-scroll__thumb_top').ondragstart = function() {return false;};
+    if ( container.querySelector('.wjs-scroll__thumb_top') ) {
+      container.querySelector('.wjs-scroll__thumb_top').addEventListener('mousedown', gorizontalThumbScroll);
+      container.querySelector('.wjs-scroll__thumb_top').ondragstart = function() {return false;};
     }
-    if ( elem.querySelector('.wjs-scroll__thumb_bottom') ) {
-      elem.querySelector('.wjs-scroll__thumb_bottom').addEventListener('mousedown', gorizontalThumbScroll);
-      elem.querySelector('.wjs-scroll__thumb_bottom').ondragstart = function() {return false;};
+    if ( container.querySelector('.wjs-scroll__thumb_bottom') ) {
+      container.querySelector('.wjs-scroll__thumb_bottom').addEventListener('mousedown', gorizontalThumbScroll);
+      container.querySelector('.wjs-scroll__thumb_bottom').ondragstart = function() {return false;};
     }
 
     function verticalThumbScroll(event) {
-      let thumb = elem.querySelector('.wjs-scroll__thumb_right')
-               || elem.querySelector('.wjs-scroll__thumb_left');
-      let line = elem.querySelector('.wjs-scroll__line_right')
-              || elem.querySelector('.wjs-scroll__line_left');
+      let thumb = container.querySelector('.wjs-scroll__thumb_right')
+               || container.querySelector('.wjs-scroll__thumb_left');
+      let line = container.querySelector('.wjs-scroll__line_right')
+              || container.querySelector('.wjs-scroll__line_left');
 
       event.target.closest('.wjs-scroll__wrapper').classList.add('wjs-scroll__wrapper_active-v');
 
@@ -252,11 +231,11 @@ function wSetScroll(elem, params = {}) {
 
         content.scrollTop = parseFloat( getComputedStyle(thumb).top )*maxContentScroll/maxThumbScroll;
 
-        if ( elem.querySelector('.wjs-scroll__thumb_right') ) {
-          elem.querySelector('.wjs-scroll__thumb_right').style.top = thumbCurrentAbsPosition + 'px';
+        if ( container.querySelector('.wjs-scroll__thumb_right') ) {
+          container.querySelector('.wjs-scroll__thumb_right').style.top = thumbCurrentAbsPosition + 'px';
         }
-        if ( elem.querySelector('.wjs-scroll__thumb_left') ) {
-          elem.querySelector('.wjs-scroll__thumb_left').style.top = thumbCurrentAbsPosition + 'px';
+        if ( container.querySelector('.wjs-scroll__thumb_left') ) {
+          container.querySelector('.wjs-scroll__thumb_left').style.top = thumbCurrentAbsPosition + 'px';
         }
       }
 
@@ -271,10 +250,10 @@ function wSetScroll(elem, params = {}) {
     }
 
     function gorizontalThumbScroll(event) {
-      let thumb = elem.querySelector('.wjs-scroll__thumb_bottom')
-               || elem.querySelector('.wjs-scroll__thumb_top');
-      let line = elem.querySelector('.wjs-scroll__line_bottom')
-              || elem.querySelector('.wjs-scroll__line_top');
+      let thumb = container.querySelector('.wjs-scroll__thumb_bottom')
+               || container.querySelector('.wjs-scroll__thumb_top');
+      let line = container.querySelector('.wjs-scroll__line_bottom')
+              || container.querySelector('.wjs-scroll__line_top');
 
       event.target.closest('.wjs-scroll__wrapper').classList.add('wjs-scroll__wrapper_active-h');
 
@@ -298,11 +277,11 @@ function wSetScroll(elem, params = {}) {
         content.scrollLeft = parseFloat( getComputedStyle(thumb).left )*maxContentScroll/maxThumbScroll;
 
 
-        if ( elem.querySelector('.wjs-scroll__thumb_bottom') ) {
-          elem.querySelector('.wjs-scroll__thumb_bottom').style.left = thumbCurrentAbsPosition + 'px';
+        if ( container.querySelector('.wjs-scroll__thumb_bottom') ) {
+          container.querySelector('.wjs-scroll__thumb_bottom').style.left = thumbCurrentAbsPosition + 'px';
         }
-        if ( elem.querySelector('.wjs-scroll__thumb_top') ) {
-          elem.querySelector('.wjs-scroll__thumb_top').style.left = thumbCurrentAbsPosition + 'px';
+        if ( container.querySelector('.wjs-scroll__thumb_top') ) {
+          container.querySelector('.wjs-scroll__thumb_top').style.left = thumbCurrentAbsPosition + 'px';
         }
       }
 
@@ -325,7 +304,7 @@ function wSetScroll(elem, params = {}) {
                   </div>\
                 </div>\
                ';
-    elem.insertAdjacentHTML('afterBegin', html);
+    container.insertAdjacentHTML('afterBegin', html);
   }
 }
 /* ↑↑↑ functions declaration ↑↑↑ */

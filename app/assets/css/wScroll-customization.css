@@ -1,31 +1,7 @@
 .wjs-scroll {
   border: 1px solid grey;
   margin: 20px auto;
-  text-align: justify;
   max-width: 90%;
   height: 400px;
-}
-
-.wjs-scroll__content {
-  padding: 40px;
-}
-
-.wjs2-scroll {
-  border: 1px solid red;
-  width: 400px;
-  height: 300px;
-  margin: 50px auto;
-}
-
-.wjs2-scroll__content-wrapper {
-  border: 2px dotted blue;
-  height: 100%;
-  overflow: hidden;
-  padding: 20px;
-}
-
-.wjs2-scroll__content {
-  border: 3px dashed green;
-  overflow: scroll;
-  height: 100%;
+  padding: 50px;
 }
