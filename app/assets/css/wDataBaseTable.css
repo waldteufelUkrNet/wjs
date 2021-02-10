@@ -212,6 +212,7 @@ a, a:hover {
   -webkit-flex-grow: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
+  border: 1px solid lightgrey;
 }
 
 .wjs-table table {
@@ -359,4 +360,14 @@ a, a:hover {
 
 .wjs-table__page-btn {
   cursor: pointer;
+}
+
+.wjs-table__table-wrapper.wjs-scroll .wjs-scroll__content {
+  padding: 20px;
+}
+
+.wjs-table__table-wrapper.wjs-scroll .wjs-scroll__wrapper_bottom {
+  width: 100%;
+  left: 0;
+  background-color: white;
 }

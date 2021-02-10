@@ -121,7 +121,6 @@ a, a:hover {
 
 /* ↓↓↓ custom scroll ↓↓↓ */
 .wjs-scroll {
-  overflow: hidden;
   position: relative;
 }
 

@@ -45,7 +45,7 @@ html(lang='ru')
         .wjs-table__filtered-amount 163
         .wjs-table__label selected items:
         .wjs-table__selected-amount 42
-      .wjs-table__table-wrapper.wjs-scroll(data-scroll='bottom')
+      .wjs-table__table-wrapper.wjs-scroll(data-scroll='bottom' data-scroll-hidden='')
         .wjs-scroll__content
           table
             thead
@@ -677,6 +677,7 @@ html(lang='ru')
             //- tfoot
             //-   tr
             //-     td footer 1
+          div(style='height:20px')
       .wjs-table__pagination-wrapper
         button.wjs-table__page-btn(type='button') 1
         button.wjs-table__page-btn(type='button') 2

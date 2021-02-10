@@ -5,7 +5,25 @@
   max-width: 90%;
   height: 400px;
   &__content {
-    padding: 15px;
-    // overflow-y: hidden;
+    padding: 40px;
+  }
+}
+
+.wjs2-scroll {
+  border: 1px solid red;
+  width: 400px;
+  height: 300px;
+  margin: 50px auto;
+
+  &__content-wrapper {
+    border: 2px dotted blue;
+    height: 100%;
+    overflow: hidden;
+    padding: 20px;
+  }
+  &__content {
+    border: 3px dashed green;
+    overflow: scroll;
+    height: 100%;
   }
 }

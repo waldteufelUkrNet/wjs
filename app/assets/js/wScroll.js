@@ -65,6 +65,28 @@ function wSetScroll(elem, params = {}) {
 
     content.style.height = container.clientHeight + scrollLineHeight + 'px';
     content.style.width  = container.clientWidth + scrollLineWidth + 'px';
+
+    // цікавий баг із badding-bottom/right: якщо потрібно кастомізувати скроли,
+    // зробивши їх сталого розміру і не прозорими, потрібно виділити під них
+    // пусте місце в контенті. злыва і зверху padding працює, а нижній і правий
+    // не хочуть. Треба додавати пусті елементи з висотою/шириною, рівними
+    // padding-bottom/right.
+    let paddingBottom = getComputedStyle(content).paddingBottom
+        paddingRight  = getComputedStyle(content).paddingRight;
+
+    if ( content.querySelector('.wjs-scroll__content-padding-bottom-emulator') ) {
+      content.querySelector('.wjs-scroll__content-padding-bottom-emulator').remove();
+    } else {
+      let paddingElem = '<div class="wjs-scroll__content-padding-bottom-emulator" style="height:' + paddingBottom + '"></div>';
+      content.insertAdjacentHTML('beforeEnd', paddingElem);
+    }
+
+    if ( content.querySelector('.wjs-scroll__content-padding-right-emulator') ) {
+      content.querySelector('.wjs-scroll__content-padding-right-emulator').remove();
+    } else {
+      let paddingElem = '<div class="wjs-scroll__content-padding-right-emulator" style="width:' + paddingBottom + '"></div>';
+      content.insertAdjacentHTML('beforeEnd', paddingElem);
+    }
   /* ↑↑↑ /ПІДГОТОВКА ↑↑↑ */
 
   /* ↓↓↓ ДОДАВАННЯ ПОЛОС ПРОКРУТКИ ↓↓↓ */

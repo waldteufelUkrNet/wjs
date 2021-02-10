@@ -58,6 +58,7 @@
   }
   &__table-wrapper {
     flex-grow: 1;
+    border: 1px solid lightgrey;
   }
   table {
     border: 1px solid #dbf0fe;
@@ -158,5 +159,24 @@
   }
   &__page-btn {
     cursor: pointer;
+  }
+}
+
+// scrol customization
+
+.wjs-table__table-wrapper.wjs-scroll {
+    .wjs-scroll__content {
+      padding: 20px;
+    }
+  .wjs-scroll__wrapper_bottom {
+    width: 100%;
+    left: 0;
+    background-color: white;
+    .wjs-scroll__line_bottom {
+
+    }
+    .wjs-scroll__thumb_bottom {
+
+    }
   }
 }
