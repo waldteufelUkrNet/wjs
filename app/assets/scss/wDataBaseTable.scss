@@ -2,9 +2,9 @@
 @import "reset";
 @import "style_general";
 
-.wjs-table {margin: 20px; height: 600px; //border: 1px dotted red;
+.wjs-table {margin: 20px; height: 600px; border: 3px dotted red;
   font-family: futura;
-  overflow: hidden;
+  // overflow: hidden;
   display: flex;
   flex-direction: column;
   &__header {
@@ -163,10 +163,10 @@
 }
 
 // scrol customization
-
-.wjs-table__table-wrapper.wjs-scroll {
+// потрібно визначати висоту таблиці вручну(((
+.wjs-table__table-wrapper.wjs-scroll { border: 3px dotted blue;
     .wjs-scroll__content {
-      padding: 20px;
+      padding-bottom: 20px;
     }
   .wjs-scroll__wrapper_bottom {
     width: 100%;

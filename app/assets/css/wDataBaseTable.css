@@ -121,8 +121,8 @@ a, a:hover {
 .wjs-table {
   margin: 20px;
   height: 600px;
+  border: 3px dotted red;
   font-family: futura;
-  overflow: hidden;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -362,8 +362,12 @@ a, a:hover {
   cursor: pointer;
 }
 
+.wjs-table__table-wrapper.wjs-scroll {
+  border: 3px dotted blue;
+}
+
 .wjs-table__table-wrapper.wjs-scroll .wjs-scroll__content {
-  padding: 20px;
+  padding-bottom: 20px;
 }
 
 .wjs-table__table-wrapper.wjs-scroll .wjs-scroll__wrapper_bottom {
