@@ -2,7 +2,7 @@
 @import "reset";
 @import "style_general";
 
-.wjs-table {margin: 20px; height: 600px;// border: 3px dotted red;
+.wjs-dbtable {margin: 20px; height: 600px;// border: 3px dotted red;
   font-family             : futura;
   overflow                : hidden;
   display                 : flex;
@@ -68,9 +68,6 @@
     justify-content       : space-between;
     align-items           : center;
     min-height            : 36px;
-    border                : 1px solid #dbf0fe;
-    border-collapse       : collapse;
-    vertical-align        : middle;
     background-color      : #bde0f6;
     border                : 1px solid lightsteelblue;
     cursor                : grab;
@@ -142,7 +139,7 @@
   }
   table {
     border                : 1px solid #dbf0fe;
-    border-collapse       : collapse;
+    // border-collapse       : collapse;
     white-space           : nowrap;
     user-select           : none;
   }
@@ -157,7 +154,8 @@
     height                : .1px;
   }
   &__th-inner {
-
+     width: 100%;
+     height: 0.001px;
   }
   td {
     border                : 1px solid #dbf0fe;
@@ -179,7 +177,7 @@
 }
 
 // scrol customization
-.wjs-table__table-wrapper.wjs-scroll { //border: 3px dotted blue;
+.wjs-dbtable__table-wrapper.wjs-scroll { //border: 3px dotted blue;
     .wjs-scroll__content {
       padding-bottom: 20px;
     }

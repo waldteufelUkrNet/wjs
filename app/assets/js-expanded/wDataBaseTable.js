@@ -2,12 +2,15 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ wDataBaseTable ↓↓↓ */
-  // коли даних в таблиці забагато, .wjs-table__table-wrapper випадає за межі
-  // .wjs-table, в результаті не видно прокрутки. Потрібно розраховувати висоту
-  // .wjs-table__table-wrapper
+  // коли даних в таблиці забагато, .wjs-dbtable__table-wrapper випадає за межі
+  // .wjs-dbtable, в результаті не видно прокрутки. Потрібно розраховувати висоту
+  // .wjs-dbtable__table-wrapper
   document.addEventListener('DOMContentLoaded', function(){
-    calculateTableWrapperHeight( document.querySelector('.wjs-table__table-wrapper') );
-    calculateTableWrapperHeight( document.querySelector('.wjs-table__body') );
+    calculateTableCellsWidth( document.querySelector('#clientTable') );
+
+    calculateTableWrapperHeight( document.querySelector('.wjs-dbtable__table-wrapper') );
+
+
   });
 /* ↑↑↑ wDataBaseTable ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
@@ -23,6 +26,30 @@
  * overflowXHidden:boolean, overvlowYHidden:boolean}]
  */
 function wFoo(elem, params = {}) {}
+
+
+function calculateTableCellsWidth(tableElement) {
+  if (!tableElement) return;
+
+  let realHeaderCells = tableElement.querySelectorAll('thead th'),
+      realHeaderCellsInner = tableElement.querySelectorAll('.wjs-dbtable__th-inner'),
+      fakeHeaderCells = tableElement.querySelectorAll('.wjs-dbtable__pseudo-header-item');
+
+  if (realHeaderCells.length == fakeHeaderCells.length) {
+    for (let i = 0; i < realHeaderCells.length; i++) {
+      if (realHeaderCellsInner[i].clientWidth > fakeHeaderCells[i].clientWidth) {
+        console.log(realHeaderCellsInner[i].clientWidth + '/' + fakeHeaderCells[i].clientWidth);
+        fakeHeaderCells[i].style.minWidth = realHeaderCellsInner[i].clientWidth + 'px';
+        console.log(realHeaderCellsInner[i].clientWidth + '/' + fakeHeaderCells[i].clientWidth);
+      } else {
+        realHeaderCellsInner[i].style.minWidth = fakeHeaderCells[i].clientWidth + 'px';
+      }
+    }
+  } else {
+    console.log('table build error: realHeaderCells.length != fakeHeaderCells.length');
+  }
+}
+
 
 function calculateTableWrapperHeight(elem) {
   if (!elem) return
@@ -61,5 +88,5 @@ function calculateTableWrapperHeight(elem) {
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
 
-// let th = document.querySelectorAll('.wjs-table__th-inner')[3];
+// let th = document.querySelectorAll('.wjs-dbtable__th-inner')[3];
 // th.style.width = '300px';

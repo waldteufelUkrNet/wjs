@@ -14,249 +14,249 @@ html(lang='ru')
     script(defer src="../js/wDataBaseTable.js")
   body
 
-    .wjs-table
-      .wjs-table__header Table Of Clients
-      .wjs-table__meta-data-wrapper
-        .wjs-table__label filters:
-        .wjs-table__filters-wrapper
-          .wjs-table__filter-item
+    .wjs-dbtable#clientTable
+      .wjs-dbtable__header Table Of Clients
+      .wjs-dbtable__meta-data-wrapper
+        .wjs-dbtable__label filters:
+        .wjs-dbtable__filters-wrapper
+          .wjs-dbtable__filter-item
             span froud
-            button.wjs-table__filter-close-btn
-          .wjs-table__filter-item
+            button.wjs-dbtable__filter-close-btn
+          .wjs-dbtable__filter-item
             span sales
-            button.wjs-table__filter-close-btn
-          .wjs-table__filter-item
+            button.wjs-dbtable__filter-close-btn
+          .wjs-dbtable__filter-item
             span noanswer1
-            button.wjs-table__filter-close-btn
-        .wjs-table__label disabled columns:
-        .wjs-table__discols-wrapper
-          .wjs-table__discols-item
+            button.wjs-dbtable__filter-close-btn
+        .wjs-dbtable__label disabled columns:
+        .wjs-dbtable__discols-wrapper
+          .wjs-dbtable__discols-item
             span last note
-            button.wjs-table__discols-close-btn
-          .wjs-table__discols-item
+            button.wjs-dbtable__discols-close-btn
+          .wjs-dbtable__discols-item
             span brocker type
-            button.wjs-table__discols-close-btn
-          .wjs-table__discols-item
+            button.wjs-dbtable__discols-close-btn
+          .wjs-dbtable__discols-item
             span spec.status
-            button.wjs-table__discols-close-btn
-        .wjs-table__label items in DB:
-        .wjs-table__items-amount 21674
-        .wjs-table__label filtered items:
-        .wjs-table__filtered-amount 163
-        .wjs-table__label selected items:
-        .wjs-table__selected-amount 42
-      .wjs-table__table-wrapper.wjs-scroll(data-scroll='bottom' data-scroll-hidden='vertical')
+            button.wjs-dbtable__discols-close-btn
+        .wjs-dbtable__label items in DB:
+        .wjs-dbtable__items-amount 21674
+        .wjs-dbtable__label filtered items:
+        .wjs-dbtable__filtered-amount 163
+        .wjs-dbtable__label selected items:
+        .wjs-dbtable__selected-amount 42
+      .wjs-dbtable__table-wrapper.wjs-scroll(data-scroll='bottom' data-scroll-hidden='vertical')
         .wjs-scroll__content-wrapper
           .wjs-scroll__content
-            .wjs-table__pseudo-header
+            .wjs-dbtable__pseudo-header
 
-              .wjs-table__pseudo-header-item
+              .wjs-dbtable__pseudo-header-item
                 input(type='checkbox' style='margin-left:10px')
 
-              .wjs-table__pseudo-header-item
-                button.wjs-table__btn.wjs-table__btn_search(title='search')
-                span.wjs-table__th-name id
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort.wjs-table__btn_active(title='sort')
+              .wjs-dbtable__pseudo-header-item
+                button.wjs-dbtable__btn.wjs-dbtable__btn_search(title='search')
+                span.wjs-dbtable__th-name id
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort.wjs-dbtable__btn_active(title='sort')
 
-              .wjs-table__pseudo-header-item
-                button.wjs-table__btn.wjs-table__btn_search(title='search')
-                span.wjs-table__th-name Клиент
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
+              .wjs-dbtable__pseudo-header-item
+                button.wjs-dbtable__btn.wjs-dbtable__btn_search(title='search')
+                span.wjs-dbtable__th-name Клиент
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name login
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name login
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Статус
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Статус
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Спец. статус
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Спец. статус
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                button.wjs-table__btn.wjs-table__btn_search(title='search')
-                span.wjs-table__th-name Телефон
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                    button.wjs-table__btn.wjs-table__btn_sort(title='sort')
+              .wjs-dbtable__pseudo-header-item
+                button.wjs-dbtable__btn.wjs-dbtable__btn_search(title='search')
+                span.wjs-dbtable__th-name Телефон
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                    button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
 
-              .wjs-table__pseudo-header-item
-                button.wjs-table__btn.wjs-table__btn_search(title='search')
-                span.wjs-table__th-name Почта
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
+              .wjs-dbtable__pseudo-header-item
+                button.wjs-dbtable__btn.wjs-dbtable__btn_search(title='search')
+                span.wjs-dbtable__th-name Почта
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Компания (афилят)
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Компания (афилят)
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Брокер
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Брокер
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Должность брокера
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Должность брокера
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Команда брокера
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Команда брокера
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Тип платформы
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Тип платформы
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Верификация
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Верификация
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Страна
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Страна
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Язык
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Язык
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Наличие депозитов
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Наличие депозитов
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Баланс
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Баланс
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Валюта
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Валюта
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Активность
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Активность
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Последняя активность
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Последняя активность
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Возможность торговли
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Возможность торговли
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Дата регистрации
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Дата регистрации
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Дата последней заметки
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Дата последней заметки
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Последняя заметка
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Последняя заметка
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
 
-              .wjs-table__pseudo-header-item
-                span.wjs-table__th-name Тип аккаунта
-                .wjs-table__btns-group
-                  button.wjs-table__btn.wjs-table__btn_close(title='close')
-                  button.wjs-table__btn.wjs-table__btn_sort(title='sort')
-                  button.wjs-table__btn.wjs-table__btn_options(title='options')
-            .wjs-table__body
-              .wjs-scroll(data-scroll='right' data-scroll-hidden='horizontal' style='border:3px dotted red;')
+              .wjs-dbtable__pseudo-header-item
+                span.wjs-dbtable__th-name Тип аккаунта
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+            .wjs-dbtable__body
+              .wjs-scroll(data-scroll='right' data-scroll-hidden='')
                 .wjs-scroll__content-wrapper
                   .wjs-scroll__content
                     table
                       thead
                         tr
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
-                          th: .wjs-table__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
+                          th: .wjs-dbtable__th-inner
                       tbody
                         tr
                           td
@@ -931,11 +931,11 @@ html(lang='ru')
                           td не берет трубку
                           td start
 
-      .wjs-table__pagination-wrapper
-        button.wjs-table__page-btn(type='button') 1
-        button.wjs-table__page-btn(type='button') 2
-        button.wjs-table__page-btn(type='button') 3
-        button.wjs-table__page-btn(type='button') 4
-        button.wjs-table__page-btn(type='button') 5
-        button.wjs-table__page-btn(type='button') 6
-        button.wjs-table__page-btn(type='button') 7
+      .wjs-dbtable__pagination-wrapper
+        button.wjs-dbtable__page-btn(type='button') 1
+        button.wjs-dbtable__page-btn(type='button') 2
+        button.wjs-dbtable__page-btn(type='button') 3
+        button.wjs-dbtable__page-btn(type='button') 4
+        button.wjs-dbtable__page-btn(type='button') 5
+        button.wjs-dbtable__page-btn(type='button') 6
+        button.wjs-dbtable__page-btn(type='button') 7
