@@ -121,8 +121,8 @@ a, a:hover {
 .wjs-table {
   margin: 20px;
   height: 600px;
-  border: 3px dotted red;
   font-family: futura;
+  overflow: hidden;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -215,43 +215,14 @@ a, a:hover {
   border: 1px solid lightgrey;
 }
 
-.wjs-table table {
-  border: 1px solid #dbf0fe;
-  border-collapse: collapse;
-  white-space: nowrap;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+.wjs-table__pseudo-header {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
 }
 
-.wjs-table th, .wjs-table td {
-  border: 1px solid #dbf0fe;
-  border-collapse: collapse;
-  vertical-align: middle;
-}
-
-.wjs-table th {
-  background-color: #bde0f6;
-  border: 1px solid lightsteelblue;
-  cursor: -webkit-grab;
-  cursor: grab;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-  padding: 0;
-}
-
-.wjs-table td {
-  padding: 10px 6px;
-}
-
-.wjs-table tr:nth-of-type(even) {
-  background-color: #eef2f5;
-}
-
-.wjs-table__th-inner {
+.wjs-table__pseudo-header-item {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -265,6 +236,19 @@ a, a:hover {
       -ms-flex-align: center;
           align-items: center;
   min-height: 36px;
+  border: 1px solid #dbf0fe;
+  border-collapse: collapse;
+  vertical-align: middle;
+  background-color: #bde0f6;
+  border: 1px solid lightsteelblue;
+  cursor: -webkit-grab;
+  cursor: grab;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  padding: 0;
+  white-space: nowrap;
 }
 
 .wjs-table__th-name {
@@ -354,16 +338,47 @@ a, a:hover {
   background-color: Chartreuse;
 }
 
+.wjs-table table {
+  border: 1px solid #dbf0fe;
+  border-collapse: collapse;
+  white-space: nowrap;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.wjs-table th {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  padding: 0;
+  border: none;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+  border-collapse: collapse;
+  color: transparent;
+  height: .1px;
+}
+
+.wjs-table td {
+  border: 1px solid #dbf0fe;
+  border-collapse: collapse;
+  vertical-align: middle;
+  padding: 10px 6px;
+}
+
+.wjs-table tr:nth-of-type(even) {
+  background-color: #eef2f5;
+}
+
 .wjs-table__pagination-wrapper {
   padding: 10px 0;
 }
 
 .wjs-table__page-btn {
   cursor: pointer;
-}
-
-.wjs-table__table-wrapper.wjs-scroll {
-  border: 3px dotted blue;
 }
 
 .wjs-table__table-wrapper.wjs-scroll .wjs-scroll__content {
