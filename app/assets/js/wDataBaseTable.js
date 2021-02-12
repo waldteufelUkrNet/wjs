@@ -33,23 +33,21 @@ function calculateTableCellsWidth(tableElement) {
 
   let realHeaderCells = tableElement.querySelectorAll('thead th'),
       realHeaderCellsInner = tableElement.querySelectorAll('.wjs-dbtable__th-inner'),
-      fakeHeaderCells = tableElement.querySelectorAll('.wjs-dbtable__pseudo-header-item');
+      fakeHeaderCells = tableElement.querySelectorAll('.wjs-dbtable__pseudo-header-item'),
+      testItems = tableElement.querySelectorAll('.test-item');
 
   if (realHeaderCells.length == fakeHeaderCells.length) {
     for (let i = 0; i < realHeaderCells.length; i++) {
       if (realHeaderCellsInner[i].clientWidth > fakeHeaderCells[i].clientWidth) {
-        console.log(realHeaderCellsInner[i].clientWidth + '/' + fakeHeaderCells[i].clientWidth);
-        fakeHeaderCells[i].style.minWidth = realHeaderCellsInner[i].clientWidth + 'px';
-        console.log(realHeaderCellsInner[i].clientWidth + '/' + fakeHeaderCells[i].clientWidth);
+        fakeHeaderCells[i].style.width = realHeaderCellsInner[i].offsetWidth + 5 + 'px';
       } else {
-        realHeaderCellsInner[i].style.minWidth = fakeHeaderCells[i].clientWidth + 'px';
+        realHeaderCellsInner[i].style.width = fakeHeaderCells[i].offsetWidth + 5 + 'px';
       }
     }
   } else {
     console.log('table build error: realHeaderCells.length != fakeHeaderCells.length');
   }
 }
-
 
 function calculateTableWrapperHeight(elem) {
   if (!elem) return
@@ -90,3 +88,23 @@ function calculateTableWrapperHeight(elem) {
 
 // let th = document.querySelectorAll('.wjs-dbtable__th-inner')[3];
 // th.style.width = '300px';
+
+
+let headers = document.querySelectorAll('.test-header-item'),
+    cells   = document.querySelectorAll('.test-body-item');
+
+for (let i = 0; i < headers.length; i++) {
+  if ( headers[i].clientWidth < cells[i].clientWidth ) {
+    console.log(headers[i].clientWidth + '/' + cells[i].clientWidth);
+    headers[i].style.width = cells[i].offsetWidth + .3 + 'px';
+    headers[i].style.backgroundColor = 'lightcyan';
+    console.log(headers[i].clientWidth + '/' + cells[i].clientWidth);
+    console.log('===');
+  } else {
+    console.log(headers[i].clientWidth + '/' + cells[i].clientWidth);
+    cells[i].style.width = headers[i].offsetWidth + .3 + 'px';
+    cells[i].style.backgroundColor = 'lightcyan';
+    console.log(headers[i].clientWidth + '/' + cells[i].clientWidth);
+    console.log('===');
+  }
+}
