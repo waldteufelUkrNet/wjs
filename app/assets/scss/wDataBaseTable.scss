@@ -61,9 +61,11 @@
     border                : 1px solid lightgrey;
   }
   &__pseudo-header {
-    display               : flex;
+    display               : grid;
+        grid-template-columns : repeat(24, auto) 1fr;
   }
-  &__pseudo-header-item {
+  &__pseudo-header-item,
+  &__header-item {
     display               : flex;
     justify-content       : space-between;
     align-items           : center;
@@ -74,14 +76,14 @@
     user-select           : none;
     padding               : 0;
     white-space           : nowrap;
-    flex-shrink: 0;
-    flex-grow: 1;
+    flex-shrink           : 0;
+    flex-grow             : 1;
   }
   &__th-name {
     text-align            : center;
     margin-left           : 10px;
     margin-right          : 10px;
-    flex-frow             : 1;
+    flex-grow             : 1;
     font-weight           : 900;
   }
   &__btns-group {
@@ -138,6 +140,20 @@
     &_active {
       background-color    : Chartreuse;
     }
+  }
+  &__body {
+    display               : grid;
+    grid-template-columns : repeat(24, auto) 1fr;
+  }
+  &__cell {
+    display               : flex;
+    justify-content       : space-between;
+    align-items           : center;
+    border                : 1px solid lightsteelblue;
+    cursor                : grab;
+    user-select           : none;
+    padding               : 6px 12px;
+    white-space           : nowrap;
   }
   table {
     border                : 1px solid #dbf0fe;
@@ -196,29 +212,26 @@
   }
 }
 
-.test-wrapper {
+.test-table1,
+.test-table2 {
   border: 1px solid black;
-  margin: 20px;
-  .test-header {
-    background-color: lightgrey;
-    display: flex;
-    .test-header-item {
-      padding: 6px 12px;
-      white-space: nowrap;
-      border: 1px solid lightgrey;
-      flex-shrink: 0;
-      flex-grow: 0;
-    }
+  margin: 10px;
+  th,td {
+    border: 1px solid black;
+    white-space: nowrap;
+    padding: 0;
   }
-  .test-body {
-    display: flex;
-    flex-wrap: wrap;
-    .test-body-item {
-      padding: 6px 12px;
-      white-space: nowrap;
-      border: 1px dotted lightgrey;
-      flex-shrink: 0;
-      flex-grow: 0;
-    }
-  }
+}
+
+.test-table1-inner {
+  padding: 6px 12px;
+}
+
+.test-table2-inner {
+  // padding: 6px 12px;
+}
+
+table.test-table2 th {
+  height: 1px !important;
+  padding: 0;
 }

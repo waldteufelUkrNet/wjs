@@ -15,8 +15,8 @@ html(lang='ru')
   body
 
     //- .wjs-dbtable#clientTable
-      .wjs-dbtable__header Table Of Clients
-      .wjs-dbtable__meta-data-wrapper
+    //-   .wjs-dbtable__header Table Of Clients
+    //-   .wjs-dbtable__meta-data-wrapper
         .wjs-dbtable__label filters:
         .wjs-dbtable__filters-wrapper
           .wjs-dbtable__filter-item
@@ -45,890 +45,554 @@ html(lang='ru')
         .wjs-dbtable__filtered-amount 163
         .wjs-dbtable__label selected items:
         .wjs-dbtable__selected-amount 42
-      .wjs-dbtable__table-wrapper.wjs-scroll(data-scroll='bottom' data-scroll-hidden='vertical')
-        .wjs-scroll__content-wrapper
-          .wjs-scroll__content
-            .wjs-dbtable__pseudo-header
+      //- .wjs-dbtable__table-wrapper.wjs-scroll(data-scroll='bottom' data-scroll-hidden='vertical')
+      //-   .wjs-scroll__content-wrapper
+      //-     .wjs-scroll__content
+      //-       .wjs-dbtable__pseudo-header
 
-              .wjs-dbtable__pseudo-header-item
-                input(type='checkbox' style='margin-left:10px')
+              //- .wjs-dbtable__pseudo-header-item(data-column='01')
+              //-   input(type='checkbox')
 
-              .wjs-dbtable__pseudo-header-item
+              //- .wjs-dbtable__pseudo-header-item(data-column='02')
+              //-   button.wjs-dbtable__btn.wjs-dbtable__btn_search(title='search')
+              //-   span.wjs-dbtable__th-name id
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort.wjs-dbtable__btn_active(title='sort')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='03')
+              //-   button.wjs-dbtable__btn.wjs-dbtable__btn_search(title='search')
+              //-   span.wjs-dbtable__th-name Клиент
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='04')
+              //-   span.wjs-dbtable__th-name login
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='05')
+              //-   span.wjs-dbtable__th-name Статус
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='06')
+              //-   span.wjs-dbtable__th-name Спец. статус
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='07')
+              //-   button.wjs-dbtable__btn.wjs-dbtable__btn_search(title='search')
+              //-   span.wjs-dbtable__th-name Телефон
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-       button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='08')
+              //-   button.wjs-dbtable__btn.wjs-dbtable__btn_search(title='search')
+              //-   span.wjs-dbtable__th-name Почта
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='09')
+              //-   span.wjs-dbtable__th-name Компания (афилят)
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='10')
+              //-   span.wjs-dbtable__th-name Брокер
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='11')
+              //-   span.wjs-dbtable__th-name Должность брокера
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='12')
+              //-   span.wjs-dbtable__th-name Команда брокера
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='13')
+              //-   span.wjs-dbtable__th-name Тип платформы
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='14')
+              //-   span.wjs-dbtable__th-name Верификация
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='15')
+              //-   span.wjs-dbtable__th-name Страна
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='16')
+              //-   span.wjs-dbtable__th-name Язык
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='17')
+              //-   span.wjs-dbtable__th-name Наличие депозитов
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='18')
+              //-   span.wjs-dbtable__th-name Баланс
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='19')
+              //-   span.wjs-dbtable__th-name Валюта
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='20')
+              //-   span.wjs-dbtable__th-name Активность
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='21')
+              //-   span.wjs-dbtable__th-name Последняя активность
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='22')
+              //-   span.wjs-dbtable__th-name Возможность торговли
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='23')
+              //-   span.wjs-dbtable__th-name Дата регистрации
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='24')
+              //-   span.wjs-dbtable__th-name Дата последней заметки
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='25')
+              //-   span.wjs-dbtable__th-name Последняя заметка
+              //-   .wjs-dbtable__btns-group
+              //-     button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+
+              //- .wjs-dbtable__pseudo-header-item(data-column='26')
+                span.wjs-dbtable__th-name Тип аккаунта
+                .wjs-dbtable__btns-group
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
+                  button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
+            //- .wjs-dbtable__body
+
+              //- .wjs-dbtable__header-item(data-column='01')
+              //-   input(type='checkbox')
+
+              .wjs-dbtable__header-item(data-column='02')
                 button.wjs-dbtable__btn.wjs-dbtable__btn_search(title='search')
                 span.wjs-dbtable__th-name id
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort.wjs-dbtable__btn_active(title='sort')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='03')
                 button.wjs-dbtable__btn.wjs-dbtable__btn_search(title='search')
                 span.wjs-dbtable__th-name Клиент
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='04')
                 span.wjs-dbtable__th-name login
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='05')
                 span.wjs-dbtable__th-name Статус
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='06')
                 span.wjs-dbtable__th-name Спец. статус
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='07')
                 button.wjs-dbtable__btn.wjs-dbtable__btn_search(title='search')
                 span.wjs-dbtable__th-name Телефон
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                     button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='08')
                 button.wjs-dbtable__btn.wjs-dbtable__btn_search(title='search')
                 span.wjs-dbtable__th-name Почта
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='09')
                 span.wjs-dbtable__th-name Компания (афилят)
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='10')
                 span.wjs-dbtable__th-name Брокер
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='11')
                 span.wjs-dbtable__th-name Должность брокера
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='12')
                 span.wjs-dbtable__th-name Команда брокера
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='13')
                 span.wjs-dbtable__th-name Тип платформы
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='14')
                 span.wjs-dbtable__th-name Верификация
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='15')
                 span.wjs-dbtable__th-name Страна
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='16')
                 span.wjs-dbtable__th-name Язык
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='17')
                 span.wjs-dbtable__th-name Наличие депозитов
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='18')
                 span.wjs-dbtable__th-name Баланс
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='19')
                 span.wjs-dbtable__th-name Валюта
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='20')
                 span.wjs-dbtable__th-name Активность
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='21')
                 span.wjs-dbtable__th-name Последняя активность
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='22')
                 span.wjs-dbtable__th-name Возможность торговли
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='23')
                 span.wjs-dbtable__th-name Дата регистрации
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='24')
                 span.wjs-dbtable__th-name Дата последней заметки
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='25')
                 span.wjs-dbtable__th-name Последняя заметка
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
 
-              .wjs-dbtable__pseudo-header-item
+              .wjs-dbtable__header-item(data-column='26')
                 span.wjs-dbtable__th-name Тип аккаунта
                 .wjs-dbtable__btns-group
                   button.wjs-dbtable__btn.wjs-dbtable__btn_close(title='close')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_sort(title='sort')
                   button.wjs-dbtable__btn.wjs-dbtable__btn_options(title='options')
-            .wjs-dbtable__body
-                    table
-                      thead
-                        tr
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                          th: .wjs-dbtable__th-inner
-                      tbody
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
-                        tr
-                          td
-                            input(type='checkbox')
-                          td 1
-                          td Вася Пупкин
-                          td offline
-                          td new
-                          td specStatus1
-                          td 79061234567
-                          td vasja.pupkin@mail.ru
-                          td Site Registration
-                          td Alexandr Melnikov
-                          td sales
-                          td sales1
-                          td binary
-                          td без верификации
-                          td Российская Федерация
-                          td русский
-                          td без депозитов
-                          td 0
-                          td USD
-                          td активен
-                          td 2021.01.14
-                          td не доступна
-                          td 2021.01.06
-                          td 2021.01.27
-                          td не берет трубку
-                          td start
+              //- .wjs-dbtable__cell(data-column='01'): input(type='checkbox')
+              .wjs-dbtable__cell(data-column='02') 2
+              .wjs-dbtable__cell(data-column='03') Вася Пупкин
+              .wjs-dbtable__cell(data-column='04') offline
+              .wjs-dbtable__cell(data-column='05') new
+              .wjs-dbtable__cell(data-column='06') specStatus1
+              .wjs-dbtable__cell(data-column='07') 79061234567
+              .wjs-dbtable__cell(data-column='08') vasja.pupkin@mail.ru
+              .wjs-dbtable__cell(data-column='09') Site Registration
+              .wjs-dbtable__cell(data-column='10') Alexandr Melnikov
+              .wjs-dbtable__cell(data-column='11') sales
+              .wjs-dbtable__cell(data-column='12') sales1
+              .wjs-dbtable__cell(data-column='13') binary
+              .wjs-dbtable__cell(data-column='14') без верификации
+              .wjs-dbtable__cell(data-column='15') Российская Федерация
+              .wjs-dbtable__cell(data-column='16') русский
+              .wjs-dbtable__cell(data-column='17') без депозитов
+              .wjs-dbtable__cell(data-column='18') 0
+              .wjs-dbtable__cell(data-column='19') USD
+              .wjs-dbtable__cell(data-column='20') активен
+              .wjs-dbtable__cell(data-column='21') 2021.01.14
+              .wjs-dbtable__cell(data-column='22') не доступна
+              .wjs-dbtable__cell(data-column='23') 2021.01.06
+              .wjs-dbtable__cell(data-column='24') 2021.01.27
+              .wjs-dbtable__cell(data-column='25') не берет трубку
+              .wjs-dbtable__cell(data-column='26') start
+              //- .wjs-dbtable__cell: input(type='checkbox')
+              .wjs-dbtable__cell 1
+              .wjs-dbtable__cell Вася Пупкин
+              .wjs-dbtable__cell offline
+              .wjs-dbtable__cell new
+              .wjs-dbtable__cell specStatus1
+              .wjs-dbtable__cell 79061234567
+              .wjs-dbtable__cell vasja.pupkin@mail.ru
+              .wjs-dbtable__cell Site Registration
+              .wjs-dbtable__cell Alexandr Melnikov
+              .wjs-dbtable__cell sales
+              .wjs-dbtable__cell sales1
+              .wjs-dbtable__cell binary
+              .wjs-dbtable__cell без верификации
+              .wjs-dbtable__cell Российская Федерация
+              .wjs-dbtable__cell русский
+              .wjs-dbtable__cell без депозитов
+              .wjs-dbtable__cell 0
+              .wjs-dbtable__cell USD
+              .wjs-dbtable__cell активен
+              .wjs-dbtable__cell 2021.01.14
+              .wjs-dbtable__cell не доступна
+              .wjs-dbtable__cell 2021.01.06
+              .wjs-dbtable__cell 2021.01.27
+              .wjs-dbtable__cell не берет трубку
+              .wjs-dbtable__cell start
+              //- .wjs-dbtable__cell: input(type='checkbox')
+              .wjs-dbtable__cell 1
+              .wjs-dbtable__cell Вася Пупкин
+              .wjs-dbtable__cell offline
+              .wjs-dbtable__cell new
+              .wjs-dbtable__cell specStatus1
+              .wjs-dbtable__cell 79061234567
+              .wjs-dbtable__cell vasja.pupkin@mail.ru
+              .wjs-dbtable__cell Site Registration
+              .wjs-dbtable__cell Alexandr Melnikov
+              .wjs-dbtable__cell sales
+              .wjs-dbtable__cell sales1
+              .wjs-dbtable__cell binary
+              .wjs-dbtable__cell без верификации
+              .wjs-dbtable__cell Российская Федерация
+              .wjs-dbtable__cell русский
+              .wjs-dbtable__cell без депозитов
+              .wjs-dbtable__cell 0
+              .wjs-dbtable__cell USD
+              .wjs-dbtable__cell активен
+              .wjs-dbtable__cell 2021.01.14
+              .wjs-dbtable__cell не доступна
+              .wjs-dbtable__cell 2021.01.06
+              .wjs-dbtable__cell 2021.01.27
+              .wjs-dbtable__cell не берет трубку
+              .wjs-dbtable__cell start
+              //- .wjs-dbtable__cell: input(type='checkbox')
+              .wjs-dbtable__cell 1
+              .wjs-dbtable__cell Вася Пупкин
+              .wjs-dbtable__cell offline
+              .wjs-dbtable__cell new
+              .wjs-dbtable__cell specStatus1
+              .wjs-dbtable__cell 79061234567
+              .wjs-dbtable__cell vasja.pupkin@mail.ru
+              .wjs-dbtable__cell Site Registration
+              .wjs-dbtable__cell Alexandr Melnikov
+              .wjs-dbtable__cell sales
+              .wjs-dbtable__cell sales1
+              .wjs-dbtable__cell binary
+              .wjs-dbtable__cell без верификации
+              .wjs-dbtable__cell Российская Федерация
+              .wjs-dbtable__cell русский
+              .wjs-dbtable__cell без депозитов
+              .wjs-dbtable__cell 0
+              .wjs-dbtable__cell USD
+              .wjs-dbtable__cell активен
+              .wjs-dbtable__cell 2021.01.14
+              .wjs-dbtable__cell не доступна
+              .wjs-dbtable__cell 2021.01.06
+              .wjs-dbtable__cell 2021.01.27
+              .wjs-dbtable__cell не берет трубку
+              .wjs-dbtable__cell start
 
-      .wjs-dbtable__pagination-wrapper
+                    //- table
+                    //-   thead
+                    //-     tr
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-       th: .wjs-dbtable__th-inner
+                    //-   tbody
+                    //-     tr
+                    //-       td
+                    //-         input(type='checkbox')
+                    //-       td 1
+                    //-       td Вася Пупкин
+                    //-       td offline
+                    //-       td new
+                    //-       td specStatus1
+                    //-       td 79061234567
+                    //-       td vasja.pupkin@mail.ru
+                    //-       td Site Registration
+                    //-       td Alexandr Melnikov
+                    //-       td sales
+                    //-       td sales1
+                    //-       td binary
+                    //-       td без верификации
+                    //-       td Российская Федерация
+                    //-       td русский
+                    //-       td без депозитов
+                    //-       td 0
+                    //-       td USD
+                    //-       td активен
+                    //-       td 2021.01.14
+                    //-       td не доступна
+                    //-       td 2021.01.06
+                    //-       td 2021.01.27
+                    //-       td не берет трубку
+                    //-       td start
+                    //-     tr
+                    //-       td
+                    //-         input(type='checkbox')
+                    //-       td 1
+                    //-       td Вася Пупкин
+                    //-       td offline
+                    //-       td new
+                    //-       td specStatus1
+                    //-       td 79061234567
+                    //-       td vasja.pupkin@mail.ru
+                    //-       td Site Registration
+                    //-       td Alexandr Melnikov
+                    //-       td sales
+                    //-       td sales1
+                    //-       td binary
+                    //-       td без верификации
+                    //-       td Российская Федерация
+                    //-       td русский
+                    //-       td без депозитов
+                    //-       td 0
+                    //-       td USD
+                    //-       td активен
+                    //-       td 2021.01.14
+                    //-       td не доступна
+                    //-       td 2021.01.06
+                    //-       td 2021.01.27
+                    //-       td не берет трубку
+                    //-       td start
+
+      //- .wjs-dbtable__pagination-wrapper
         button.wjs-dbtable__page-btn(type='button') 1
         button.wjs-dbtable__page-btn(type='button') 2
         button.wjs-dbtable__page-btn(type='button') 3
@@ -937,135 +601,170 @@ html(lang='ru')
         button.wjs-dbtable__page-btn(type='button') 6
         button.wjs-dbtable__page-btn(type='button') 7
 
+    table.test-table1
+      thead
+        th
+          .test-table1-inner
+            input(type='checkbox' style='margin-left:10px')
+        th
+          .test-table1-inner id
+        th
+          .test-table1-inner Клиент
+        th
+          .test-table1-inner login
+        th
+          .test-table1-inner Статус
+        th
+          .test-table1-inner Спец. статус
+        th
+          .test-table1-inner Телефон
+        th
+          .test-table1-inner Почта
+        th
+          .test-table1-inner Компания (афилят)
+        th
+          .test-table1-inner Брокер
+        th
+          .test-table1-inner Должность брокера
+        th
+          .test-table1-inner Команда брокера
+        th
+          .test-table1-inner Тип платформы
+        th
+          .test-table1-inner Верификация
+        th
+          .test-table1-inner Страна
+        th
+          .test-table1-inner Язык
+        th
+          .test-table1-inner Наличие депозитов
+        th
+          .test-table1-inner Баланс
+        th
+          .test-table1-inner Валюта
+        th
+          .test-table1-inner Активность
+        th
+          .test-table1-inner Последняя активность
+        th
+          .test-table1-inner Возможность торговли
+        th
+          .test-table1-inner Дата регистрации
+        th
+          .test-table1-inner Дата последней заметки
+        th
+          .test-table1-inner Последняя заметка
+        th
+          .test-table1-inner Тип аккаунта
+      //- tbody
+      //-   tr
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
+      //-     td
 
-    .test-wrapper
-      .test-header
-        .test-header-item headddd 1
-        .test-header-item head 2
-        .test-header-item head 3
-        .test-header-item head 4
-        .test-header-item head 5
-        .test-header-item head 6
-        .test-header-item head 7
-        .test-header-item head 8
-        .test-header-item headdddddddddd 9
-        .test-header-item head 10
-        .test-header-item head 11
-        .test-header-item head 12
-        .test-header-item head 13
-        .test-header-item head 14
-        .test-header-item head 15
-        .test-header-item head 16
-      .test-body
-        .test-body-item lorem 1
-        .test-body-item lorem 2
-        .test-body-item lorem 3
-        .test-body-item lorem 4
-        .test-body-item lorem 5
-        .test-body-item lorem 6
-        .test-body-item lorem 7
-        .test-body-item lorem 8
-        .test-body-item lorem 9
-        .test-body-item lorem 10
-        .test-body-item lorem 11
-        .test-body-item lorem 12
-        .test-body-item lorem 13
-        .test-body-item lorem 14
-        .test-body-item lorem 15
-        .test-body-item lorem 16
-        .test-body-item lorem 1
-        .test-body-item lorem 2
-        .test-body-item lorem 3
-        .test-body-item lorem 4
-        .test-body-item lorem 5
-        .test-body-item lorem 6
-        .test-body-item lorem 7
-        .test-body-item lorem 8
-        .test-body-item lorem 9
-        .test-body-item lorem 10
-        .test-body-item lorem 11
-        .test-body-item lorem 12
-        .test-body-item lorem 13
-        .test-body-item lorem 14
-        .test-body-item lorem 15
-        .test-body-item lorem 16
-        .test-body-item lorem 1
-        .test-body-item lorem 2
-        .test-body-item lorem 3
-        .test-body-item lorem 4
-        .test-body-item lorem 5
-        .test-body-item lorem 6
-        .test-body-item lorem 7
-        .test-body-item lorem 8
-        .test-body-item lorem 9
-        .test-body-item lorem 10
-        .test-body-item lorem 11
-        .test-body-item lorem 12
-        .test-body-item lorem 13
-        .test-body-item lorem 14
-        .test-body-item lorem 15
-        .test-body-item lorem 16
-        .test-body-item lorem 1
-        .test-body-item lorem 2
-        .test-body-item lorem 3
-        .test-body-item lorem 4
-        .test-body-item lorem 5
-        .test-body-item lorem 6
-        .test-body-item lorem 7
-        .test-body-item lorem 8
-        .test-body-item lorem 9
-        .test-body-item lorem 10
-        .test-body-item lorem 11
-        .test-body-item lorem 12
-        .test-body-item lorem 13
-        .test-body-item lorem 14
-        .test-body-item lorem 15
-        .test-body-item lorem 16
-        .test-body-item lorem 1
-        .test-body-item lorem 2
-        .test-body-item lorem 3
-        .test-body-item lorem 4
-        .test-body-item lorem 5
-        .test-body-item lorem 6
-        .test-body-item lorem 7
-        .test-body-item lorem 8
-        .test-body-item lorem 9
-        .test-body-item lorem 10
-        .test-body-item lorem 11
-        .test-body-item lorem 12
-        .test-body-item lorem 13
-        .test-body-item lorem 14
-        .test-body-item lorem 15
-        .test-body-item lorem 16
-        .test-body-item lorem 1
-        .test-body-item lorem 2
-        .test-body-item lorem 3
-        .test-body-item lorem 4
-        .test-body-item lorem 5
-        .test-body-item lorem 6
-        .test-body-item lorem 7
-        .test-body-item lorem 8
-        .test-body-item lorem 9
-        .test-body-item lorem 10
-        .test-body-item lorem 11
-        .test-body-item lorem 12
-        .test-body-item lorem 13
-        .test-body-item lorem 14
-        .test-body-item lorem 15
-        .test-body-item lorem 16
-        .test-body-item lorem 1
-        .test-body-item lorem 2
-        .test-body-item lorem 3
-        .test-body-item lorem 4
-        .test-body-item lorem 5
-        .test-body-item lorem 6
-        .test-body-item lorem 7
-        .test-body-item lorem 8
-        .test-body-item lorem 9
-        .test-body-item lorem 10
-        .test-body-item lorem 11
-        .test-body-item lorem 12
-        .test-body-item lorem 13
-        .test-body-item lorem 14
-        .test-body-item lorem 15
-        .test-body-item lorem 16
+    table.test-table2
+      thead
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+        th
+          .test-table2-inner
+      tbody
+        tr
+          td
+            input(type='checkbox')
+          td 1
+          td Вася Пупкин11111111111111111
+          td offline
+          td new
+          td specStatus1
+          td 79061234567
+          td vasja.pupkin@mail.ru
+          td Site Registration
+          td Alexandr Melnikov
+          td sales
+          td sales1
+          td binary
+          td без верификации
+          td Российская Федерация
+          td русский
+          td без депозитов
+          td 0
+          td USD
+          td активен
+          td 2021.01.14
+          td не доступна
+          td 2021.01.06
+          td 2021.01.27
+          td не берет трубку
+          td start

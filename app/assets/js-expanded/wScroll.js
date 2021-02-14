@@ -38,6 +38,15 @@
  * overflowXHidden:boolean, overvlowYHidden:boolean}]
  */
 function wSetScroll(elem, params = {}) {
+
+  if (!elem) return;
+
+  if ( !elem.querySelector('.wjs-scroll__content-wrapper')
+       || !elem.querySelector('.wjs-scroll__content') ) {
+    console.log('markup error: wrong html structure');
+    return;
+  }
+
   let container      = elem,
       contentWrapper = elem.querySelector('.wjs-scroll__content-wrapper'),
       content        = elem.querySelector('.wjs-scroll__content');

@@ -31,21 +31,21 @@ function wFoo(elem, params = {}) {}
 function calculateTableCellsWidth(tableElement) {
   if (!tableElement) return;
 
-  let realHeaderCells = tableElement.querySelectorAll('thead th'),
-      realHeaderCellsInner = tableElement.querySelectorAll('.wjs-dbtable__th-inner'),
-      fakeHeaderCells = tableElement.querySelectorAll('.wjs-dbtable__pseudo-header-item'),
-      testItems = tableElement.querySelectorAll('.test-item');
+  let realHeaders = tableElement.querySelectorAll('.wjs-dbtable__header-item'),
+      fakeHeaders = tableElement.querySelectorAll('.wjs-dbtable__pseudo-header-item');;
 
-  if (realHeaderCells.length == fakeHeaderCells.length) {
-    for (let i = 0; i < realHeaderCells.length; i++) {
-      if (realHeaderCellsInner[i].clientWidth > fakeHeaderCells[i].clientWidth) {
-        fakeHeaderCells[i].style.width = realHeaderCellsInner[i].offsetWidth + 5 + 'px';
+  if (realHeaders.length == fakeHeaders.length) {
+    for (let i = 0; i < realHeaders.length-1; i++) {
+      if (realHeaders[i].clientWidth > fakeHeaders[i].clientWidth) {
+        console.log(1);
+        fakeHeaders[i].style.width = realHeaders[i].clientWidth + 'px';
       } else {
-        realHeaderCellsInner[i].style.width = fakeHeaderCells[i].offsetWidth + 5 + 'px';
+        console.log(2);
+        realHeaders[i].style.width = fakeHeaders[i].clientWidth + 'px';
       }
     }
   } else {
-    console.log('table build error: realHeaderCells.length != fakeHeaderCells.length');
+    console.log('table build error: fakeHeaders.length != realHeaders.length');
   }
 }
 
@@ -90,21 +90,18 @@ function calculateTableWrapperHeight(elem) {
 // th.style.width = '300px';
 
 
-let headers = document.querySelectorAll('.test-header-item'),
-    cells   = document.querySelectorAll('.test-body-item');
 
-for (let i = 0; i < headers.length; i++) {
-  if ( headers[i].clientWidth < cells[i].clientWidth ) {
-    console.log(headers[i].clientWidth + '/' + cells[i].clientWidth);
-    headers[i].style.width = cells[i].offsetWidth + .3 + 'px';
-    headers[i].style.backgroundColor = 'lightcyan';
-    console.log(headers[i].clientWidth + '/' + cells[i].clientWidth);
-    console.log('===');
-  } else {
-    console.log(headers[i].clientWidth + '/' + cells[i].clientWidth);
-    cells[i].style.width = headers[i].offsetWidth + .3 + 'px';
-    cells[i].style.backgroundColor = 'lightcyan';
-    console.log(headers[i].clientWidth + '/' + cells[i].clientWidth);
-    console.log('===');
+setTimeout(function(){
+  let t1Headers = document.querySelectorAll('.test-table1-inner'),
+      t2Headers = document.querySelectorAll('.test-table2-inner');
+
+  for (let i = 0; i < t1Headers.length; i++) {
+    if (t1Headers[i].clientWidth > t2Headers[i].clientWidth) {
+      console.log(1);
+      t2Headers[i].style.cssText = 'width : ' + t1Headers[i].offsetWidth + 'px';
+    } else {
+      console.log(2);
+      t1Headers[i].style.cssText = 'width : ' + t2Headers[i].offsetWidth + 'px';
+    }
   }
-}
+},5000);
