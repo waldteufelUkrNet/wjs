@@ -31,22 +31,22 @@ function wFoo(elem, params = {}) {}
 function calculateTableCellsWidth(tableElement) {
   if (!tableElement) return;
 
-  let realHeaders = tableElement.querySelectorAll('.wjs-dbtable__header-item'),
-      fakeHeaders = tableElement.querySelectorAll('.wjs-dbtable__pseudo-header-item');;
+  // let realHeaders = tableElement.querySelectorAll('.wjs-dbtable__header-item'),
+  //     fakeHeaders = tableElement.querySelectorAll('.wjs-dbtable__pseudo-header-item');;
 
-  if (realHeaders.length == fakeHeaders.length) {
-    for (let i = 0; i < realHeaders.length-1; i++) {
-      if (realHeaders[i].clientWidth > fakeHeaders[i].clientWidth) {
-        console.log(1);
-        fakeHeaders[i].style.width = realHeaders[i].clientWidth + 'px';
-      } else {
-        console.log(2);
-        realHeaders[i].style.width = fakeHeaders[i].clientWidth + 'px';
-      }
-    }
-  } else {
-    console.log('table build error: fakeHeaders.length != realHeaders.length');
-  }
+  // if (realHeaders.length == fakeHeaders.length) {
+  //   for (let i = 0; i < realHeaders.length-1; i++) {
+  //     if (realHeaders[i].clientWidth > fakeHeaders[i].clientWidth) {
+  //       console.log(1);
+  //       fakeHeaders[i].style.width = realHeaders[i].clientWidth + 'px';
+  //     } else {
+  //       console.log(2);
+  //       realHeaders[i].style.width = fakeHeaders[i].clientWidth + 'px';
+  //     }
+  //   }
+  // } else {
+  //   console.log('table build error: fakeHeaders.length != realHeaders.length');
+  // }
 }
 
 function calculateTableWrapperHeight(elem) {
@@ -92,16 +92,26 @@ function calculateTableWrapperHeight(elem) {
 
 
 setTimeout(function(){
-  let t1Headers = document.querySelectorAll('.test-table1-inner'),
-      t2Headers = document.querySelectorAll('.test-table2-inner');
+  let headers = document.querySelectorAll('#table .inner'),
+      cells   = document.querySelectorAll('#table .cell');
 
-  for (let i = 0; i < t1Headers.length; i++) {
-    if (t1Headers[i].clientWidth > t2Headers[i].clientWidth) {
-      console.log(1);
-      t2Headers[i].style.cssText = 'width : ' + t1Headers[i].offsetWidth + 'px';
+  let countWidth = 0;
+
+  for (let i = 0; i < headers.length; i++) {
+    if (headers[i].clientWidth > cells[i].clientWidth) {
+      cells[i].style.cssText = 'width:' + headers[i].offsetWidth + 'px';
+      headers[i].style.cssText = 'width:' + headers[i].offsetWidth + 'px';
     } else {
-      console.log(2);
-      t1Headers[i].style.cssText = 'width : ' + t2Headers[i].offsetWidth + 'px';
+      cells[i].style.cssText = 'width:' + cells[i].offsetWidth + 'px';
+      headers[i].style.cssText = 'width:' + cells[i].offsetWidth + 'px';
     }
+    countWidth += headers[i].offsetWidth;
   }
-},5000);
+
+  let theader = document.querySelector('#table .theader'),
+      tbody   = document.querySelector('#table .tbody');
+
+  theader.style.cssText = 'width:' + countWidth + 'px';
+  tbody.style.cssText = 'width:' + countWidth + 'px';
+
+},1000);
