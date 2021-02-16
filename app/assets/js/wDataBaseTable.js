@@ -8,9 +8,8 @@
   document.addEventListener('DOMContentLoaded', function(){
     calculateTableCellsWidth( document.querySelector('#clientTable') );
 
-    calculateTableWrapperHeight( document.querySelector('.wjs-dbtable__table-wrapper') );
-
-
+    setTableWrapperMaxAviableHeight();
+    setTableInnerMaxAviableHeight();
   });
 /* ↑↑↑ wDataBaseTable ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
@@ -31,26 +30,31 @@ function wFoo(elem, params = {}) {}
 function calculateTableCellsWidth(tableElement) {
   if (!tableElement) return;
 
-  // let realHeaders = tableElement.querySelectorAll('.wjs-dbtable__header-item'),
-  //     fakeHeaders = tableElement.querySelectorAll('.wjs-dbtable__pseudo-header-item');;
+  let headers = tableElement.querySelectorAll('.wjs-dbtable__header-cell'),
+      cells   = tableElement.querySelectorAll('.wjs-dbtable__body-cell'),
+      theader = tableElement.querySelector('.wjs-dbtable__theader'),
+      tbody   = tableElement.querySelector('.wjs-dbtable__tbody');
 
-  // if (realHeaders.length == fakeHeaders.length) {
-  //   for (let i = 0; i < realHeaders.length-1; i++) {
-  //     if (realHeaders[i].clientWidth > fakeHeaders[i].clientWidth) {
-  //       console.log(1);
-  //       fakeHeaders[i].style.width = realHeaders[i].clientWidth + 'px';
-  //     } else {
-  //       console.log(2);
-  //       realHeaders[i].style.width = fakeHeaders[i].clientWidth + 'px';
-  //     }
-  //   }
-  // } else {
-  //   console.log('table build error: fakeHeaders.length != realHeaders.length');
-  // }
+  let countWidth = 0;
+
+  for (let i = 0; i < headers.length; i++) {
+    if (headers[i].clientWidth > cells[i].clientWidth) {
+      cells[i].style.cssText = 'width:' + headers[i].offsetWidth + 'px';
+      headers[i].style.cssText = 'width:' + headers[i].offsetWidth + 'px';
+    } else {
+      cells[i].style.cssText = 'width:' + cells[i].offsetWidth + 'px';
+      headers[i].style.cssText = 'width:' + cells[i].offsetWidth + 'px';
+    }
+    countWidth += headers[i].offsetWidth;
+  }
+
+  theader.style.cssText = 'width:' + countWidth + 'px';
+  tbody.style.cssText = 'width:' + countWidth + 'px';
 }
 
-function calculateTableWrapperHeight(elem) {
-  if (!elem) return
+function setTableWrapperMaxAviableHeight() {
+
+  let elem = document.querySelector('#clientTable .wjs-dbtable__table-wrapper');
 
   let parent = elem.parentElement;
   let aviableHeight = parent.clientHeight
@@ -83,35 +87,19 @@ function calculateTableWrapperHeight(elem) {
     elem.style.height = aviableHeight + 'px';
   }
 }
+
+function setTableInnerMaxAviableHeight() {
+  let elem = document.querySelector('#clientTable .wjs-scroll__content-wrapper .wjs-scroll');
+  let height = document.querySelector('#clientTable .wjs-dbtable__table-wrapper').clientHeight
+               - document.querySelector('#clientTable .wjs-dbtable__theader').offsetHeight
+               - getComputedStyle( document.querySelector('#clientTable .wjs-dbtable__table-wrapper .wjs-scroll__content') ).paddingBottom.slice(0,-2);
+
+  let width = document.querySelector('#clientTable .wjs-dbtable__tbody').offsetWidth;
+
+  elem.style.height = height + 'px';
+  elem.style.width = width + 'px';
+
+  wSetScroll(elem,{right:true,overvlowYHidden:true});
+}
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
-
-// let th = document.querySelectorAll('.wjs-dbtable__th-inner')[3];
-// th.style.width = '300px';
-
-
-
-setTimeout(function(){
-  let headers = document.querySelectorAll('#table .inner'),
-      cells   = document.querySelectorAll('#table .cell');
-
-  let countWidth = 0;
-
-  for (let i = 0; i < headers.length; i++) {
-    if (headers[i].clientWidth > cells[i].clientWidth) {
-      cells[i].style.cssText = 'width:' + headers[i].offsetWidth + 'px';
-      headers[i].style.cssText = 'width:' + headers[i].offsetWidth + 'px';
-    } else {
-      cells[i].style.cssText = 'width:' + cells[i].offsetWidth + 'px';
-      headers[i].style.cssText = 'width:' + cells[i].offsetWidth + 'px';
-    }
-    countWidth += headers[i].offsetWidth;
-  }
-
-  let theader = document.querySelector('#table .theader'),
-      tbody   = document.querySelector('#table .tbody');
-
-  theader.style.cssText = 'width:' + countWidth + 'px';
-  tbody.style.cssText = 'width:' + countWidth + 'px';
-
-},1000);
