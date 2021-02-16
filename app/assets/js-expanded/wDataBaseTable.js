@@ -10,6 +10,7 @@
 
     setTableWrapperMaxAviableHeight();
     setTableInnerMaxAviableHeight();
+    positioningOfInnerRightScroll();
   });
 /* ↑↑↑ wDataBaseTable ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
@@ -100,6 +101,18 @@ function setTableInnerMaxAviableHeight() {
   elem.style.width = width + 'px';
 
   wSetScroll(elem,{right:true,overvlowYHidden:true});
+}
+
+function positioningOfInnerRightScroll() {
+  let elem = document.querySelector('#clientTable .wjs-scroll__content-wrapper .wjs-scroll .wjs-scroll__wrapper_right');
+
+  let container = document.querySelector('.wjs-dbtable__table-wrapper.wjs-scroll');
+  elem.style.left =  container.clientWidth - elem.offsetWidth + 'px';
+
+  container.querySelector('.wjs-scroll__content').addEventListener('scroll', foo);
+  function foo(event) {
+    elem.style.left =  container.clientWidth - elem.offsetWidth + event.target.scrollLeft + 'px';
+  }
 }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
