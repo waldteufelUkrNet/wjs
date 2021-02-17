@@ -2,7 +2,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ custom scroll ↓↓↓ */
-
   // ініціалізація
   document.addEventListener('DOMContentLoaded', function(){
 

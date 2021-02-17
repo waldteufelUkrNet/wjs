@@ -6,12 +6,129 @@
   // .wjs-dbtable, в результаті не видно прокрутки. Потрібно розраховувати висоту
   // .wjs-dbtable__table-wrapper
   document.addEventListener('DOMContentLoaded', function(){
+
+    // це тимчасова змінна для емуляції відповіді на запит про побудову заголовків
+    let arr = [
+      {
+        position : 0,
+        name     : "checkbox"
+      },{
+        position : 1,
+        name     : "id",
+        buttons  : ["search", "close", "sort"]
+      },{
+        position : 2,
+        name     : "Клиент",
+        buttons  : ["search", "close", "sort"]
+      },{
+        position : 3,
+        name     : "Login",
+        buttons  : ["search", "close", "sort", "menu"]
+      },{
+        position : 4,
+        name     : "Статус",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 5,
+        name     : "Спец.Статус",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 6,
+        name     : "Телефон",
+        buttons  : ["search", "close", "sort"]
+      },{
+        position : 7,
+        name     : "Почта",
+        buttons  : ["search", "close", "sort"]
+      },{
+        position : 8,
+        name     : "Компания (афилят)",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 9,
+        name     : "Брокер",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 10,
+        name     : "Должность брокера",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 11,
+        name     : "Команда брокера",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 12,
+        name     : "Тип платформы",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 13,
+        name     : "Верификация",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 14,
+        name     : "Страна",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 15,
+        name     : "Язык",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 16,
+        name     : "Наличие депозитов",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 17,
+        name     : "Баланс",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 18,
+        name     : "Валюта",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 19,
+        name     : "Активность",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 20,
+        name     : "Последняя активность",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 21,
+        name     : "Возможность торговли",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 22,
+        name     : "Дата регистрации",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 23,
+        name     : "Дата последней заметки",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 24,
+        name     : "Последняя заметка",
+        buttons  : ["close", "sort", "menu"]
+      },{
+        position : 25,
+        name     : "Тип аккаунта",
+        buttons  : ["close", "sort", "menu"]
+      }
+    ];
+    let str = JSON.stringify(arr);
+    buildTableHeader('clientTable', str);
+
+
     calculateTableCellsWidth( document.querySelector('#clientTable') );
 
     setTableWrapperMaxAviableHeight();
     setTableInnerMaxAviableHeight();
+    wSetScroll( document.querySelector('#clientTable .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
+    wSetScroll( document.querySelector('#clientTable .wjs-dbtable__table-wrapper.wjs-scroll'), {bottom:true,overvlowYHidden:true});
     positioningOfInnerRightScroll();
   });
+
+  window.addEventListener('resize', positioningOfInnerRightScroll);
+  window.addEventListener('resize', setTableInnerMaxAviableHeight);
 /* ↑↑↑ wDataBaseTable ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ functions declaration ↓↓↓ */
@@ -26,6 +143,7 @@
  * overflowXHidden:boolean, overvlowYHidden:boolean}]
  */
 function wFoo(elem, params = {}) {}
+
 
 
 function calculateTableCellsWidth(tableElement) {
@@ -100,7 +218,6 @@ function setTableInnerMaxAviableHeight() {
   elem.style.height = height + 'px';
   elem.style.width = width + 'px';
 
-  wSetScroll(elem,{right:true,overvlowYHidden:true});
 }
 
 function positioningOfInnerRightScroll() {
@@ -113,6 +230,57 @@ function positioningOfInnerRightScroll() {
   function foo(event) {
     elem.style.left =  container.clientWidth - elem.offsetWidth + event.target.scrollLeft + 'px';
   }
+}
+
+function buildTableHeader (tableID, data) {
+  let dataArr = JSON.parse(data);
+
+  let table = document.querySelector('#' + tableID);
+  let header = table.querySelector('.wjs-dbtable__theader');
+  // header.innerHTML = '';
+
+  let htmlStr = '';
+  for (let item of dataArr ) {
+    if (item.name == 'checkbox') {
+      htmlStr += '\
+                    <div class="wjs-dbtable__header-cell">\
+                      <div class="wjs-dbtable__th-name">\
+                        <input type="checkbox">\
+                      </div>\
+                    </div>\
+                 ';
+    } else {
+
+      htmlStr += '<div class="wjs-dbtable__header-cell">';
+
+      if ( item.buttons && item.buttons.includes('search') ) {
+        htmlStr += '<button class="wjs-dbtable__btn wjs-dbtable__btn_search" type="button" title="поиск в базе по полю"></button>';
+      }
+
+      htmlStr += '<div class="wjs-dbtable__th-name">' + item.name + '</div>';
+
+      if ( item.buttons && ( item.buttons.includes('close')
+                             || item.buttons.includes('sort')
+                             || item.buttons.includes('menu') ) ) {
+        htmlStr += '<div class="wjs-dbtable__theader-btns-group">';
+
+        if ( item.buttons.includes('close') ) {
+          htmlStr += '<button class="wjs-dbtable__btn wjs-dbtable__btn_close" type="button" title="спрятать колонку"></button>';
+        }
+        if ( item.buttons.includes('sort') ) {
+          htmlStr += '<button class="wjs-dbtable__btn wjs-dbtable__btn_sort" type="button" title="сортировать базу данных по полю"></button>';
+        }
+        if ( item.buttons.includes('menu') ) {
+          htmlStr += '<button class="wjs-dbtable__btn wjs-dbtable__btn_options" type="button" title="доп. опции"></button>';
+        }
+        htmlStr += '</div>';
+      }
+
+      htmlStr += '</div>';
+
+    }
+  }
+  header.innerHTML = htmlStr;
 }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
