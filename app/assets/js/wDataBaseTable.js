@@ -148,12 +148,12 @@
       {
         checkbox         : true,
         id               : 1,
-        clientName       : '',//Клиент
-        networkStatus    : '',//Login
-        status           : '',//Статус
-        specStatus       : '',//Спец.Статус
-        phone            : '',//Телефон
-        email            : '',//Почта
+        clientName       : 'Rudy Malocha',//Клиент
+        networkStatus    : 'offline',//Login
+        status           : 'new',//Статус
+        specStatus       : 'sstatus1',//Спец.Статус
+        phone            : '79061234567',//Телефон
+        email            : 'trimeter@antiguan.edu',//Почта
         company          : '',//Компания (афилят)
         broker           : '',//Брокер
         brokerPosition   : '',//Должность брокера

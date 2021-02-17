@@ -6,22 +6,6 @@
 
 
 
-border                : 1px solid #dbf0fe;
-border-left           : 1px solid lightgrey;
-background-color    : #eef2f5;
-background-color      : #bde0f6;
-border                : 1px solid lightsteelblue;
-background-image    : url('../img/search.png');
-background-color    : Chartreuse;
-
-
-
-
-
-
-
-
-
 
 
 
