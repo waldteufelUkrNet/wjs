@@ -1,134 +1,30 @@
 let arrH = [
-  {
-    position : 0,
-    name     : "checkbox",
-    source   : "checkbox"
-  },{
-    position : 1,
-    name     : "id",
-    buttons  : ["search", "close", "sort"],
-    source   : "id"
-  },{
-    position : 2,
-    name     : "Клиент",
-    buttons  : ["search", "close", "sort"],
-    source   : "clientName"
-  },{
-    position : 3,
-    name     : "Login",
-    buttons  : ["close", "sort", "menu"],
-    source   : "networkStatus"
-  },{
-    position : 4,
-    name     : "Статус",
-    buttons  : ["close", "sort", "menu"],
-    source   : "status"
-  },{
-    position : 5,
-    name     : "Спец.Статус",
-    buttons  : ["close", "sort", "menu"],
-    source   : "specStatus"
-  },{
-    position : 6,
-    name     : "Телефон",
-    buttons  : ["search", "close", "sort"],
-    source   : "phone"
-  },{
-    position : 7,
-    name     : "Почта",
-    buttons  : ["search", "close", "sort"],
-    source   : "email"
-  },{
-    position : 8,
-    name     : "Компания (афилят)",
-    buttons  : ["close", "sort", "menu"],
-    source   : "company"
-  },{
-    position : 9,
-    name     : "Брокер",
-    buttons  : ["close", "sort", "menu"],
-    source   : "broker"
-  },{
-    position : 10,
-    name     : "Должность брокера",
-    buttons  : ["close", "sort", "menu"],
-    source   : "brokerPosition"
-  },{
-    position : 11,
-    name     : "Команда брокера",
-    buttons  : ["close", "sort", "menu"],
-    source   : "brockerTeam"
-  },{
-    position : 12,
-    name     : "Тип платформы",
-    buttons  : ["close", "sort", "menu"],
-    source   : "platform"
-  },{
-    position : 13,
-    name     : "Верификация",
-    buttons  : ["close", "sort", "menu"],
-    source   : "verification"
-  },{
-    position : 14,
-    name     : "Страна",
-    buttons  : ["close", "sort", "menu"],
-    source   : "country"
-  },{
-    position : 15,
-    name     : "Язык",
-    buttons  : ["close", "sort", "menu"],
-    source   : "language"
-  },{
-    position : 16,
-    name     : "Наличие депозитов",
-    buttons  : ["close", "sort", "menu"],
-    source   : "deposits"
-  },{
-    position : 17,
-    name     : "Баланс",
-    buttons  : ["close", "sort", "menu"],
-    source   : "money"
-  },{
-    position : 18,
-    name     : "Валюта",
-    buttons  : ["close", "sort", "menu"],
-    source   : "currency"
-  },{
-    position : 19,
-    name     : "Активность",
-    buttons  : ["close", "sort", "menu"],
-    source   : "activity"
-  },{
-    position : 20,
-    name     : "Последняя активность",
-    buttons  : ["close", "sort", "menu"],
-    source   : "lastActivity"
-  },{
-    position : 21,
-    name     : "Возможность торговли",
-    buttons  : ["close", "sort", "menu"],
-    source   : "isTradeAble"
-  },{
-    position : 22,
-    name     : "Дата регистрации",
-    buttons  : ["close", "sort", "menu"],
-    source   : "dateRegistration"
-  },{
-    position : 23,
-    name     : "Дата последней заметки",
-    buttons  : ["close", "sort", "menu"],
-    source   : "dateLastNote"
-  },{
-    position : 24,
-    name     : "Последняя заметка",
-    buttons  : ["close", "sort", "menu"],
-    source   : "lastNote"
-  },{
-    position : 25,
-    name     : "Тип аккаунта",
-    buttons  : ["close", "sort", "menu"],
-    source   : "accountType"
-  }
-];
+  
+  {"name":"checkbox","source":"checkbox"},
+  {"name":"id","buttons":["search","close","sort"],"source":"id"},
+  {"name":"Клиент","buttons":["search","close","sort"],"source":"clientName"},
+  {"name":"Login","buttons":["close","sort","menu"],"source":"networkStatus"},
+  {"name":"Статус","buttons":["close","sort","menu"],"source":"status"},
+  {"name":"Спец.Статус","buttons":["close","sort","menu"],"source":"specStatus"},
+  {"name":"Телефон","buttons":["search","close","sort"],"source":"phone"},
+  {"name":"Почта","buttons":["search","close","sort"],"source":"email"},
+  {"name":"Компания (афилят)","buttons":["close","sort","menu"],"source":"company"},
+  {"name":"Брокер","buttons":["close","sort","menu"],"source":"broker"},
+  {"name":"Должность брокера","buttons":["close","sort","menu"],"source":"brokerPosition"},
+  {"name":"Команда брокера","buttons":["close","sort","menu"],"source":"brockerTeam"},
+  {"name":"Тип платформы","buttons":["close","sort","menu"],"source":"platform"},
+  {"name":"Верификация","buttons":["close","sort","menu"],"source":"verification"},
+  {"name":"Страна","buttons":["close","sort","menu"],"source":"country"},
+  {"name":"Язык","buttons":["close","sort","menu"],"source":"language"},
+  {"name":"Наличие депозитов","buttons":["close","sort","menu"],"source":"deposits"},
+  {"name":"Баланс","buttons":["close","sort","menu"],"source":"money"},
+  {"name":"Валюта","buttons":["close","sort","menu"],"source":"currency"},
+  {"name":"Активность","buttons":["close","sort","menu"],"source":"activity"},
+  {"name":"Последняя активность","buttons":["close","sort","menu"],"source":"lastActivity"},
+  {"name":"Возможность торговли","buttons":["close","sort","menu"],"source":"isTradeAble"},
+  {"name":"Дата регистрации","buttons":["close","sort","menu"],"source":"dateRegistration"},
+  {"name":"Дата последней заметки","buttons":["close","sort","menu"],"source":"dateLastNote"},
+  {"name":"Последняя заметка","buttons":["close","sort","menu"],"source":"lastNote"},
+  {"name":"Тип аккаунта","buttons":["close","sort","menu"],"source":"accountType"}];
 let strH = JSON.stringify(arrH);
 console.log("strH", strH);

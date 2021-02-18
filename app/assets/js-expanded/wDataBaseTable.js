@@ -7,6 +7,16 @@
   // .wjs-dbtable__table-wrapper
   document.addEventListener('DOMContentLoaded', function(){
 
+    initLocalStorage('clientTable');
+    let table = JSON.parse( localStorage.getItem('clientTable') );
+    if (!table.h.length) {
+      // вантажимо заголовки, зберігаємо і далі по тексту
+      console.log("вантажимо");
+    } else {
+      // тут одразу далі по тексту)
+      console.log("тут");
+    }
+
     // запит заголовків таблиці і виклик функції їх побудови
     ajax('../db/clientsDB-headers.txt', 'GET', callback1);
     function callback1(arg) {
@@ -37,6 +47,14 @@
 /* ↑↑↑ wDataBaseTable ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ functions declaration ↓↓↓ */
+
+function initLocalStorage(tableId) {
+  let table = JSON.parse( localStorage.getItem(tableId) ) || {};
+
+  if ( !('h' in table) ) table.h = [];
+
+  localStorage.setItem( tableId, JSON.stringify(table) );
+}
 
 /**
  * [calculateTableCellsWidth нормалізує ширину чарунок таблиці і чарунок
@@ -207,7 +225,7 @@ function buildTableHeader (tableID, data) {
  * @param  {[type]} data    [дані, з яких будується таблия]
  */
 function buildTableBody (tableID, data) {
-  console.log("data", data);
+  console.log("data", data[1]);
 }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////

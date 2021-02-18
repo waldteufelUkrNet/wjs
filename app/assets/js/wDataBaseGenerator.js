@@ -82,7 +82,7 @@ for (let i = 0; i < brokers.length; i++) {
 }
 
 //  db generation
-for (let i = 0; i < 50000; i++) {
+for (let i = 0; i < 1000; i++) {
   let percent = randomInteger(1,100);
 
   let item = {
