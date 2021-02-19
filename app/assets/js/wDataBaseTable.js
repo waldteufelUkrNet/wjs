@@ -1,50 +1,67 @@
 "use strict";
-
+// wDataBaseTable
 ////////////////////////////////////////////////////////////////////////////////
-/* ↓↓↓ wDataBaseTable ↓↓↓ */
-  // коли даних в таблиці забагато, .wjs-dbtable__table-wrapper випадає за межі
-  // .wjs-dbtable, в результаті не видно прокрутки. Потрібно розраховувати висоту
-  // .wjs-dbtable__table-wrapper
+
+// перевіряємо, чи є LS, якщо нема - для уникнення помилок створюємо
+// правильну структуру
+initLocalStorage('clientTable');
+
+/* ↓↓↓ build table ↓↓↓ */
   document.addEventListener('DOMContentLoaded', function(){
 
-    initLocalStorage('clientTable');
     let table = JSON.parse( localStorage.getItem('clientTable') );
     if (!table.h.length) {
-      // вантажимо заголовки, зберігаємо і далі по тексту
-      console.log("вантажимо");
+      // ls пустий, вантажимо заголовки таблиці
+      ajax('../db/clientsDB-headers.txt', 'GET', handleTableHeaders);
+      function handleTableHeaders(arg) {
+        let headersArr = JSON.parse(arg);
+
+        for (let i = 0; i < headersArr.length; i++) {
+          let item = {
+            n: headersArr[i].name,
+            b: headersArr[i].buttons,
+            s: headersArr[i].source,
+            d: true
+          };
+          table.h.push(item);
+        }
+
+        localStorage.setItem( 'clientTable', JSON.stringify(table) );
+        buildTableHeader('clientTable');
+
+        // заголовки таблиці готові, вантажимо тіло
+        ajax('../db/clientsDB.txt', 'GET', handleTableBody);
+        function handleTableBody(arg) {
+          buildTableBody('clientTable', arg);
+          normalizeTableMeasurements('clientTable');
+        }
+
+      }
     } else {
-      // тут одразу далі по тексту)
-      console.log("тут");
+      // заголoвки таблиці записані в ls, будуємо таблицю
+      buildTableHeader('clientTable');
+
+      // заголовки таблиці готові, вантажимо тіло
+      ajax('../db/clientsDB.txt', 'GET', handleTableBody);
+      function handleTableBody(arg) {
+        buildTableBody('clientTable', arg);
+        normalizeTableMeasurements('clientTable');
+      }
     }
+/* ↑↑↑ build table ↑↑↑ */
 
-    // запит заголовків таблиці і виклик функції їх побудови
-    ajax('../db/clientsDB-headers.txt', 'GET', callback1);
-    function callback1(arg) {
-      buildTableHeader('clientTable', arg);
-    }
-
-    ajax('../db/clientsDB.txt', 'GET', callback2);
-    function callback2(arg) {
-      buildTableBody('clientTable', arg);
-    }
-
-    calculateTableCellsWidth( document.querySelector('#clientTable') );
-
-    setTableWrapperMaxAviableHeight();
-    setTableInnerMaxAviableMeasurements();
-    wSetScroll( document.querySelector('#clientTable .wjs-dbtable__table-wrapper.wjs-scroll'), {bottom:true,overvlowYHidden:true});
-    wSetScroll( document.querySelector('#clientTable .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
-    positioningOfInnerRightScroll();
   });
 
   window.addEventListener('resize', function(){
-    positioningOfInnerRightScroll();
-    setTableWrapperMaxAviableHeight();
-    setTableInnerMaxAviableMeasurements();
-    wSetScroll( document.querySelector('#clientTable .wjs-dbtable__table-wrapper.wjs-scroll'), {bottom:true,overvlowYHidden:true});
-    wSetScroll( document.querySelector('#clientTable .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
+    normalizeTableMeasurements('clientTable');
   });
-/* ↑↑↑ wDataBaseTable ↑↑↑ */
+
+  document.querySelector('#clientTable').addEventListener('click', function(event){
+    if ( event.target.classList.contains('wjs-dbtable__btn_close') ) {
+      closeColumn(event.target);
+    }
+  });
+
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ functions declaration ↓↓↓ */
 
@@ -54,6 +71,24 @@ function initLocalStorage(tableId) {
   if ( !('h' in table) ) table.h = [];
 
   localStorage.setItem( tableId, JSON.stringify(table) );
+}
+
+/**
+ * [normalizeTableMeasurements нормалізує зовнішній вигляд таблиці: підганяє
+ * розміри, додає полоси прокрутки]
+ * @param  {[type]} tableElement [description]
+ * @return {[type]}              [description]
+ */
+function normalizeTableMeasurements(tableElement) {
+  calculateTableCellsWidth( document.querySelector('#' + tableElement) );
+
+  setTableWrapperMaxAviableHeight(tableElement);
+  setTableInnerMaxAviableMeasurements(tableElement);
+  wSetScroll( document.querySelector('#clientTable .wjs-dbtable__table-wrapper.wjs-scroll'), {bottom:true,overvlowYHidden:true});
+  wSetScroll( document.querySelector('#clientTable .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
+  positioningOfInnerRightScroll(tableElement);
+
+  document.querySelector('#' + tableElement + ' .wjs-dbtable__loader-wrapper').style.display = 'none';
 }
 
 /**
@@ -92,9 +127,9 @@ function calculateTableCellsWidth(tableElement) {
  * таблиці, максимально-доступні у flex-контейнері. Явно вказана висота
  * потрібна, щоб у елемента з'явилася прокрутка ]
  */
-function setTableWrapperMaxAviableHeight() {
+function setTableWrapperMaxAviableHeight(tableElement) {
 
-  let elem = document.querySelector('#clientTable .wjs-dbtable__table-wrapper');
+  let elem = document.querySelector('#' + tableElement + ' .wjs-dbtable__table-wrapper');
 
   let parent = elem.parentElement;
   let aviableHeight = parent.clientHeight
@@ -133,13 +168,13 @@ function setTableWrapperMaxAviableHeight() {
  * контейнера з прокруткою (тіло таблиці). Це потрібно для появи прокрутки та
  * коректного відображення контенту]
  */
-function setTableInnerMaxAviableMeasurements() {
-  let elem = document.querySelector('#clientTable .wjs-scroll__content-wrapper .wjs-scroll');
-  let height = document.querySelector('#clientTable .wjs-dbtable__table-wrapper').clientHeight
-               - document.querySelector('#clientTable .wjs-dbtable__theader').offsetHeight
-               - getComputedStyle( document.querySelector('#clientTable .wjs-dbtable__table-wrapper .wjs-scroll__content') ).paddingBottom.slice(0,-2);
+function setTableInnerMaxAviableMeasurements(tableElement) {
+  let elem = document.querySelector('#' + tableElement + ' .wjs-scroll__content-wrapper .wjs-scroll');
+  let height = document.querySelector('#' + tableElement + ' .wjs-dbtable__table-wrapper').clientHeight
+               - document.querySelector('#' + tableElement + ' .wjs-dbtable__theader').offsetHeight
+               - getComputedStyle( document.querySelector('#' + tableElement + ' .wjs-dbtable__table-wrapper .wjs-scroll__content') ).paddingBottom.slice(0,-2);
 
-  let width = document.querySelector('#clientTable .wjs-dbtable__tbody').offsetWidth;
+  let width = document.querySelector('#' + tableElement + ' .wjs-dbtable__tbody').offsetWidth;
 
   elem.style.height = height + 'px';
   elem.style.width = width + 'px';
@@ -148,8 +183,8 @@ function setTableInnerMaxAviableMeasurements() {
 /**
  * [positioningOfInnerRightScroll позиціонує правий вертикальний скрол]
  */
-function positioningOfInnerRightScroll() {
-  let elem = document.querySelector('#clientTable .wjs-scroll__content-wrapper .wjs-scroll .wjs-scroll__wrapper_right');
+function positioningOfInnerRightScroll(tableElement) {
+  let elem = document.querySelector('#' + tableElement + ' .wjs-scroll__content-wrapper .wjs-scroll .wjs-scroll__wrapper_right');
   if(!elem) return;
 
   let container = document.querySelector('.wjs-dbtable__table-wrapper.wjs-scroll');
@@ -167,16 +202,21 @@ function positioningOfInnerRightScroll() {
  * таблиця]
  * @param  {[type]} data    [дані, з яких будуються заголовки]
  */
-function buildTableHeader (tableID, data) {
-  let dataArr = JSON.parse(data);
+function buildTableHeader (tableID) {
+
+  let headerData = JSON.parse( localStorage.getItem(tableID) ).h;
+
 
   let table = document.querySelector('#' + tableID);
   let header = table.querySelector('.wjs-dbtable__theader');
   // header.innerHTML = '';
 
   let htmlStr = '';
-  for (let item of dataArr ) {
-    if (item.name == 'checkbox') {
+  for (let item of headerData ) {
+    // якщо колонка виключена - не выдображати
+    if (!item.d) continue;
+
+    if (item.n == 'checkbox') {
       htmlStr += '\
                     <div class="wjs-dbtable__header-cell">\
                       <div class="wjs-dbtable__th-name">\
@@ -186,26 +226,26 @@ function buildTableHeader (tableID, data) {
                  ';
     } else {
 
-      htmlStr += '<div class="wjs-dbtable__header-cell" data-source="' + item.source + '">';
+      htmlStr += '<div class="wjs-dbtable__header-cell" data-source="' + item.s + '">';
 
-      if ( item.buttons && item.buttons.includes('search') ) {
+      if ( item.b && item.b.includes('search') ) {
         htmlStr += '<button class="wjs-dbtable__btn wjs-dbtable__btn_search" type="button" title="поиск в базе по полю"></button>';
       }
 
-      htmlStr += '<div class="wjs-dbtable__th-name">' + item.name + '</div>';
+      htmlStr += '<div class="wjs-dbtable__th-name">' + item.n + '</div>';
 
-      if ( item.buttons && ( item.buttons.includes('close')
-                             || item.buttons.includes('sort')
-                             || item.buttons.includes('menu') ) ) {
+      if ( item.b && ( item.b.includes('close')
+                             || item.b.includes('sort')
+                             || item.b.includes('menu') ) ) {
         htmlStr += '<div class="wjs-dbtable__theader-btns-group">';
 
-        if ( item.buttons.includes('close') ) {
+        if ( item.b.includes('close') ) {
           htmlStr += '<button class="wjs-dbtable__btn wjs-dbtable__btn_close" type="button" title="спрятать колонку"></button>';
         }
-        if ( item.buttons.includes('sort') ) {
+        if ( item.b.includes('sort') ) {
           htmlStr += '<button class="wjs-dbtable__btn wjs-dbtable__btn_sort" type="button" title="сортировать базу данных по полю"></button>';
         }
-        if ( item.buttons.includes('menu') ) {
+        if ( item.b.includes('menu') ) {
           htmlStr += '<button class="wjs-dbtable__btn wjs-dbtable__btn_options" type="button" title="доп. опции"></button>';
         }
         htmlStr += '</div>';
@@ -225,7 +265,41 @@ function buildTableHeader (tableID, data) {
  * @param  {[type]} data    [дані, з яких будується таблия]
  */
 function buildTableBody (tableID, data) {
-  console.log("data", data[1]);
+  let headerData   = JSON.parse( localStorage.getItem(tableID) ).h,
+      tableData    = JSON.parse(data),
+      tableElement = document.querySelector('#' + tableID + ' .wjs-dbtable__tbody');
+
+  document.querySelector('.wjs-dbtable__items-amount').innerHTML = tableData.length;
+
+  let order = [];
+  for (let item of headerData) {
+   order.push(item.s);
+  }
+
+  for (let i = 0; i < tableData.length; i++) {
+    let item = '';
+    for (let j = 0; j < order.length; j++) {
+      if ( tableData[i][order[j]] === true ) {
+        item = item + '<div class="wjs-dbtable__body-cell"><input type="checkbox"></div>';
+      } else {
+        item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+      }
+    }
+    tableElement.insertAdjacentHTML('beforeEnd', item);
+  }
+}
+
+function closeColumn(elem) {
+  let parent     = elem.closest('.wjs-dbtable'),
+      headerCell = elem.closest('[data-source]'),
+      source     = headerCell.dataset.source;
+
+  let bodyCellsArr = parent.querySelectorAll('.wjs-dbtable__body-cell[data-source="' + source + '"]');
+
+  for (let cell of bodyCellsArr) {
+    cell.remove();
+  }
+  headerCell.remove();
 }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////

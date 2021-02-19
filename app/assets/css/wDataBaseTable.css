@@ -217,6 +217,23 @@ a, a:hover {
   position: relative;
 }
 
+.wjs-dbtable__loader-wrapper {
+  position: absolute;
+  z-index: 1112;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+}
+
+.wjs-dbtable__loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+
 .wjs-dbtable__table {
   white-space: nowrap;
   -webkit-user-select: none;
