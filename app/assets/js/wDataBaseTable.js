@@ -65,6 +65,10 @@ initLocalStorage('clientTable');
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ functions declaration ↓↓↓ */
 
+/**
+ * [initLocalStorage перевірка наявності LS, якщо його нема - ініціалізація]
+ * @param  {[String]} tableId [ідентифікатор таблиці]
+ */
 function initLocalStorage(tableId) {
   let table = JSON.parse( localStorage.getItem(tableId) ) || {};
 
@@ -106,7 +110,6 @@ function calculateTableCellsWidth(tableElement) {
       tbody   = tableElement.querySelector('.wjs-dbtable__tbody');
 
   let countWidth = 0;
-
   for (let i = 0; i < headers.length; i++) {
     if (headers[i].clientWidth > cells[i].clientWidth) {
       cells[i].style.cssText = 'width:' + headers[i].offsetWidth + 'px';
@@ -118,8 +121,8 @@ function calculateTableCellsWidth(tableElement) {
     countWidth += headers[i].offsetWidth;
   }
 
-  theader.style.cssText = 'width:' + countWidth + 'px';
-  tbody.style.cssText = 'width:' + countWidth + 'px';
+  theader.style.width = countWidth + 'px';
+  tbody.style.width = countWidth + 'px';
 }
 
 /**
@@ -206,14 +209,13 @@ function buildTableHeader (tableID) {
 
   let headerData = JSON.parse( localStorage.getItem(tableID) ).h;
 
-
   let table = document.querySelector('#' + tableID);
   let header = table.querySelector('.wjs-dbtable__theader');
   // header.innerHTML = '';
 
   let htmlStr = '';
   for (let item of headerData ) {
-    // якщо колонка виключена - не выдображати
+    // якщо колонка виключена - не відображати
     if (!item.d) continue;
 
     if (item.n == 'checkbox') {
@@ -290,16 +292,58 @@ function buildTableBody (tableID, data) {
 }
 
 function closeColumn(elem) {
-  let parent     = elem.closest('.wjs-dbtable'),
-      headerCell = elem.closest('[data-source]'),
-      source     = headerCell.dataset.source;
+  let parent         = elem.closest('.wjs-dbtable'),
+      parentId       = parent.getAttribute('id'),
+      tableHeader    = parent.querySelector('.wjs-dbtable__theader'),
+      tableBody      = parent.querySelector('.wjs-dbtable__tbody'),
+      headerCell     = elem.closest('[data-source]'),
+      markersWrapper = parent.querySelector('.wjs-dbtable__discols-wrapper'),
+      source         = headerCell.dataset.source,
+      name           = '';
 
+  // видалити заголок і колонку
+  headerCell.remove();
   let bodyCellsArr = parent.querySelectorAll('.wjs-dbtable__body-cell[data-source="' + source + '"]');
-
   for (let cell of bodyCellsArr) {
     cell.remove();
   }
-  headerCell.remove();
+
+  // підкорегувати стилі
+  let tableData   = JSON.parse( localStorage.getItem(parentId) );
+  let enabledColumnsAmount = 0;
+  for (let i = 0; i < tableData.h.length; i++) {
+    if (tableData.h[i].d) {
+      enabledColumnsAmount++;
+    }
+  }
+  // -2, бо 1 колонку виключаємо, 1 колонку забирає 1fr
+  enabledColumnsAmount -= 2;
+
+  tableHeader.style.gridTemplateColumns = 'repeat(' + enabledColumnsAmount + ', auto) 1fr';
+  tableBody.style.gridTemplateColumns = 'repeat(' + enabledColumnsAmount + ', auto) 1fr';
+
+
+  // зберегти зміни
+  for (let i = 0; i < tableData.h.length; i++) {
+    if ( tableData.h[i].s == source ) {
+      tableData.h[i].d = false;
+      localStorage.setItem( parentId, JSON.stringify(tableData) );
+
+      name = tableData.h[i].n;
+      break;
+    }
+  }
+
+  // показати маркер закритої колонки
+  let html = '\
+          <div class="wjs-dbtable__discols-item">\
+            <span>' + name + '</span>\
+            <button type="button" class="wjs-dbtable__discols-close-btn"></buton>\
+          </div>\
+  ';
+  markersWrapper.insertAdjacentHTML('beforeEnd', html);
+
+  normalizeTableMeasurements(parentId);
 }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
