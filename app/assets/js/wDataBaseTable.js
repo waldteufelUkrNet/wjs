@@ -35,10 +35,10 @@ initLocalStorage('clientTable');
           buildTableBody('clientTable', arg);
           normalizeTableMeasurements('clientTable');
         }
-
       }
     } else {
       // заголoвки таблиці записані в ls, будуємо таблицю
+      showDisabledColumnMarkerAtStartUp('clientTable');
       buildTableHeader('clientTable');
 
       // заголовки таблиці готові, вантажимо тіло
@@ -48,9 +48,8 @@ initLocalStorage('clientTable');
         normalizeTableMeasurements('clientTable');
       }
     }
-/* ↑↑↑ build table ↑↑↑ */
-
   });
+/* ↑↑↑ build table ↑↑↑ */
 
   window.addEventListener('resize', function(){
     normalizeTableMeasurements('clientTable');
@@ -60,6 +59,11 @@ initLocalStorage('clientTable');
     if ( event.target.classList.contains('wjs-dbtable__btn_close') ) {
       closeColumn(event.target);
     }
+
+    if ( event.target.classList.contains('wjs-dbtable__discols-close-btn') ) {
+      showDisabledColumn(event.target);
+    }
+
   });
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -269,14 +273,19 @@ function buildTableHeader (tableID) {
 function buildTableBody (tableID, data) {
   let headerData   = JSON.parse( localStorage.getItem(tableID) ).h,
       tableData    = JSON.parse(data),
-      tableElement = document.querySelector('#' + tableID + ' .wjs-dbtable__tbody');
+      tableBody    = document.querySelector('#' + tableID + ' .wjs-dbtable__tbody'),
+      tableHeader  = document.querySelector('#' + tableID + ' .wjs-dbtable__theader');
 
   document.querySelector('.wjs-dbtable__items-amount').innerHTML = tableData.length;
 
   let order = [];
   for (let item of headerData) {
+    if (!item.d) continue;
    order.push(item.s);
   }
+
+  tableHeader.style.gridTemplateColumns = 'repeat(' + (order.length - 1) + ', auto) 1fr';
+  tableBody.style.gridTemplateColumns = 'repeat(' + (order.length - 1) + ', auto) 1fr';
 
   for (let i = 0; i < tableData.length; i++) {
     let item = '';
@@ -287,7 +296,7 @@ function buildTableBody (tableID, data) {
         item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
       }
     }
-    tableElement.insertAdjacentHTML('beforeEnd', item);
+    tableBody.insertAdjacentHTML('beforeEnd', item);
   }
 }
 
@@ -297,7 +306,6 @@ function closeColumn(elem) {
       tableHeader    = parent.querySelector('.wjs-dbtable__theader'),
       tableBody      = parent.querySelector('.wjs-dbtable__tbody'),
       headerCell     = elem.closest('[data-source]'),
-      markersWrapper = parent.querySelector('.wjs-dbtable__discols-wrapper'),
       source         = headerCell.dataset.source,
       name           = '';
 
@@ -334,16 +342,45 @@ function closeColumn(elem) {
     }
   }
 
-  // показати маркер закритої колонки
+  showDisabledColumnMarker(name, source, parentId);
+  normalizeTableMeasurements(parentId);
+}
+
+function showDisabledColumnMarker(name, source, tableID) {
+  let markersWrapper = document.querySelector('#' + tableID + ' .wjs-dbtable__discols-wrapper');
   let html = '\
-          <div class="wjs-dbtable__discols-item">\
+          <div class="wjs-dbtable__discols-item" data-source="' + source + '">\
             <span>' + name + '</span>\
             <button type="button" class="wjs-dbtable__discols-close-btn"></buton>\
           </div>\
   ';
   markersWrapper.insertAdjacentHTML('beforeEnd', html);
+}
 
-  normalizeTableMeasurements(parentId);
+function showDisabledColumnMarkerAtStartUp(tableID) {
+  let tableData = JSON.parse( localStorage.getItem('clientTable') );
+
+  for (let i = 0; i < tableData.h.length; i++) {
+    if (!tableData.h[i].d) {
+      showDisabledColumnMarker(tableData.h[i].n, tableData.h[i].s, tableID);
+    }
+  }
+}
+
+function showDisabledColumn(elem) {
+  let marker    = elem.closest('.wjs-dbtable__discols-item'),
+      source    = marker.dataset.source,
+      tableID   = elem.closest('.wjs-dbtable').getAttribute('id'),
+      tableData = JSON.parse( localStorage.getItem(tableID) );
+
+  marker.remove();
+
+  for ( let i = 0; i < tableData.h.length; i++) {
+    if (source == tableData.h[i].s) {
+      tableData.h[i].d = true;
+      localStorage.setItem( tableID, JSON.stringify(tableData) );
+    }
+  }
 }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////

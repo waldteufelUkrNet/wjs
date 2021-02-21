@@ -164,8 +164,7 @@ a, a:hover {
 
 .wjs-dbtable__filter-item, .wjs-dbtable__discols-item {
   height: 30px;
-  margin-right: 6px;
-  margin-bottom: 3px;
+  margin: 0 3px 3px 0;
   border: 1px solid lightsteelblue;
   -webkit-border-radius: 4px;
           border-radius: 4px;
