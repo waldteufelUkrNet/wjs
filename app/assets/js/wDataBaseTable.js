@@ -1,6 +1,10 @@
 "use strict";
 // wDataBaseTable
 ////////////////////////////////////////////////////////////////////////////////
+/* ↓↓↓ variables declaration ↓↓↓ */
+  let db;
+/* ↑↑↑ variables declaration ↑↑↑ */
+////////////////////////////////////////////////////////////////////////////////
 
 // перевіряємо, чи є LS, якщо нема - для уникнення помилок створюємо
 // правильну структуру
@@ -31,10 +35,6 @@ initLocalStorage('clientTable');
 
         // заголовки таблиці готові, вантажимо тіло
         ajax('../db/clientsDB.txt', 'GET', handleTableBody);
-        function handleTableBody(arg) {
-          buildTableBody('clientTable', arg);
-          normalizeTableMeasurements('clientTable');
-        }
       }
     } else {
       // заголoвки таблиці записані в ls, будуємо таблицю
@@ -43,10 +43,6 @@ initLocalStorage('clientTable');
 
       // заголовки таблиці готові, вантажимо тіло
       ajax('../db/clientsDB.txt', 'GET', handleTableBody);
-      function handleTableBody(arg) {
-        buildTableBody('clientTable', arg);
-        normalizeTableMeasurements('clientTable');
-      }
     }
   });
 /* ↑↑↑ build table ↑↑↑ */
@@ -79,6 +75,12 @@ function initLocalStorage(tableId) {
   if ( !('h' in table) ) table.h = [];
 
   localStorage.setItem( tableId, JSON.stringify(table) );
+}
+
+function handleTableBody(arg) {
+  db = arg;
+  buildTableBody('clientTable', arg);
+  normalizeTableMeasurements('clientTable');
 }
 
 /**
@@ -195,7 +197,10 @@ function positioningOfInnerRightScroll(tableElement) {
   if(!elem) return;
 
   let container = document.querySelector('.wjs-dbtable__table-wrapper.wjs-scroll');
-  elem.style.left =  container.clientWidth - elem.offsetWidth + 'px';
+
+  let content = document.querySelector('#' + tableElement + ' .wjs-scroll__content');
+
+  elem.style.left =  container.clientWidth + content.scrollLeft - elem.offsetWidth + 'px';
 
   container.querySelector('.wjs-scroll__content').addEventListener('scroll', foo);
   function foo(event) {
@@ -277,6 +282,8 @@ function buildTableBody (tableID, data) {
       tableHeader  = document.querySelector('#' + tableID + ' .wjs-dbtable__theader');
 
   document.querySelector('.wjs-dbtable__items-amount').innerHTML = tableData.length;
+
+  tableBody.innerHTML = '';
 
   let order = [];
   for (let item of headerData) {
@@ -373,14 +380,21 @@ function showDisabledColumn(elem) {
       tableID   = elem.closest('.wjs-dbtable').getAttribute('id'),
       tableData = JSON.parse( localStorage.getItem(tableID) );
 
+  // видаляємо маркер
   marker.remove();
 
+  // зберігаємо зміни в ls
   for ( let i = 0; i < tableData.h.length; i++) {
     if (source == tableData.h[i].s) {
       tableData.h[i].d = true;
       localStorage.setItem( tableID, JSON.stringify(tableData) );
     }
   }
+
+  // перебудувати таблицю
+  buildTableHeader('clientTable');
+  buildTableBody('clientTable', db);
+  normalizeTableMeasurements('clientTable');
 }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
