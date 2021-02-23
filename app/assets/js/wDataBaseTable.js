@@ -94,6 +94,7 @@ function normalizeTableMeasurements(tableElement) {
 
   setTableWrapperMaxAviableHeight(tableElement);
   setTableInnerMaxAviableMeasurements(tableElement);
+  recalculateContainerWidth(tableElement);
   wSetScroll( document.querySelector('#clientTable .wjs-dbtable__table-wrapper.wjs-scroll'), {bottom:true,overvlowYHidden:true});
   wSetScroll( document.querySelector('#clientTable .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
   positioningOfInnerRightScroll(tableElement);
@@ -187,6 +188,18 @@ function setTableInnerMaxAviableMeasurements(tableElement) {
 
   elem.style.height = height + 'px';
   elem.style.width = width + 'px';
+}
+
+// при додаванні/видаленні колонок змінити ширину контейнера
+function recalculateContainerWidth(tableElement) {
+  let container      = document.querySelector('#' + tableElement + ' .wjs-scroll__content' ),
+      theader        = document.querySelector('#' + tableElement + ' .wjs-dbtable__theader' ),
+      oldScrollValue = container.scrollLeft;
+  container.style.width = theader.offsetWidth + 'px';
+
+  setTimeout(function(){
+  container.scrollLeft = oldScrollValue;
+  },1);
 }
 
 /**
@@ -355,13 +368,28 @@ function closeColumn(elem) {
 
 function showDisabledColumnMarker(name, source, tableID) {
   let markersWrapper = document.querySelector('#' + tableID + ' .wjs-dbtable__discols-wrapper');
+  let markersWrapperLabel = markersWrapper.previousElementSibling;
   let html = '\
           <div class="wjs-dbtable__discols-item" data-source="' + source + '">\
             <span>' + name + '</span>\
             <button type="button" class="wjs-dbtable__discols-close-btn"></buton>\
           </div>\
   ';
+
+  markersWrapper.style.display = 'flex';
+  markersWrapperLabel.style.display = 'block';
   markersWrapper.insertAdjacentHTML('beforeEnd', html);
+
+  let allCloseMarker = document.querySelector('#' + tableID + ' .wjs-dbtable__discols-item[data-role="closeAll"]');
+  if (!allCloseMarker) {
+    let html = '\
+            <div class="wjs-dbtable__discols-item" data-role="closeAll">\
+              <span>show all columns</span>\
+              <button type="button" class="wjs-dbtable__discols-close-btn"></buton>\
+            </div>\
+    ';
+    markersWrapper.insertAdjacentHTML('afterBegin', html);
+  }
 }
 
 function showDisabledColumnMarkerAtStartUp(tableID) {
@@ -375,19 +403,37 @@ function showDisabledColumnMarkerAtStartUp(tableID) {
 }
 
 function showDisabledColumn(elem) {
-  let marker    = elem.closest('.wjs-dbtable__discols-item'),
-      source    = marker.dataset.source,
-      tableID   = elem.closest('.wjs-dbtable').getAttribute('id'),
-      tableData = JSON.parse( localStorage.getItem(tableID) );
 
-  // видаляємо маркер
-  marker.remove();
+  let marker              = elem.closest('.wjs-dbtable__discols-item'),
+      markersWrapper      = elem.closest('.wjs-dbtable__discols-wrapper'),
+      markersWrapperLabel = markersWrapper.previousElementSibling,
+      source              = marker.dataset.source,
+      tableID             = elem.closest('.wjs-dbtable').getAttribute('id'),
+      tableData           = JSON.parse( localStorage.getItem(tableID) );
 
-  // зберігаємо зміни в ls
-  for ( let i = 0; i < tableData.h.length; i++) {
-    if (source == tableData.h[i].s) {
+  if ( marker.dataset.role == 'closeAll' ) {
+    markersWrapper.innerHTML = '';
+
+    // зберігаємо зміни в ls
+    for ( let i = 0; i < tableData.h.length; i++) {
       tableData.h[i].d = true;
       localStorage.setItem( tableID, JSON.stringify(tableData) );
+    }
+  } else {
+    // видаляємо маркер
+    marker.remove();
+
+    if( !markersWrapper.children.length ) {
+      markersWrapper.style.display = 'none';
+      markersWrapperLabel.style.display = 'none';
+    }
+
+    // зберігаємо зміни в ls
+    for ( let i = 0; i < tableData.h.length; i++) {
+      if (source == tableData.h[i].s) {
+        tableData.h[i].d = true;
+        localStorage.setItem( tableID, JSON.stringify(tableData) );
+      }
     }
   }
 

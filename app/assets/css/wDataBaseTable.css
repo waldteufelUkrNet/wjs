@@ -148,15 +148,26 @@ a, a:hover {
   padding-bottom: 10px;
 }
 
+.wjs-dbtable__label_discols {
+  display: none;
+}
+
 .wjs-dbtable__items-amount {
   font-weight: 900;
 }
 
-.wjs-dbtable__filters-wrapper, .wjs-dbtable__discols-wrapper {
+.wjs-dbtable__filters-wrapper {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+}
+
+.wjs-dbtable__discols-wrapper {
+  display: none;
   -webkit-flex-wrap: wrap;
       -ms-flex-wrap: wrap;
           flex-wrap: wrap;
