@@ -16,3 +16,28 @@ tableId = {
     }       //    }
   ]         //  ]
 };
+
+перелік змінних:
+
+db база даних
+table = JSON.parse( localStorage.getItem('clientTable') )
+headersArr
+
+let headers = tableElement.querySelectorAll('.wjs-dbtable__header-cell'),
+    cells   = tableElement.querySelectorAll('.wjs-dbtable__body-cell'),
+    theader = tableElement.querySelector('.wjs-dbtable__theader'),
+    tbody   = tableElement.querySelector('.wjs-dbtable__tbody');
+
+  let headerData = JSON.parse( localStorage.getItem(tableId) ).h;
+
+  let table = document.querySelector('#' + tableId);
+  let header = table.querySelector('.wjs-dbtable__theader');
+
+  let headerData   = JSON.parse( localStorage.getItem(tableId) ).h,
+      tableData    = JSON.parse(data),
+      tableBody    = document.querySelector('#' + tableId + ' .wjs-dbtable__tbody'),
+      tableHeader  = document.querySelector('#' + tableId + ' .wjs-dbtable__theader');
+
+  let bodyCellsArr = parent.querySelectorAll('.wjs-dbtable__body-cell[data-source="' + source + '"]');
+
+  let tableData   = JSON.parse( localStorage.getItem(parentId) );

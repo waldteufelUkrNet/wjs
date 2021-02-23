@@ -223,15 +223,15 @@ function positioningOfInnerRightScroll(tableElement) {
 
 /**
  * [buildTableHeader відповідає за динамічну побудову шапки таблиці]
- * @param  {[DOM-object]} tableID [кореневий елемент DOM, в якому знаходиться
+ * @param  {[DOM-object]} tableId [кореневий елемент DOM, в якому знаходиться
  * таблиця]
  * @param  {[type]} data    [дані, з яких будуються заголовки]
  */
-function buildTableHeader (tableID) {
+function buildTableHeader (tableId) {
 
-  let headerData = JSON.parse( localStorage.getItem(tableID) ).h;
+  let headerData = JSON.parse( localStorage.getItem(tableId) ).h;
 
-  let table = document.querySelector('#' + tableID);
+  let table = document.querySelector('#' + tableId);
   let header = table.querySelector('.wjs-dbtable__theader');
   // header.innerHTML = '';
 
@@ -284,15 +284,15 @@ function buildTableHeader (tableID) {
 
 /**
  * [buildTableBody відповідає за динамічну побудову тіла таблиці]
- * @param  {[DOM-object]} tableID [кореневий елемент DOM, в якому знаходиться
+ * @param  {[DOM-object]} tableId [кореневий елемент DOM, в якому знаходиться
  * таблиця]
  * @param  {[type]} data    [дані, з яких будується таблия]
  */
-function buildTableBody (tableID, data) {
-  let headerData   = JSON.parse( localStorage.getItem(tableID) ).h,
+function buildTableBody (tableId, data) {
+  let headerData   = JSON.parse( localStorage.getItem(tableId) ).h,
       tableData    = JSON.parse(data),
-      tableBody    = document.querySelector('#' + tableID + ' .wjs-dbtable__tbody'),
-      tableHeader  = document.querySelector('#' + tableID + ' .wjs-dbtable__theader');
+      tableBody    = document.querySelector('#' + tableId + ' .wjs-dbtable__tbody'),
+      tableHeader  = document.querySelector('#' + tableId + ' .wjs-dbtable__theader');
 
   document.querySelector('.wjs-dbtable__items-amount').innerHTML = tableData.length;
 
@@ -366,8 +366,8 @@ function closeColumn(elem) {
   normalizeTableMeasurements(parentId);
 }
 
-function showDisabledColumnMarker(name, source, tableID) {
-  let markersWrapper = document.querySelector('#' + tableID + ' .wjs-dbtable__discols-wrapper');
+function showDisabledColumnMarker(name, source, tableId) {
+  let markersWrapper = document.querySelector('#' + tableId + ' .wjs-dbtable__discols-wrapper');
   let markersWrapperLabel = markersWrapper.previousElementSibling;
   let html = '\
           <div class="wjs-dbtable__discols-item" data-source="' + source + '">\
@@ -380,7 +380,7 @@ function showDisabledColumnMarker(name, source, tableID) {
   markersWrapperLabel.style.display = 'block';
   markersWrapper.insertAdjacentHTML('beforeEnd', html);
 
-  let allCloseMarker = document.querySelector('#' + tableID + ' .wjs-dbtable__discols-item[data-role="closeAll"]');
+  let allCloseMarker = document.querySelector('#' + tableId + ' .wjs-dbtable__discols-item[data-role="closeAll"]');
   if (!allCloseMarker) {
     let html = '\
             <div class="wjs-dbtable__discols-item" data-role="closeAll">\
@@ -392,12 +392,12 @@ function showDisabledColumnMarker(name, source, tableID) {
   }
 }
 
-function showDisabledColumnMarkerAtStartUp(tableID) {
+function showDisabledColumnMarkerAtStartUp(tableId) {
   let tableData = JSON.parse( localStorage.getItem('clientTable') );
 
   for (let i = 0; i < tableData.h.length; i++) {
     if (!tableData.h[i].d) {
-      showDisabledColumnMarker(tableData.h[i].n, tableData.h[i].s, tableID);
+      showDisabledColumnMarker(tableData.h[i].n, tableData.h[i].s, tableId);
     }
   }
 }
@@ -408,8 +408,8 @@ function showDisabledColumn(elem) {
       markersWrapper      = elem.closest('.wjs-dbtable__discols-wrapper'),
       markersWrapperLabel = markersWrapper.previousElementSibling,
       source              = marker.dataset.source,
-      tableID             = elem.closest('.wjs-dbtable').getAttribute('id'),
-      tableData           = JSON.parse( localStorage.getItem(tableID) );
+      tableId             = elem.closest('.wjs-dbtable').getAttribute('id'),
+      tableData           = JSON.parse( localStorage.getItem(tableId) );
 
   if ( marker.dataset.role == 'closeAll' ) {
     markersWrapper.innerHTML = '';
@@ -417,7 +417,7 @@ function showDisabledColumn(elem) {
     // зберігаємо зміни в ls
     for ( let i = 0; i < tableData.h.length; i++) {
       tableData.h[i].d = true;
-      localStorage.setItem( tableID, JSON.stringify(tableData) );
+      localStorage.setItem( tableId, JSON.stringify(tableData) );
     }
   } else {
     // видаляємо маркер
@@ -432,7 +432,7 @@ function showDisabledColumn(elem) {
     for ( let i = 0; i < tableData.h.length; i++) {
       if (source == tableData.h[i].s) {
         tableData.h[i].d = true;
-        localStorage.setItem( tableID, JSON.stringify(tableData) );
+        localStorage.setItem( tableId, JSON.stringify(tableData) );
       }
     }
   }
