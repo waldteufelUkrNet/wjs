@@ -13,8 +13,8 @@ initLocalStorage('clientTable');
 /* ↓↓↓ build table ↓↓↓ */
   document.addEventListener('DOMContentLoaded', function(){
 
-    let table = JSON.parse( localStorage.getItem('clientTable') );
-    if (!table.h.length) {
+    let tableObj = JSON.parse( localStorage.getItem('clientTable') );
+    if (!tableObj.h.length) {
       // ls пустий, вантажимо заголовки таблиці
       ajax('../db/clientsDB-headers.txt', 'GET', handleTableHeaders);
       function handleTableHeaders(arg) {
@@ -27,10 +27,10 @@ initLocalStorage('clientTable');
             s: headersArr[i].source,
             d: true
           };
-          table.h.push(item);
+          tableObj.h.push(item);
         }
 
-        localStorage.setItem( 'clientTable', JSON.stringify(table) );
+        localStorage.setItem( 'clientTable', JSON.stringify(tableObj) );
         buildTableHeader('clientTable');
 
         // заголовки таблиці готові, вантажимо тіло
@@ -70,13 +70,17 @@ initLocalStorage('clientTable');
  * @param  {[String]} tableId [ідентифікатор таблиці]
  */
 function initLocalStorage(tableId) {
-  let table = JSON.parse( localStorage.getItem(tableId) ) || {};
+  let tableObj = JSON.parse( localStorage.getItem(tableId) ) || {};
 
-  if ( !('h' in table) ) table.h = [];
+  if ( !('h' in tableObj) ) tableObj.h = [];
 
-  localStorage.setItem( tableId, JSON.stringify(table) );
+  localStorage.setItem( tableId, JSON.stringify(tableObj) );
 }
 
+/**
+ * [handleTableBody функція-колбек на запит бази даних]
+ * @param  {[Object]} arg [база даних]
+ */
 function handleTableBody(arg) {
   db = arg;
   buildTableBody('clientTable', arg);
@@ -86,20 +90,19 @@ function handleTableBody(arg) {
 /**
  * [normalizeTableMeasurements нормалізує зовнішній вигляд таблиці: підганяє
  * розміри, додає полоси прокрутки]
- * @param  {[type]} tableElement [description]
- * @return {[type]}              [description]
+ * @param  {[String]} tableId [ідентифікатор твблиці]
  */
-function normalizeTableMeasurements(tableElement) {
-  calculateTableCellsWidth( document.querySelector('#' + tableElement) );
+function normalizeTableMeasurements(tableId) {
+  calculateTableCellsWidth( document.querySelector('#' + tableId) );
 
-  setTableWrapperMaxAviableHeight(tableElement);
-  setTableInnerMaxAviableMeasurements(tableElement);
-  recalculateContainerWidth(tableElement);
-  wSetScroll( document.querySelector('#clientTable .wjs-dbtable__table-wrapper.wjs-scroll'), {bottom:true,overvlowYHidden:true});
-  wSetScroll( document.querySelector('#clientTable .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
-  positioningOfInnerRightScroll(tableElement);
+  setTableWrapperMaxAviableHeight(tableId);
+  setTableInnerMaxAviableMeasurements(tableId);
+  recalculateContainerWidth(tableId);
+  wSetScroll( document.querySelector('#' + tableId + ' .wjs-dbtable__table-wrapper.wjs-scroll'), {bottom:true,overvlowYHidden:true});
+  wSetScroll( document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
+  positioningOfInnerRightScroll(tableId);
 
-  document.querySelector('#' + tableElement + ' .wjs-dbtable__loader-wrapper').style.display = 'none';
+  document.querySelector('#' + tableId + ' .wjs-dbtable__loader-wrapper').style.display = 'none';
 }
 
 /**
@@ -136,10 +139,11 @@ function calculateTableCellsWidth(tableElement) {
  * [setTableWrapperMaxAviableHeight виставляє точні розміри обгортки для
  * таблиці, максимально-доступні у flex-контейнері. Явно вказана висота
  * потрібна, щоб у елемента з'явилася прокрутка ]
+ * @param  {[String]} tableId [ідентифікатор твблиці]
  */
-function setTableWrapperMaxAviableHeight(tableElement) {
+function setTableWrapperMaxAviableHeight(tableId) {
 
-  let elem = document.querySelector('#' + tableElement + ' .wjs-dbtable__table-wrapper');
+  let elem = document.querySelector('#' + tableId + ' .wjs-dbtable__table-wrapper');
 
   let parent = elem.parentElement;
   let aviableHeight = parent.clientHeight
@@ -177,23 +181,28 @@ function setTableWrapperMaxAviableHeight(tableElement) {
  * [setTableInnerMaxAviableMeasurements виставляє точні розміри вкладеного
  * контейнера з прокруткою (тіло таблиці). Це потрібно для появи прокрутки та
  * коректного відображення контенту]
+ * @param  {[String]} tableId [ідентифікатор твблиці]
  */
-function setTableInnerMaxAviableMeasurements(tableElement) {
-  let elem = document.querySelector('#' + tableElement + ' .wjs-scroll__content-wrapper .wjs-scroll');
-  let height = document.querySelector('#' + tableElement + ' .wjs-dbtable__table-wrapper').clientHeight
-               - document.querySelector('#' + tableElement + ' .wjs-dbtable__theader').offsetHeight
-               - getComputedStyle( document.querySelector('#' + tableElement + ' .wjs-dbtable__table-wrapper .wjs-scroll__content') ).paddingBottom.slice(0,-2);
+function setTableInnerMaxAviableMeasurements(tableId) {
+  let elem = document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll');
+  let height = document.querySelector('#' + tableId + ' .wjs-dbtable__table-wrapper').clientHeight
+               - document.querySelector('#' + tableId + ' .wjs-dbtable__theader').offsetHeight
+               - getComputedStyle( document.querySelector('#' + tableId + ' .wjs-dbtable__table-wrapper .wjs-scroll__content') ).paddingBottom.slice(0,-2);
 
-  let width = document.querySelector('#' + tableElement + ' .wjs-dbtable__tbody').offsetWidth;
+  let width = document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').offsetWidth;
 
   elem.style.height = height + 'px';
   elem.style.width = width + 'px';
 }
 
-// при додаванні/видаленні колонок змінити ширину контейнера
-function recalculateContainerWidth(tableElement) {
-  let container      = document.querySelector('#' + tableElement + ' .wjs-scroll__content' ),
-      theader        = document.querySelector('#' + tableElement + ' .wjs-dbtable__theader' ),
+/**
+ * [recalculateContainerWidth при додаванні/видаленні колонок змінює ширину
+ * контейнера]
+ * @param  {[String]} tableId [ідентифікатор твблиці]
+ */
+function recalculateContainerWidth(tableId) {
+  let container      = document.querySelector('#' + tableId + ' .wjs-scroll__content' ),
+      theader        = document.querySelector('#' + tableId + ' .wjs-dbtable__theader' ),
       oldScrollValue = container.scrollLeft;
   container.style.width = theader.offsetWidth + 'px';
 
@@ -204,14 +213,15 @@ function recalculateContainerWidth(tableElement) {
 
 /**
  * [positioningOfInnerRightScroll позиціонує правий вертикальний скрол]
+ * @param  {[String]} tableId [ідентифікатор твблиці]
  */
-function positioningOfInnerRightScroll(tableElement) {
-  let elem = document.querySelector('#' + tableElement + ' .wjs-scroll__content-wrapper .wjs-scroll .wjs-scroll__wrapper_right');
+function positioningOfInnerRightScroll(tableId) {
+  let elem = document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll .wjs-scroll__wrapper_right');
   if(!elem) return;
 
   let container = document.querySelector('.wjs-dbtable__table-wrapper.wjs-scroll');
 
-  let content = document.querySelector('#' + tableElement + ' .wjs-scroll__content');
+  let content = document.querySelector('#' + tableId + ' .wjs-scroll__content');
 
   elem.style.left =  container.clientWidth + content.scrollLeft - elem.offsetWidth + 'px';
 
@@ -223,20 +233,17 @@ function positioningOfInnerRightScroll(tableElement) {
 
 /**
  * [buildTableHeader відповідає за динамічну побудову шапки таблиці]
- * @param  {[DOM-object]} tableId [кореневий елемент DOM, в якому знаходиться
- * таблиця]
- * @param  {[type]} data    [дані, з яких будуються заголовки]
+ * @param  {[String]} tableId [ідентифікатор твблиці]
  */
 function buildTableHeader (tableId) {
 
-  let headerData = JSON.parse( localStorage.getItem(tableId) ).h;
+  let tableObj = JSON.parse( localStorage.getItem(tableId) );
 
-  let table = document.querySelector('#' + tableId);
-  let header = table.querySelector('.wjs-dbtable__theader');
-  // header.innerHTML = '';
+  let table   = document.querySelector('#' + tableId);
+  let theader = table.querySelector('.wjs-dbtable__theader');
 
   let htmlStr = '';
-  for (let item of headerData ) {
+  for (let item of tableObj.h ) {
     // якщо колонка виключена - не відображати
     if (!item.d) continue;
 
@@ -279,14 +286,13 @@ function buildTableHeader (tableId) {
 
     }
   }
-  header.innerHTML = htmlStr;
+  theader.innerHTML = htmlStr;
 }
 
 /**
  * [buildTableBody відповідає за динамічну побудову тіла таблиці]
- * @param  {[DOM-object]} tableId [кореневий елемент DOM, в якому знаходиться
- * таблиця]
- * @param  {[type]} data    [дані, з яких будується таблия]
+ * @param  {[String]} tableId [ідентифікатор твблиці]
+ * @param  {[String]} data    [дані, з яких будується таблиця]
  */
 function buildTableBody (tableId, data) {
   let headerData   = JSON.parse( localStorage.getItem(tableId) ).h,
@@ -320,14 +326,18 @@ function buildTableBody (tableId, data) {
   }
 }
 
+/**
+ * [closeColumn видаляє колонку з таблиці]
+ * @param  {[DOM-Object]} elem [кнопка, на якій спрацював обробник кліку]
+ */
 function closeColumn(elem) {
-  let parent         = elem.closest('.wjs-dbtable'),
-      parentId       = parent.getAttribute('id'),
-      tableHeader    = parent.querySelector('.wjs-dbtable__theader'),
-      tableBody      = parent.querySelector('.wjs-dbtable__tbody'),
-      headerCell     = elem.closest('[data-source]'),
-      source         = headerCell.dataset.source,
-      name           = '';
+  let parent     = elem.closest('.wjs-dbtable'),
+      parentId   = parent.getAttribute('id'),
+      theader    = parent.querySelector('.wjs-dbtable__theader'),
+      tbody      = parent.querySelector('.wjs-dbtable__tbody'),
+      headerCell = elem.closest('[data-source]'),
+      source     = headerCell.dataset.source,
+      name       = '';
 
   // видалити заголок і колонку
   headerCell.remove();
@@ -347,8 +357,8 @@ function closeColumn(elem) {
   // -2, бо 1 колонку виключаємо, 1 колонку забирає 1fr
   enabledColumnsAmount -= 2;
 
-  tableHeader.style.gridTemplateColumns = 'repeat(' + enabledColumnsAmount + ', auto) 1fr';
-  tableBody.style.gridTemplateColumns = 'repeat(' + enabledColumnsAmount + ', auto) 1fr';
+  theader.style.gridTemplateColumns = 'repeat(' + enabledColumnsAmount + ', auto) 1fr';
+  tbody.style.gridTemplateColumns = 'repeat(' + enabledColumnsAmount + ', auto) 1fr';
 
 
   // зберегти зміни
@@ -366,6 +376,13 @@ function closeColumn(elem) {
   normalizeTableMeasurements(parentId);
 }
 
+/**
+ * [showDisabledColumnMarker показує маркер закритої колонки]
+ * @param  {[String]} name    [назва колонки]
+ * @param  {[String]} source  [як колонка назавається в бд(по цій змінній
+ * відбувається зв'язка шапки і тіла таблиці) ]
+ * @param  {[String]} tableId [ідентифікатор твблиці]
+ */
 function showDisabledColumnMarker(name, source, tableId) {
   let markersWrapper = document.querySelector('#' + tableId + ' .wjs-dbtable__discols-wrapper');
   let markersWrapperLabel = markersWrapper.previousElementSibling;
@@ -392,6 +409,11 @@ function showDisabledColumnMarker(name, source, tableId) {
   }
 }
 
+/**
+ * [showDisabledColumnMarkerAtStartUp під час завантаження показує в циклі усі
+ * маркери виключених колонок таблиці]
+ * @param  {[String]} tableId [ідентифікатор твблиці]
+ */
 function showDisabledColumnMarkerAtStartUp(tableId) {
   let tableData = JSON.parse( localStorage.getItem('clientTable') );
 
@@ -402,6 +424,10 @@ function showDisabledColumnMarkerAtStartUp(tableId) {
   }
 }
 
+/**
+ * [showDisabledColumn видаляє маркер, повертає колонку в таблицю]
+ * @param  {[DOM-Object]} elem [кнопка, на якій спрацював обробник кліку]
+ */
 function showDisabledColumn(elem) {
 
   let marker              = elem.closest('.wjs-dbtable__discols-item'),
