@@ -11,11 +11,12 @@
 initLocalStorage('clientTable');
 
 /* ↓↓↓ build table ↓↓↓ */
-  document.addEventListener('DOMContentLoaded', function(){
+  window.addEventListener('load', function(){
 
     let tableObj = JSON.parse( localStorage.getItem('clientTable') );
     if (!tableObj.h.length) {
       // ls пустий, вантажимо заголовки таблиці
+      showLoader('clientTable', 'запрос структуры таблицы ...');
       ajax('../db/clientsDB-headers.txt', 'GET', handleTableHeaders);
       function handleTableHeaders(arg) {
         let headersArr = JSON.parse(arg);
@@ -34,6 +35,7 @@ initLocalStorage('clientTable');
         buildTableHeader('clientTable');
 
         // заголовки таблиці готові, вантажимо тіло
+        showLoader('clientTable', 'загрузка базы данных ...');
         ajax('../db/clientsDB.txt', 'GET', handleTableBody);
       }
     } else {
@@ -42,6 +44,7 @@ initLocalStorage('clientTable');
       buildTableHeader('clientTable');
 
       // заголовки таблиці готові, вантажимо тіло
+      showLoader('clientTable', 'загрузка базы данных ...');
       ajax('../db/clientsDB.txt', 'GET', handleTableBody);
     }
   });
@@ -59,7 +62,6 @@ initLocalStorage('clientTable');
     if ( event.target.classList.contains('wjs-dbtable__discols-close-btn') ) {
       showDisabledColumn(event.target);
     }
-
   });
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -83,8 +85,12 @@ function initLocalStorage(tableId) {
  */
 function handleTableBody(arg) {
   db = arg;
-  buildTableBody('clientTable', arg);
-  normalizeTableMeasurements('clientTable');
+  showLoader('clientTable', 'обработка данных ...');
+
+  setTimeout(function(){
+    buildTableBody('clientTable', arg);
+    normalizeTableMeasurements('clientTable');
+  },1);
 }
 
 /**
@@ -102,7 +108,9 @@ function normalizeTableMeasurements(tableId) {
   wSetScroll( document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
   positioningOfInnerRightScroll(tableId);
 
-  document.querySelector('#' + tableId + ' .wjs-dbtable__loader-wrapper').style.display = 'none';
+  setTimeout(function(){
+    hideLoader(tableId);
+  },1000);
 }
 
 /**
@@ -331,6 +339,7 @@ function buildTableBody (tableId, data) {
  * @param  {[DOM-Object]} elem [кнопка, на якій спрацював обробник кліку]
  */
 function closeColumn(elem) {
+  showLoader('clientTable', 'обработка данных ...');
   let parent     = elem.closest('.wjs-dbtable'),
       parentId   = parent.getAttribute('id'),
       theader    = parent.querySelector('.wjs-dbtable__theader'),
@@ -429,7 +438,7 @@ function showDisabledColumnMarkerAtStartUp(tableId) {
  * @param  {[DOM-Object]} elem [кнопка, на якій спрацював обробник кліку]
  */
 function showDisabledColumn(elem) {
-
+  showLoader('clientTable', 'обновление таблицы ...');
   let marker              = elem.closest('.wjs-dbtable__discols-item'),
       markersWrapper      = elem.closest('.wjs-dbtable__discols-wrapper'),
       markersWrapperLabel = markersWrapper.previousElementSibling,
@@ -437,36 +446,48 @@ function showDisabledColumn(elem) {
       tableId             = elem.closest('.wjs-dbtable').getAttribute('id'),
       tableData           = JSON.parse( localStorage.getItem(tableId) );
 
-  if ( marker.dataset.role == 'closeAll' ) {
-    markersWrapper.innerHTML = '';
+  setTimeout(function(){
+    if ( marker.dataset.role == 'closeAll' ) {
+      markersWrapper.innerHTML = '';
 
-    // зберігаємо зміни в ls
-    for ( let i = 0; i < tableData.h.length; i++) {
-      tableData.h[i].d = true;
-      localStorage.setItem( tableId, JSON.stringify(tableData) );
-    }
-  } else {
-    // видаляємо маркер
-    marker.remove();
-
-    if( !markersWrapper.children.length ) {
-      markersWrapper.style.display = 'none';
-      markersWrapperLabel.style.display = 'none';
-    }
-
-    // зберігаємо зміни в ls
-    for ( let i = 0; i < tableData.h.length; i++) {
-      if (source == tableData.h[i].s) {
+      // зберігаємо зміни в ls
+      for ( let i = 0; i < tableData.h.length; i++) {
         tableData.h[i].d = true;
         localStorage.setItem( tableId, JSON.stringify(tableData) );
       }
-    }
-  }
+    } else {
+      // видаляємо маркер
+      marker.remove();
 
-  // перебудувати таблицю
-  buildTableHeader('clientTable');
-  buildTableBody('clientTable', db);
-  normalizeTableMeasurements('clientTable');
+      if( !markersWrapper.children.length || markersWrapper.children.length == 1 ) {
+        markersWrapper.style.display = 'none';
+        markersWrapperLabel.style.display = 'none';
+      }
+
+      // зберігаємо зміни в ls
+      for ( let i = 0; i < tableData.h.length; i++) {
+        if (source == tableData.h[i].s) {
+          tableData.h[i].d = true;
+          localStorage.setItem( tableId, JSON.stringify(tableData) );
+        }
+      }
+    }
+
+    // перебудувати таблицю
+    buildTableHeader('clientTable');
+    buildTableBody('clientTable', db);
+    normalizeTableMeasurements('clientTable');
+  });
+}
+
+function showLoader(tableId, text){
+  let loader = document.querySelector('#' + tableId + ' .wjs-dbtable__loader');
+  loader.querySelector('.wjs-dbtable__loader-info').innerHTML = text;
+  loader.classList.add('wjs-dbtable__loader_active');
+}
+
+function hideLoader(tableId){
+  document.querySelector('#' + tableId + ' .wjs-dbtable__loader').classList.remove('wjs-dbtable__loader_active');
 }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////

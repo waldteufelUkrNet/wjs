@@ -227,21 +227,71 @@ a, a:hover {
   position: relative;
 }
 
-.wjs-dbtable__loader-wrapper {
+.wjs-dbtable__loader {
   position: absolute;
   z-index: 1112;
   width: 100%;
   height: 100%;
-  background-color: #fff;
+  background-color: white;
+  display: none;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
-.wjs-dbtable__loader {
+.wjs-dbtable__loader_active {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  z-index: 7777;
+}
+
+.wjs-dbtable__loader-img-wrapper {
+  width: 60px;
+  height: 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.wjs-dbtable__loader-img {
   position: absolute;
   top: 50%;
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
       -ms-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
+}
+
+.wjs-dbtable__loader-info-wrapper {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.wjs-dbtable__loader-dots {
+  padding-left: 2px;
+  font-weight: 900;
+  letter-spacing: 2px;
 }
 
 .wjs-dbtable__table {

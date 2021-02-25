@@ -69,19 +69,45 @@
     overflow              : hidden;
     position              : relative;
   }
-  &__loader-wrapper {
+  &__loader {
     position: absolute;
     z-index: 1112;
     width: 100%;
     height: 100%;
-    background-color: #fff;
+    background-color: white;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    &_active {
+      display: flex;
+      z-index: 7777;
+    }
   }
-  &__loader {
+  &__loader-img-wrapper {
+    width: 60px;
+    height: 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  &__loader-img {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
   }
+  &__loader-info-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  &__loader-info {}
+  &__loader-dots {
+    padding-left: 2px;
+    font-weight: 900;
+    letter-spacing: 2px;
+  }
+
   &__table {
     white-space           : nowrap;
     user-select           : none;

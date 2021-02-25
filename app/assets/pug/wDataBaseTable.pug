@@ -35,14 +35,20 @@ html(lang='ru')
           //-   span last note
           //-   button.wjs-dbtable__discols-close-btn
         .wjs-dbtable__label items in DB:
-        .wjs-dbtable__items-amount 0
+        .wjs-dbtable__items-amount
         .wjs-dbtable__label filtered items:
         .wjs-dbtable__filtered-amount 163
         .wjs-dbtable__label selected items:
         .wjs-dbtable__selected-amount 42
       .wjs-dbtable__table-wrapper.wjs-scroll(data-scroll='bottom' data-scroll-hidden='vertical' )
-        .wjs-dbtable__loader-wrapper
-          img.wjs-dbtable__loader(src='../img/loader.gif')
+
+        .wjs-dbtable__loader
+          .wjs-dbtable__loader-img-wrapper
+            img.wjs-dbtable__loader-img(src='../img/loader.gif')
+          .wjs-dbtable__loader-info-wrapper
+            .wjs-dbtable__loader-info
+            .wjs-dbtable__loader-dots
+
         .wjs-scroll__content-wrapper
           .wjs-scroll__content
             .wjs-dbtable__table
