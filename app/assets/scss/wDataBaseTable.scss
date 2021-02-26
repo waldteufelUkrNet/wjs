@@ -1,6 +1,7 @@
 @import "fonts";
 @import "reset";
 @import "style_general";
+@import "wCore";
 
 .wjs-dbtable {margin: 0 20px; height: 100vh;// border: 3px dotted red;
   font-family             : futura;
@@ -217,4 +218,30 @@
       border-left         : 1px solid lightgrey;
     }
   }
+}
+
+input[type='checkbox'] {
+  display: none;
+}
+
+input[type='checkbox'] + label {
+  // border: 3px dotted green;
+  // width: 100%;
+  // height: 100%;
+  // display: block;
+}
+
+input[type='checkbox'] + label::before {
+  content: '';
+  display: inline-block;
+  height: 26px;
+  width: 26px;
+  background-image: url('../img/checkbox-sprite.png');
+  background-position: -5px -20px;
+  background-size: 66px 66px;
+  background-repeat: no-repeat;
+}
+
+input[type='checkbox']:checked + label:before {
+  background-position: -36.7px -20px;
 }

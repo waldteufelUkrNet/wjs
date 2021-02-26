@@ -1,4 +1,5 @@
 "use strict";
+
 // wDataBaseTable
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ variables declaration ↓↓↓ */
@@ -45,7 +46,7 @@ initLocalStorage('clientTable');
 
       // заголовки таблиці готові, вантажимо тіло
       showLoader('clientTable', 'загрузка базы данных ...');
-      ajax('../db/clientsDB.txt', 'GET', handleTableBody);
+      ajax('../db/clientsDB-100.txt', 'GET', handleTableBody);
     }
   });
 /* ↑↑↑ build table ↑↑↑ */
@@ -259,7 +260,8 @@ function buildTableHeader (tableId) {
       htmlStr += '\
                     <div class="wjs-dbtable__header-cell">\
                       <div class="wjs-dbtable__th-name">\
-                        <input type="checkbox">\
+                        <input type="checkbox" id="chboxAll">\
+                        <label for="chboxAll"></label>\
                       </div>\
                     </div>\
                  ';
@@ -324,10 +326,101 @@ function buildTableBody (tableId, data) {
   for (let i = 0; i < tableData.length; i++) {
     let item = '';
     for (let j = 0; j < order.length; j++) {
-      if ( tableData[i][order[j]] === true ) {
-        item = item + '<div class="wjs-dbtable__body-cell"><input type="checkbox"></div>';
-      } else {
-        item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+      // tableData[i] - елемент БД, об'єкт
+      // [order[j]] - його властивості (networkStatus/phone/id і т.д.)
+      switch(order[j]) {
+        case 'checkbox':
+          if ( tableData[i][order[j]] === true ) {
+            item = item + '<div class="wjs-dbtable__body-cell">\
+                             <input type="checkbox" id="chbox' + tableData[i].id + '">\
+                             <label for="chbox' + tableData[i].id + '"></label>\
+                           </div>';
+          }
+          break;
+
+        case 'id':
+          item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">\
+                           <a href="#" class="w-link">' + tableData[i][order[j]] + '</a>\
+                         </div>';
+          break;
+
+        case 'clientName':
+          item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">\
+                           <a href="#" class="w-link">' + tableData[i][order[j]] + '</a>\
+                         </div>';
+          break;
+
+        case 'networkStatus':
+          if ( tableData[i][order[j]] === 'offline' ) {
+            item = item + '<div class="wjs-dbtable__body-cell w-red" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+          } else {
+            item = item + '<div class="wjs-dbtable__body-cell w-lime" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+          }
+          break;
+
+        case 'phone':
+          item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">\
+                           <a href="#" class="w-link w-monotype">' + tableData[i][order[j]] + '</a>\
+                         </div>';
+          break;
+
+        case 'email':
+          item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">\
+                           <a href="#" class="w-link">' + tableData[i][order[j]] + '</a>\
+                         </div>';
+          break;
+
+        case 'verification':
+          if ( tableData[i][order[j]] === 'без верификации' ) {
+            item = item + '<div class="wjs-dbtable__body-cell w-red" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+          } else if ( tableData[i][order[j]] === 'частичная верификация' ){
+            item = item + '<div class="wjs-dbtable__body-cell w-orange" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+          } else {
+            item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+          }
+          break;
+
+        case 'activity':
+          if ( tableData[i][order[j]] === 'не активен' ) {
+            item = item + '<div class="wjs-dbtable__body-cell w-lightgrey" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+          } else {
+            item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+          }
+          break;
+
+        case 'isTradeAble':
+          if ( tableData[i][order[j]] === 'не доступна' ) {
+            item = item + '<div class="wjs-dbtable__body-cell w-red" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+          } else {
+            item = item + '<div class="wjs-dbtable__body-cell w-lime" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+          }
+          break;
+
+        case 'dateRegistration':
+        case 'dateLastNote':
+        case 'lastActivity':
+          let dateString = tableData[i][order[j]],
+              dateObj = new Date(dateString),
+              yyyy = dateObj.getUTCFullYear(),
+              mm = dateObj.getUTCMonth() + 1,
+              dd = dateObj.getUTCDate(),
+              hh = dateObj.getUTCHours(),
+              min = dateObj.getUTCMinutes();
+          if (mm < 10) mm = '0' + mm;
+          if (dd < 10) dd = '0' + dd;
+          if (hh < 10) hh = '0' + hh;
+          if (min < 10) min = '0' + min;
+
+          let date = yyyy + '.' +
+                     mm + '.' +
+                     dd + ' ' +
+                     hh + ':' +
+                     min;
+          item = item + '<div class="wjs-dbtable__body-cell w-monotype" data-source="' + order[j] + '">' + date + '</div>';
+          break
+
+        default:
+          item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
       }
     }
     tableBody.insertAdjacentHTML('beforeEnd', item);

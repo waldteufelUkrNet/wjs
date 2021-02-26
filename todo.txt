@@ -17,6 +17,35 @@ tableId = {
   ]         //  ]
 };
 
+елемент з БД:
+{
+"checkbox"         : true,
+"id"               : 1,
+"clientName"       : "Reggie Aquas",
+"networkStatus"    : "offline",
+"status"           : "Замена",
+"specStatus"       : "sstatus1",
+"phone"            : 78602787816,
+"email"            : "reggie.aquas@unstuccoed.com",
+"company"          : "ARC",
+"platform"         : "binary",
+"verification"     : "без верификации",
+"country"          : "Sweden",
+"language"         : "español",
+"currency"         : "RUB",
+"money"            : 1612,
+"deposits"         : "с депозитами",
+"activity"         : "активен",
+"isTradeAble"      : "доступна",
+"accountType"      : "business",
+"lastNote"         : "Lorem \n ipsum dolor sit amet consectetur adipisicing elit. Mollitia quaerat voluptatum nisi sapiente veritatis quam sunt pariatur at, quidem, officiis.",
+"dateRegistration" : 1610040832,
+"lastActivity"     : 1613492411,
+"dateLastNote"     : 1613639205,
+"broker"           : "Egor Abramov",
+"brokerPosition"   : "retention",
+"brokerTeam"       : "RetTeam_2"
+}
 
 .wjs-dbtable__loader-dots - хочу зробити анімацію ходу завантаження і обробки даних (щосекундне додавання крапки). Через setInterval не получається.
 

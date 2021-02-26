@@ -58,7 +58,7 @@ let brokersDB = [];
 
 // brokers db generation
 for (let i = 0; i < brokers.length; i++) {
-  let percent = randomInteger(1,100);
+  let percent = randomInteger(1,50000);
 
   let item = {
     name: brokers[i]
@@ -82,7 +82,7 @@ for (let i = 0; i < brokers.length; i++) {
 }
 
 //  db generation
-for (let i = 0; i < 1000; i++) {
+for (let i = 0; i < 100; i++) {
   let percent = randomInteger(1,100);
 
   let item = {
@@ -157,13 +157,13 @@ for (let i = 0; i < 1000; i++) {
   item.lastNote = 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia quaerat voluptatum nisi sapiente veritatis quam sunt pariatur at, quidem, officiis.';
 
   // dateRegistration
-  item.dateRegistration = randomInteger(1487421582, 1613651982);
+  item.dateRegistration = randomInteger(1483228800000, 1614556800000);
 
   // lastActivity
-  item.lastActivity = randomInteger(item.dateRegistration, 1613651982+111);
+  item.lastActivity = randomInteger(item.dateRegistration, 1614556800000+111);
 
   // dateLastNote
-  item.dateLastNote = randomInteger(item.lastActivity, 1613651982+111);
+  item.dateLastNote = randomInteger(item.lastActivity, 1614556800000+111);
 
   // broker && brokerPosition && brokerTeam
   let brokerID = brokersDB[randomInteger(0, brokersDB.length-1)];

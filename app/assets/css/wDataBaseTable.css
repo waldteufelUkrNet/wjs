@@ -118,6 +118,35 @@ a, a:hover {
   cursor: pointer;
 }
 
+.w-red {
+  color: red;
+}
+
+.w-lime {
+  color: lime;
+}
+
+.w-orange {
+  color: orange;
+}
+
+.w-grey {
+  color: grey;
+}
+
+.w-lightgrey {
+  color: lightgrey;
+}
+
+.w-link {
+  color: #3a8fc8;
+  cursor: pointer;
+}
+
+.w-monotype {
+  font-family: c;
+}
+
 .wjs-dbtable {
   margin: 0 20px;
   height: 100vh;
@@ -448,4 +477,24 @@ a, a:hover {
   top: 0;
   background-color: white;
   border-left: 1px solid lightgrey;
+}
+
+input[type='checkbox'] {
+  display: none;
+}
+
+input[type='checkbox'] + label::before {
+  content: '';
+  display: inline-block;
+  height: 26px;
+  width: 26px;
+  background-image: url("../img/checkbox-sprite.png");
+  background-position: -5px -20px;
+  -webkit-background-size: 66px 66px;
+          background-size: 66px 66px;
+  background-repeat: no-repeat;
+}
+
+input[type='checkbox']:checked + label:before {
+  background-position: -36.7px -20px;
 }
