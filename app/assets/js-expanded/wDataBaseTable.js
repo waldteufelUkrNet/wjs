@@ -258,7 +258,7 @@ function buildTableHeader (tableId) {
 
     if (item.n == 'checkbox') {
       htmlStr += '\
-                    <div class="wjs-dbtable__header-cell">\
+                    <div class="wjs-dbtable__header-cell wjs-dbtable__header-cell_checkbox">\
                       <div class="wjs-dbtable__th-name">\
                         <input type="checkbox" id="chboxAll">\
                         <label for="chboxAll"></label>\
@@ -331,7 +331,7 @@ function buildTableBody (tableId, data) {
       switch(order[j]) {
         case 'checkbox':
           if ( tableData[i][order[j]] === true ) {
-            item = item + '<div class="wjs-dbtable__body-cell">\
+            item = item + '<div class="wjs-dbtable__body-cell wjs-dbtable__body-cell_checkbox">\
                              <input type="checkbox" id="chbox' + tableData[i].id + '">\
                              <label for="chbox' + tableData[i].id + '"></label>\
                            </div>';

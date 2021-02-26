@@ -358,6 +358,15 @@ a, a:hover {
   background-color: #bde0f6;
 }
 
+.wjs-dbtable__header-cell_checkbox {
+  width: 40px !important;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding-top: 2.5px;
+}
+
 .wjs-dbtable__th-name {
   font-weight: 900;
   padding: 0 12px;
@@ -450,7 +459,12 @@ a, a:hover {
 .wjs-dbtable__body-cell {
   border-right: 1px solid lightgrey;
   border-bottom: 1px solid lightgrey;
-  padding: 6px 12px;
+  padding: 11px 12px 3px;
+}
+
+.wjs-dbtable__body-cell_checkbox {
+  padding: 6px 7px 3px;
+  width: 40px !important;
 }
 
 .wjs-dbtable__pagination-wrapper {
@@ -486,8 +500,8 @@ input[type='checkbox'] {
 input[type='checkbox'] + label::before {
   content: '';
   display: inline-block;
-  height: 26px;
-  width: 26px;
+  height: 26px !important;
+  width: 26px !important;
   background-image: url("../img/checkbox-sprite.png");
   background-position: -5px -20px;
   -webkit-background-size: 66px 66px;

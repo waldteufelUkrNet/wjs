@@ -127,6 +127,11 @@
     justify-content       : space-between;
     align-items           : center;
     background-color      : #bde0f6;
+    &_checkbox {
+      width               : 40px !important;
+      justify-content     : center;
+      padding-top         : 2.5px;
+    }
   }
   &__th-name {
     font-weight           : 900;
@@ -190,7 +195,11 @@
   &__body-cell {
     border-right          : 1px solid lightgrey;
     border-bottom         : 1px solid lightgrey;
-    padding               : 6px 12px;
+    padding               : 11px 12px 3px;
+    &_checkbox {
+      padding             : 6px 7px 3px;
+      width               : 40px !important;
+    }
   }
 
   &__pagination-wrapper {
@@ -234,8 +243,8 @@ input[type='checkbox'] + label {
 input[type='checkbox'] + label::before {
   content: '';
   display: inline-block;
-  height: 26px;
-  width: 26px;
+  height: 26px !important;
+  width: 26px !important;
   background-image: url('../img/checkbox-sprite.png');
   background-position: -5px -20px;
   background-size: 66px 66px;
