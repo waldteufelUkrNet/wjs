@@ -160,7 +160,7 @@
       background-size     : 20px 20px;
       background-position : center center;
       background-repeat   : no-repeat;
-      margin-left         : 10px;
+      margin-left         : 5px;
       height              : 30px;
       width               : 30px;
       border-radius       : 4px;
@@ -211,20 +211,20 @@
 // scrol customization
 .wjs-dbtable__table-wrapper.wjs-scroll { //border: 3px dotted blue;
   .wjs-scroll__content {
-    padding-bottom        : 20px;
+    // padding-bottom        : 20px;
   }
   .wjs-scroll__wrapper_bottom {
     width                 : 100%;
     left                  : 0;
     background-color      : white;
-    border-top            : 1px solid lightgrey;
+    // border-top            : 1px solid lightgrey;
   }
   .wjs-dbtable__table {
     .wjs-scroll__wrapper_right {
       height              : 100%;
       top                 : 0;
       background-color    : white;
-      border-left         : 1px solid lightgrey;
+      // border-left         : 1px solid lightgrey;
     }
   }
 }
@@ -234,10 +234,7 @@ input[type='checkbox'] {
 }
 
 input[type='checkbox'] + label {
-  // border: 3px dotted green;
-  // width: 100%;
-  // height: 100%;
-  // display: block;
+  cursor: pointer;
 }
 
 input[type='checkbox'] + label::before {

@@ -7,6 +7,10 @@
 /* ↑↑↑ variables declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
 
+// chrome і mozilla по різному сприймають padding-bottom. Якщо це зробити через
+// стилі, у chrom'a буде зайвий padding.
+document.querySelector('.wjs-dbtable__table-wrapper.wjs-scroll .wjs-scroll__content').style.paddingBottom = '20px';
+
 // перевіряємо, чи є LS, якщо нема - для уникнення помилок створюємо
 // правильну структуру
 initLocalStorage('clientTable');
@@ -125,6 +129,7 @@ function calculateTableCellsWidth(tableElement) {
 
   let headers = tableElement.querySelectorAll('.wjs-dbtable__header-cell'),
       cells   = tableElement.querySelectorAll('.wjs-dbtable__body-cell'),
+      table   = tableElement.querySelector('.wjs-dbtable__table'),
       theader = tableElement.querySelector('.wjs-dbtable__theader'),
       tbody   = tableElement.querySelector('.wjs-dbtable__tbody');
 
@@ -139,9 +144,20 @@ function calculateTableCellsWidth(tableElement) {
     }
     countWidth += headers[i].offsetWidth;
   }
+  
+  if (table.clientWidth > countWidth) {
+    theader.style.width = table.clientWidth + 'px';
+    tbody.style.width = table.clientWidth + 'px';
 
-  theader.style.width = countWidth + 'px';
-  tbody.style.width = countWidth + 'px';
+    // розтягуємо крайню чарунку шапки по максимуму
+    let delta     = table.clientWidth - countWidth,
+        lastHCell = headers[headers.length-1];
+    lastHCell.style.width = lastHCell.offsetWidth + delta + 'px';
+    cells[headers.length-1].style.width = lastHCell.offsetWidth + delta + 'px';
+  } else {
+    theader.style.width = countWidth + 'px';
+    tbody.style.width = countWidth + 'px';
+  }
 }
 
 /**
@@ -305,10 +321,10 @@ function buildTableHeader (tableId) {
  * @param  {[String]} data    [дані, з яких будується таблиця]
  */
 function buildTableBody (tableId, data) {
-  let headerData   = JSON.parse( localStorage.getItem(tableId) ).h,
-      tableData    = JSON.parse(data),
-      tableBody    = document.querySelector('#' + tableId + ' .wjs-dbtable__tbody'),
-      tableHeader  = document.querySelector('#' + tableId + ' .wjs-dbtable__theader');
+  let headerData  = JSON.parse( localStorage.getItem(tableId) ).h,
+      tableData   = JSON.parse(data),
+      tableBody   = document.querySelector('#' + tableId + ' .wjs-dbtable__tbody'),
+      tableHeader = document.querySelector('#' + tableId + ' .wjs-dbtable__theader');
 
   document.querySelector('.wjs-dbtable__items-amount').innerHTML = tableData.length;
 

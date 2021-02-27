@@ -44,5 +44,16 @@
     return Math.round(rand);
   }
 
+  /**
+   * [isFirefox перевряє, чи браузер користувача - firefox]
+   * @return {Boolean} [результат перевірки]
+   */
+  function isFirefox() {
+    if ( navigator.userAgent.match(/firefox/i) ) {
+      return true
+    } else {
+      return false
+    }
+  }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
