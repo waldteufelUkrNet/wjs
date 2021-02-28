@@ -55,6 +55,7 @@ initLocalStorage('clientTable');
   });
 /* ↑↑↑ build table ↑↑↑ */
 
+/* ↓↓↓ appointment of event handlers ↓↓↓ */
   window.addEventListener('resize', function(){
     normalizeTableMeasurements('clientTable');
   });
@@ -68,6 +69,7 @@ initLocalStorage('clientTable');
       showDisabledColumn(event.target);
     }
   });
+/* ↑↑↑ appointment of event handlers ↑↑↑ */
 
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ functions declaration ↓↓↓ */
@@ -341,13 +343,18 @@ function buildTableBody (tableId, data) {
 
   for (let i = 0; i < tableData.length; i++) {
     let item = '';
+    let styleClass = 'w-bgc-aliceblue';
+    if ( i%2 == 0 ) {
+      styleClass = '';
+    }
+
     for (let j = 0; j < order.length; j++) {
       // tableData[i] - елемент БД, об'єкт
       // [order[j]] - його властивості (networkStatus/phone/id і т.д.)
       switch(order[j]) {
         case 'checkbox':
           if ( tableData[i][order[j]] === true ) {
-            item = item + '<div class="wjs-dbtable__body-cell wjs-dbtable__body-cell_checkbox">\
+            item = item + '<div class="wjs-dbtable__body-cell wjs-dbtable__body-cell_checkbox ' + styleClass + '">\
                              <input type="checkbox" id="chbox' + tableData[i].id + '">\
                              <label for="chbox' + tableData[i].id + '"></label>\
                            </div>';
@@ -355,60 +362,60 @@ function buildTableBody (tableId, data) {
           break;
 
         case 'id':
-          item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">\
+          item = item + '<div class="wjs-dbtable__body-cell ' + styleClass + '" data-source="' + order[j] + '">\
                            <a href="#" class="w-link">' + tableData[i][order[j]] + '</a>\
                          </div>';
           break;
 
         case 'clientName':
-          item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">\
+          item = item + '<div class="wjs-dbtable__body-cell ' + styleClass + '" data-source="' + order[j] + '">\
                            <a href="#" class="w-link">' + tableData[i][order[j]] + '</a>\
                          </div>';
           break;
 
         case 'networkStatus':
           if ( tableData[i][order[j]] === 'offline' ) {
-            item = item + '<div class="wjs-dbtable__body-cell w-red" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+            item = item + '<div class="wjs-dbtable__body-cell w-red ' + styleClass + '" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
           } else {
-            item = item + '<div class="wjs-dbtable__body-cell w-lime" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+            item = item + '<div class="wjs-dbtable__body-cell w-lime ' + styleClass + '" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
           }
           break;
 
         case 'phone':
-          item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">\
+          item = item + '<div class="wjs-dbtable__body-cell ' + styleClass + '" data-source="' + order[j] + '">\
                            <a href="#" class="w-link w-monotype">' + tableData[i][order[j]] + '</a>\
                          </div>';
           break;
 
         case 'email':
-          item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">\
+          item = item + '<div class="wjs-dbtable__body-cell ' + styleClass + '" data-source="' + order[j] + '">\
                            <a href="#" class="w-link">' + tableData[i][order[j]] + '</a>\
                          </div>';
           break;
 
         case 'verification':
           if ( tableData[i][order[j]] === 'без верификации' ) {
-            item = item + '<div class="wjs-dbtable__body-cell w-red" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+            item = item + '<div class="wjs-dbtable__body-cell w-red ' + styleClass + '" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
           } else if ( tableData[i][order[j]] === 'частичная верификация' ){
-            item = item + '<div class="wjs-dbtable__body-cell w-orange" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+            item = item + '<div class="wjs-dbtable__body-cell w-orange ' + styleClass + '" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
           } else {
-            item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+            item = item + '<div class="wjs-dbtable__body-cell ' + styleClass + '" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
           }
           break;
 
         case 'activity':
           if ( tableData[i][order[j]] === 'не активен' ) {
-            item = item + '<div class="wjs-dbtable__body-cell w-lightgrey" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+            item = item + '<div class="wjs-dbtable__body-cell w-lightgrey ' + styleClass + '" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
           } else {
-            item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+            item = item + '<div class="wjs-dbtable__body-cell ' + styleClass + '" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
           }
           break;
 
         case 'isTradeAble':
           if ( tableData[i][order[j]] === 'не доступна' ) {
-            item = item + '<div class="wjs-dbtable__body-cell w-red" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+            item = item + '<div class="wjs-dbtable__body-cell w-red ' + styleClass + '" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
           } else {
-            item = item + '<div class="wjs-dbtable__body-cell w-lime" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+            item = item + '<div class="wjs-dbtable__body-cell w-lime ' + styleClass + '" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
           }
           break;
 
@@ -432,11 +439,11 @@ function buildTableBody (tableId, data) {
                      dd + ' ' +
                      hh + ':' +
                      min;
-          item = item + '<div class="wjs-dbtable__body-cell w-monotype" data-source="' + order[j] + '">' + date + '</div>';
+          item = item + '<div class="wjs-dbtable__body-cell w-monotype ' + styleClass + '" data-source="' + order[j] + '">' + date + '</div>';
           break
 
         default:
-          item = item + '<div class="wjs-dbtable__body-cell" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
+          item = item + '<div class="wjs-dbtable__body-cell ' + styleClass + '" data-source="' + order[j] + '">' + tableData[i][order[j]] + '</div>';
       }
     }
     tableBody.insertAdjacentHTML('beforeEnd', item);

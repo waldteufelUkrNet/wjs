@@ -138,6 +138,10 @@ a, a:hover {
   color: lightgrey;
 }
 
+.w-bgc-aliceblue {
+  background-color: aliceblue;
+}
+
 .w-link {
   color: #3a8fc8;
   cursor: pointer;
@@ -276,6 +280,10 @@ a, a:hover {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 .wjs-dbtable__loader_active {
