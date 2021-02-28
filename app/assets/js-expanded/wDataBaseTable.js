@@ -70,7 +70,6 @@ initLocalStorage('clientTable');
     }
   });
 /* ↑↑↑ appointment of event handlers ↑↑↑ */
-
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ functions declaration ↓↓↓ */
 
