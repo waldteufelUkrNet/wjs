@@ -70,7 +70,6 @@ initLocalStorage('clientTable');
     }
   });
 /* ↑↑↑ appointment of event handlers ↑↑↑ */
-
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ functions declaration ↓↓↓ */
 
@@ -106,11 +105,135 @@ function handleTableBody(arg) {
  * @param  {[String]} tableId [ідентифікатор твблиці]
  */
 function normalizeTableMeasurements(tableId) {
-  calculateTableCellsWidth( document.querySelector('#' + tableId) );
 
-  setTableWrapperMaxAviableHeight(tableId);
-  setTableInnerMaxAviableMeasurements(tableId);
+  // html-структура:
+  // --------------
+  // .wjs-dbtable__table-wrapper.wjs-scroll(data-scroll='bottom' data-scroll-hidden='vertical')
+  //
+  //   .wjs-scroll__wrapper.wjs-scroll__wrapper_bottom
+  //     .wjs-scroll__line wjs-scroll__line_bottom
+  //       .wjs-scroll__thumb wjs-scroll__thumb_bottom
+  //
+  //   .wjs-scroll__content-wrapper
+  //     .wjs-scroll__content
+  //
+  //       .wjs-dbtable__table
+  //         .wjs-dbtable__theader
+  //         .wjs-scroll(data-scroll='right' data-scroll-hidden='horizontal')
+  //
+  //          .wjs-scroll__wrapper.wjs-scroll__wrapper_right
+  //            .wjs-scroll__line wjs-scroll__line_right
+  //              .wjs-scroll__thumb wjs-scroll__thumb_right
+  //
+  //           .wjs-scroll__content-wrapper
+  //             .wjs-scroll__content
+  //               .wjs-dbtable__tbody
+
+  let tableElement       = document.getElementById(tableId),
+      outerContainer     = tableElement.querySelector('.wjs-dbtable__table-wrapper'),
+      outerScrollContent = tableElement.querySelector('.wjs-dbtable__table-wrapper .wjs-scroll__content'),
+      innerContainer     = tableElement.querySelector('.wjs-scroll__content-wrapper .wjs-scroll'),
+      table              = tableElement.querySelector('.wjs-dbtable__table'),
+      theader            = tableElement.querySelector('.wjs-dbtable__theader'),
+      hCells             = tableElement.querySelectorAll('.wjs-dbtable__header-cell'),
+      tbody              = tableElement.querySelector('.wjs-dbtable__tbody'),
+      bCells             = tableElement.querySelectorAll('.wjs-dbtable__body-cell');
+
+  /* ↓↓↓ outerContainer height ↓↓↓ */
+    // розраховуємо точні розміри обгортки для таблиці, максимально-доступні у
+    // flex-контейнері. Явно вказана висота потрібна, щоб у елемента з'явилася
+    // прокрутка
+    let parent = outerContainer.parentElement;
+    let aviableHeight = parent.clientHeight
+                        - +getComputedStyle(parent).paddingTop.slice(0,-2)
+                        - +getComputedStyle(parent).paddingBottom.slice(0,-2);
+    let elemSiblings = parent.children;
+    if (elemSiblings.length == 1) {
+      // елемент один і займає весь простір
+      outerContainer.style.height = aviableHeight + 'px';
+    } else {
+      // елемент не один, розраховуємо досупну для нього висоту
+      for (let i = 0; i < elemSiblings.length; i++) {
+        if (elemSiblings[i] == outerContainer) continue;
+        aviableHeight -= elemSiblings[i].clientHeight;
+      }
+
+      for (let i = 0; i < elemSiblings.length; i++) {
+        if (elemSiblings[i-1]) {
+          if ( +getComputedStyle(elemSiblings[i-1]).marginBottom.slice(0,-2) > +getComputedStyle(elemSiblings[i]).marginTop.slice(0,-2) ) {
+            aviableHeight -= +getComputedStyle(elemSiblings[i-1]).marginBottom.slice(0,-2);
+          } else {
+            aviableHeight -= +getComputedStyle(elemSiblings[i]).marginTop.slice(0,-2);
+          }
+        } else {
+          aviableHeight -= +getComputedStyle(elemSiblings[i]).marginTop.slice(0,-2);
+        }
+      }
+      aviableHeight -= +getComputedStyle(elemSiblings[elemSiblings.length-1]).marginBottom.slice(0,-2);
+
+      outerContainer.style.height = aviableHeight + 'px';
+    }
+  /* ↑↑↑ outerContainer height ↑↑↑ */
+
+  /* ↓↓↓ table cells width ↓↓↓ */
+    // зрівнюємо ширини чарунок тіла таблиці і чарунок шапки
+    let countWidth = 0;
+    for (let i = 0; i < hCells.length; i++) {
+      if (hCells[i].clientWidth > bCells[i].clientWidth) {
+        bCells[i].style.cssText = 'width:' + hCells[i].offsetWidth + 'px';
+        hCells[i].style.cssText = 'width:' + hCells[i].offsetWidth + 'px';
+      } else {
+        bCells[i].style.cssText = 'width:' + bCells[i].offsetWidth + 'px';
+        hCells[i].style.cssText = 'width:' + bCells[i].offsetWidth + 'px';
+      }
+      countWidth += hCells[i].offsetWidth;
+    }
+
+    if (table.clientWidth > countWidth) {
+      theader.style.width = table.clientWidth + 'px';
+      tbody.style.width = table.clientWidth + 'px';
+
+      // розтягуємо крайню чарунку шапки по максимуму
+      let delta     = table.clientWidth - countWidth,
+          lastHCell = hCells[hCells.length-1];
+      lastHCell.style.width = lastHCell.offsetWidth + delta + 'px';
+      bCells[hCells.length-1].style.width = lastHCell.offsetWidth + delta + 'px';
+    } else {
+      theader.style.width = countWidth + 'px';
+      tbody.style.width = countWidth + 'px';
+    }
+  /* ↑↑↑ table cells width ↑↑↑ */
+
+  /* ↓↓↓ outerContainer height&width ↓↓↓ */
+    // розраховуємо точні розміри вкладеного контейнера з прокруткою (тіло
+    // таблиці). Це потрібно для появи прокрутки та коректного відображення
+    // контенту
+      let height = outerContainer.clientHeight
+                   - theader.offsetHeight
+                   - getComputedStyle(outerScrollContent).paddingBottom.slice(0,-2);
+      let width = tbody.offsetWidth;
+
+      innerContainer.style.height = height + 'px';
+      innerContainer.style.width = width + 'px';
+  /* ↑↑↑ outerContainer height&width ↑↑↑ */
+
   recalculateContainerWidth(tableId);
+  /**
+   * [recalculateContainerWidth при додаванні/видаленні колонок змінює ширину
+   * контейнера]
+   * @param  {[String]} tableId [ідентифікатор твблиці]
+   */
+  function recalculateContainerWidth(tableId) {
+    let container      = document.querySelector('#' + tableId + ' .wjs-scroll__content' ),
+        theader        = document.querySelector('#' + tableId + ' .wjs-dbtable__theader' ),
+        oldScrollValue = container.scrollLeft;
+    container.style.width = theader.offsetWidth + 'px';
+
+    setTimeout(function(){
+    container.scrollLeft = oldScrollValue;
+    },1);
+  }
+
   wSetScroll( document.querySelector('#' + tableId + ' .wjs-dbtable__table-wrapper.wjs-scroll'), {bottom:true,overvlowYHidden:true});
   wSetScroll( document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
   positioningOfInnerRightScroll(tableId);
@@ -118,124 +241,6 @@ function normalizeTableMeasurements(tableId) {
   setTimeout(function(){
     hideLoader(tableId);
   },1000);
-}
-
-/**
- * [calculateTableCellsWidth нормалізує ширину чарунок таблиці і чарунок
- * заголовків]
- * @param  {[DOM-object]} tableElement [кореневий елемент DOM, в якому
- * знаходиться таблиця]
- */
-function calculateTableCellsWidth(tableElement) {
-  if (!tableElement) return;
-
-  let headers = tableElement.querySelectorAll('.wjs-dbtable__header-cell'),
-      cells   = tableElement.querySelectorAll('.wjs-dbtable__body-cell'),
-      table   = tableElement.querySelector('.wjs-dbtable__table'),
-      theader = tableElement.querySelector('.wjs-dbtable__theader'),
-      tbody   = tableElement.querySelector('.wjs-dbtable__tbody');
-
-  let countWidth = 0;
-  for (let i = 0; i < headers.length; i++) {
-    if (headers[i].clientWidth > cells[i].clientWidth) {
-      cells[i].style.cssText = 'width:' + headers[i].offsetWidth + 'px';
-      headers[i].style.cssText = 'width:' + headers[i].offsetWidth + 'px';
-    } else {
-      cells[i].style.cssText = 'width:' + cells[i].offsetWidth + 'px';
-      headers[i].style.cssText = 'width:' + cells[i].offsetWidth + 'px';
-    }
-    countWidth += headers[i].offsetWidth;
-  }
-  
-  if (table.clientWidth > countWidth) {
-    theader.style.width = table.clientWidth + 'px';
-    tbody.style.width = table.clientWidth + 'px';
-
-    // розтягуємо крайню чарунку шапки по максимуму
-    let delta     = table.clientWidth - countWidth,
-        lastHCell = headers[headers.length-1];
-    lastHCell.style.width = lastHCell.offsetWidth + delta + 'px';
-    cells[headers.length-1].style.width = lastHCell.offsetWidth + delta + 'px';
-  } else {
-    theader.style.width = countWidth + 'px';
-    tbody.style.width = countWidth + 'px';
-  }
-}
-
-/**
- * [setTableWrapperMaxAviableHeight виставляє точні розміри обгортки для
- * таблиці, максимально-доступні у flex-контейнері. Явно вказана висота
- * потрібна, щоб у елемента з'явилася прокрутка ]
- * @param  {[String]} tableId [ідентифікатор твблиці]
- */
-function setTableWrapperMaxAviableHeight(tableId) {
-
-  let elem = document.querySelector('#' + tableId + ' .wjs-dbtable__table-wrapper');
-
-  let parent = elem.parentElement;
-  let aviableHeight = parent.clientHeight
-                      - +getComputedStyle(parent).paddingTop.slice(0,-2)
-                      - +getComputedStyle(parent).paddingBottom.slice(0,-2);
-  let elemSiblings = parent.children;
-  if (elemSiblings.length == 1) {
-    // елемент один і займає весь простір
-    elem.style.height = aviableHeight + 'px';
-  } else {
-    // елемент не один, розраховуємо досупну для нього висоту
-    for (let i = 0; i < elemSiblings.length; i++) {
-      if (elemSiblings[i] == elem) continue;
-      aviableHeight -= elemSiblings[i].clientHeight;
-    }
-
-    for (let i = 0; i < elemSiblings.length; i++) {
-      if (elemSiblings[i-1]) {
-        if ( +getComputedStyle(elemSiblings[i-1]).marginBottom.slice(0,-2) > +getComputedStyle(elemSiblings[i]).marginTop.slice(0,-2) ) {
-          aviableHeight -= +getComputedStyle(elemSiblings[i-1]).marginBottom.slice(0,-2);
-        } else {
-          aviableHeight -= +getComputedStyle(elemSiblings[i]).marginTop.slice(0,-2);
-        }
-      } else {
-        aviableHeight -= +getComputedStyle(elemSiblings[i]).marginTop.slice(0,-2);
-      }
-    }
-    aviableHeight -= +getComputedStyle(elemSiblings[elemSiblings.length-1]).marginBottom.slice(0,-2);
-
-    elem.style.height = aviableHeight + 'px';
-  }
-}
-
-/**
- * [setTableInnerMaxAviableMeasurements виставляє точні розміри вкладеного
- * контейнера з прокруткою (тіло таблиці). Це потрібно для появи прокрутки та
- * коректного відображення контенту]
- * @param  {[String]} tableId [ідентифікатор твблиці]
- */
-function setTableInnerMaxAviableMeasurements(tableId) {
-  let elem = document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll');
-  let height = document.querySelector('#' + tableId + ' .wjs-dbtable__table-wrapper').clientHeight
-               - document.querySelector('#' + tableId + ' .wjs-dbtable__theader').offsetHeight
-               - getComputedStyle( document.querySelector('#' + tableId + ' .wjs-dbtable__table-wrapper .wjs-scroll__content') ).paddingBottom.slice(0,-2);
-
-  let width = document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').offsetWidth;
-
-  elem.style.height = height + 'px';
-  elem.style.width = width + 'px';
-}
-
-/**
- * [recalculateContainerWidth при додаванні/видаленні колонок змінює ширину
- * контейнера]
- * @param  {[String]} tableId [ідентифікатор твблиці]
- */
-function recalculateContainerWidth(tableId) {
-  let container      = document.querySelector('#' + tableId + ' .wjs-scroll__content' ),
-      theader        = document.querySelector('#' + tableId + ' .wjs-dbtable__theader' ),
-      oldScrollValue = container.scrollLeft;
-  container.style.width = theader.offsetWidth + 'px';
-
-  setTimeout(function(){
-  container.scrollLeft = oldScrollValue;
-  },1);
 }
 
 /**
