@@ -100,7 +100,7 @@ function handleTableBody(arg) {
  * розміри, додає полоси прокрутки]
  * @param  {[String]} tableId [ідентифікатор твблиці]
  */
-function normalizeTableMeasurements(tableId) {
+async function normalizeTableMeasurements(tableId) {
 
   // html-структура:
   // --------------
@@ -174,10 +174,10 @@ function normalizeTableMeasurements(tableId) {
   /* ↓↓↓ table cells width ↓↓↓ */
     // зрівнюємо ширини чарунок тіла таблиці і чарунок шапки
 
-    theader.style.width            = outerContainer.clientWidth + 'px';
-    tbody.style.width              = outerContainer.clientWidth + 'px';
-    table.style.width              = outerContainer.clientWidth + 'px';
-    outerScrollContent.style.width = outerContainer.clientWidth + 'px';
+    // theader.style.width            = outerContainer.clientWidth - 2 + 'px';
+    // tbody.style.width              = outerContainer.clientWidth - 2 + 'px';
+    // table.style.width              = outerContainer.clientWidth + 'px';
+    // outerScrollContent.style.width = outerContainer.clientWidth + 'px';
 
     let countWidth = 0;
     for (let i = 0; i < hCells.length; i++) {
@@ -192,14 +192,15 @@ function normalizeTableMeasurements(tableId) {
     }
 
     if (countWidth > theader.clientWidth) {
-      theader.style.width            = countWidth + 'px';
-      tbody.style.width              = countWidth + 'px';
+      theader.style.width            = countWidth - 2 + 'px';
+      tbody.style.width              = countWidth - 2 + 'px';
       table.style.width              = countWidth + 'px';
       outerScrollContent.style.width = countWidth + 'px';
     }
   /* ↑↑↑ table cells width ↑↑↑ */
 
   /* ↓↓↓ left scroll review ↓↓↓ */
+    // це щоб при лівому скролі закриття останньої колонки на утворювало пустоту
     let maxScrollLeft = outerScrollContent.offsetWidth - outerContainer.clientWidth;
     if (outerScrollContent.scrollLeft > maxScrollLeft) {
       outerScrollContent.scrollLeft = maxScrollLeft;
@@ -207,6 +208,9 @@ function normalizeTableMeasurements(tableId) {
   /* ↑↑↑ left scroll review ↑↑↑ */
 
   wSetScroll( document.querySelector('#' + tableId + ' .wjs-dbtable__table-wrapper.wjs-scroll'), {bottom:true,overvlowYHidden:true});
+
+  console.log("outerScrollContent.scrollWidth", outerScrollContent.scrollWidth);
+  console.log("outerScrollContent.clientWidth", outerScrollContent.clientWidth);
 
   /* ↓↓↓ innerContainer height&width ↓↓↓ */
     // розраховуємо точні розміри вкладеного контейнера з прокруткою (тіло
@@ -227,12 +231,10 @@ function normalizeTableMeasurements(tableId) {
     let width = tbody.offsetWidth;
 
     innerContainer.style.height = height + 'px';
-    innerContainer.style.width = width + 'px';
+    // innerContainer.style.width = width + 'px';
   /* ↑↑↑ innerContainer height&width ↑↑↑ */
 
   wSetScroll( document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
-
-console.log(outerScrollContent.scrollWidth + '/' + outerScrollContent.clientWidth);
 
   positioningOfInnerRightScroll(tableId);
 

@@ -84,6 +84,9 @@ function wSetScroll(elem, params = {}) {
 
     // додавання полос прокрутки по горизонталі
     if ( !overflowXProhibition && (content.scrollWidth > content.clientWidth) ) {
+      console.log("content", content);
+      console.log("content.scrollWidth", content.scrollWidth);
+      console.log("content.clientWidth", content.clientWidth);
 
       if ( params.top || settingsString.match(/top/i) ) {
         if ( !container.querySelector('.wjs-scroll__line_top') ) {
