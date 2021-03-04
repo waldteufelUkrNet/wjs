@@ -86,13 +86,18 @@ function initLocalStorage(tableId) {
  * @param  {[Object]} arg [база даних]
  */
 function handleTableBody(arg) {
-  db = arg;
   showLoader('clientTable', 'обработка данных ...');
+  db = arg;
 
+  buildTableBody('clientTable', arg);
+
+  // при синхронному виклику normalizeTableMeasurements(arg) дає осічку до 40%:
+  // шапка і колонки отримують різну ширину. Я не знаю, чому. Можливо через те,
+  // що рушій не встигає відмалювати сторінку до порівняння. setTimeout - це
+  // милиця. Треба продумати, як її позбутися. Проміси?
   setTimeout(function(){
-    buildTableBody('clientTable', arg);
     normalizeTableMeasurements('clientTable');
-  },1);
+  },100);
 }
 
 /**
@@ -100,7 +105,7 @@ function handleTableBody(arg) {
  * розміри, додає полоси прокрутки]
  * @param  {[String]} tableId [ідентифікатор твблиці]
  */
-async function normalizeTableMeasurements(tableId) {
+function normalizeTableMeasurements(tableId) {
 
   // html-структура:
   // --------------
@@ -129,6 +134,7 @@ async function normalizeTableMeasurements(tableId) {
       outerContainer     = tableElement.querySelector('.wjs-dbtable__table-wrapper'),
       outerScrollContent = tableElement.querySelector('.wjs-dbtable__table-wrapper .wjs-scroll__content'),
       innerContainer     = tableElement.querySelector('.wjs-scroll__content-wrapper .wjs-scroll'),
+      innerScrollContent = tableElement.querySelector('.wjs-scroll__content-wrapper .wjs-scroll .wjs-scroll__content'),
       table              = tableElement.querySelector('.wjs-dbtable__table'),
       theader            = tableElement.querySelector('.wjs-dbtable__theader'),
       hCells             = tableElement.querySelectorAll('.wjs-dbtable__header-cell'),
@@ -174,10 +180,11 @@ async function normalizeTableMeasurements(tableId) {
   /* ↓↓↓ table cells width ↓↓↓ */
     // скидаємо розміри (це потрібно при зменшенні ширини таблиці, якщо закрити
     // колонку)
-    theader.style.width            = outerContainer.clientWidth - 2 + 'px';
-    tbody.style.width              = outerContainer.clientWidth - 2 + 'px';
-    table.style.width              = outerContainer.clientWidth - 2 + 'px';
+    theader.style.width            = outerContainer.clientWidth + 'px';
+    tbody.style.width              = outerContainer.clientWidth + 'px';
+    table.style.width              = outerContainer.clientWidth + 'px';
     outerScrollContent.style.width = outerContainer.clientWidth + 'px';
+    innerContainer.style.width     = outerContainer.clientWidth + 'px';
 
     // зрівнюємо ширини чарунок тіла таблиці і чарунок шапки
     let countWidth = 0;
@@ -193,10 +200,11 @@ async function normalizeTableMeasurements(tableId) {
     }
 
     if (countWidth > theader.clientWidth) {
-      theader.style.width            = countWidth - 2 + 'px';
-      tbody.style.width              = countWidth - 2 + 'px';
-      table.style.width              = countWidth - 2 + 'px';
+      theader.style.width            = countWidth + 'px';
+      tbody.style.width              = countWidth + 'px';
+      table.style.width              = countWidth + 'px';
       outerScrollContent.style.width = countWidth + 'px';
+      innerContainer.style.width     = countWidth + 'px';
     }
   /* ↑↑↑ table cells width ↑↑↑ */
 
@@ -207,37 +215,32 @@ async function normalizeTableMeasurements(tableId) {
       outerScrollContent.scrollLeft = maxScrollLeft;
     }
   /* ↑↑↑ left scroll review ↑↑↑ */
-
   wSetScroll( document.querySelector('#' + tableId + ' .wjs-dbtable__table-wrapper.wjs-scroll'), {bottom:true,overvlowYHidden:true});
-
-  // console.log("outerScrollContent.scrollWidth", outerScrollContent.scrollWidth);
-  // console.log("outerScrollContent.clientWidth", outerScrollContent.clientWidth);
 
   /* ↓↓↓ innerContainer height&width ↓↓↓ */
     // розраховуємо точні розміри вкладеного контейнера з прокруткою (тіло
     // таблиці). Це потрібно для появи прокрутки та коректного відображення
     // контенту
 
-    // if ( tableElement.querySelector('.wjs-scroll__wrapper_bottom') ) {
-    //   // chrome і mozilla по різному сприймають padding-bottom. Якщо це зробити через
-    //   // стилі, у chrom'a буде зайвий padding.
-    //   outerScrollContent.style.paddingBottom = '20px';
-    // } else {
-    //   outerScrollContent.style.paddingBottom = '0px';
-    // }
+    if ( tableElement.querySelector('.wjs-scroll__wrapper_bottom') ) {
+      // chrome і mozilla по різному сприймають padding-bottom. Якщо це зробити через
+      // стилі, у chrom'a буде зайвий padding.
+      outerScrollContent.style.paddingBottom = '20px';
+    } else {
+      outerScrollContent.style.paddingBottom = '0px';
+    }
 
-    // let height = outerContainer.clientHeight
-    //              - theader.offsetHeight
-    //              - getComputedStyle(outerScrollContent).paddingBottom.slice(0,-2);
-    // let width = tbody.offsetWidth;
+    let height = outerContainer.clientHeight
+                 - theader.offsetHeight
+                 - getComputedStyle(outerScrollContent).paddingBottom.slice(0,-2);
 
-    // innerContainer.style.height = height + 'px';
-    // innerContainer.style.width = width + 'px';
+    innerScrollContent.style.height = height + 'px';
+    innerScrollContent.style.width = innerContainer.clientWidth + 'px';
   /* ↑↑↑ innerContainer height&width ↑↑↑ */
 
-  // wSetScroll( document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
+  wSetScroll( document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
 
-  // positioningOfInnerRightScroll(tableId);
+  positioningOfInnerRightScroll(tableId);
 
   setTimeout(function(){
     hideLoader(tableId);
@@ -504,7 +507,9 @@ function closeColumn(elem) {
   }
 
   showDisabledColumnMarker(name, source, parentId);
-  normalizeTableMeasurements(parentId);
+  setTimeout(function(){
+    normalizeTableMeasurements('clientTable');
+  },100);
 }
 
 /**
