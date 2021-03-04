@@ -172,13 +172,14 @@ async function normalizeTableMeasurements(tableId) {
   /* ↑↑↑ outerContainer height ↑↑↑ */
 
   /* ↓↓↓ table cells width ↓↓↓ */
+    // скидаємо розміри (це потрібно при зменшенні ширини таблиці, якщо закрити
+    // колонку)
+    theader.style.width            = outerContainer.clientWidth - 2 + 'px';
+    tbody.style.width              = outerContainer.clientWidth - 2 + 'px';
+    table.style.width              = outerContainer.clientWidth - 2 + 'px';
+    outerScrollContent.style.width = outerContainer.clientWidth + 'px';
+
     // зрівнюємо ширини чарунок тіла таблиці і чарунок шапки
-
-    // theader.style.width            = outerContainer.clientWidth - 2 + 'px';
-    // tbody.style.width              = outerContainer.clientWidth - 2 + 'px';
-    // table.style.width              = outerContainer.clientWidth + 'px';
-    // outerScrollContent.style.width = outerContainer.clientWidth + 'px';
-
     let countWidth = 0;
     for (let i = 0; i < hCells.length; i++) {
       bCells[i].style.width = 'auto';
@@ -194,7 +195,7 @@ async function normalizeTableMeasurements(tableId) {
     if (countWidth > theader.clientWidth) {
       theader.style.width            = countWidth - 2 + 'px';
       tbody.style.width              = countWidth - 2 + 'px';
-      table.style.width              = countWidth + 'px';
+      table.style.width              = countWidth - 2 + 'px';
       outerScrollContent.style.width = countWidth + 'px';
     }
   /* ↑↑↑ table cells width ↑↑↑ */
@@ -209,34 +210,34 @@ async function normalizeTableMeasurements(tableId) {
 
   wSetScroll( document.querySelector('#' + tableId + ' .wjs-dbtable__table-wrapper.wjs-scroll'), {bottom:true,overvlowYHidden:true});
 
-  console.log("outerScrollContent.scrollWidth", outerScrollContent.scrollWidth);
-  console.log("outerScrollContent.clientWidth", outerScrollContent.clientWidth);
+  // console.log("outerScrollContent.scrollWidth", outerScrollContent.scrollWidth);
+  // console.log("outerScrollContent.clientWidth", outerScrollContent.clientWidth);
 
   /* ↓↓↓ innerContainer height&width ↓↓↓ */
     // розраховуємо точні розміри вкладеного контейнера з прокруткою (тіло
     // таблиці). Це потрібно для появи прокрутки та коректного відображення
     // контенту
 
-    if ( tableElement.querySelector('.wjs-scroll__wrapper_bottom') ) {
-      // chrome і mozilla по різному сприймають padding-bottom. Якщо це зробити через
-      // стилі, у chrom'a буде зайвий padding.
-      outerScrollContent.style.paddingBottom = '20px';
-    } else {
-      outerScrollContent.style.paddingBottom = '0px';
-    }
+    // if ( tableElement.querySelector('.wjs-scroll__wrapper_bottom') ) {
+    //   // chrome і mozilla по різному сприймають padding-bottom. Якщо це зробити через
+    //   // стилі, у chrom'a буде зайвий padding.
+    //   outerScrollContent.style.paddingBottom = '20px';
+    // } else {
+    //   outerScrollContent.style.paddingBottom = '0px';
+    // }
 
-    let height = outerContainer.clientHeight
-                 - theader.offsetHeight
-                 - getComputedStyle(outerScrollContent).paddingBottom.slice(0,-2);
-    let width = tbody.offsetWidth;
+    // let height = outerContainer.clientHeight
+    //              - theader.offsetHeight
+    //              - getComputedStyle(outerScrollContent).paddingBottom.slice(0,-2);
+    // let width = tbody.offsetWidth;
 
-    innerContainer.style.height = height + 'px';
+    // innerContainer.style.height = height + 'px';
     // innerContainer.style.width = width + 'px';
   /* ↑↑↑ innerContainer height&width ↑↑↑ */
 
-  wSetScroll( document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
+  // wSetScroll( document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
 
-  positioningOfInnerRightScroll(tableId);
+  // positioningOfInnerRightScroll(tableId);
 
   setTimeout(function(){
     hideLoader(tableId);
