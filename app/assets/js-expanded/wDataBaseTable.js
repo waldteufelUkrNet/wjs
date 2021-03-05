@@ -180,6 +180,7 @@ function normalizeTableMeasurements(tableId) {
   /* ↓↓↓ table cells width ↓↓↓ */
     // скидаємо розміри (це потрібно при зменшенні ширини таблиці, якщо закрити
     // колонку)
+
     theader.style.width            = outerContainer.clientWidth + 'px';
     tbody.style.width              = outerContainer.clientWidth + 'px';
     table.style.width              = outerContainer.clientWidth + 'px';
@@ -215,7 +216,18 @@ function normalizeTableMeasurements(tableId) {
       outerScrollContent.scrollLeft = maxScrollLeft;
     }
   /* ↑↑↑ left scroll review ↑↑↑ */
+
   wSetScroll( document.querySelector('#' + tableId + ' .wjs-dbtable__table-wrapper.wjs-scroll'), {bottom:true,overvlowYHidden:true});
+
+  // це для прибирання нижнього скролу, якщо після закриття колонки таблиця
+  // повністю вписується в сторінку. Логічніше було б використовувати порівняння
+  // (outerScrollContent.scrollWidth > outerScrollContent.clientWidth), але тут
+  // є підводний камінь: при зменшенні розмірів елементу його scrollWidth не
+  // зменшується. Ігри з overflow: auto/hidden не допомагають.
+  if ( outerContainer.clientWidth == +table.clientWidth
+    && tableElement.querySelector('.wjs-scroll__wrapper_bottom') ) {
+    document.querySelector('#' + tableId + ' .wjs-scroll__wrapper_bottom').remove();
+  }
 
   /* ↓↓↓ innerContainer height&width ↓↓↓ */
     // розраховуємо точні розміри вкладеного контейнера з прокруткою (тіло
@@ -247,10 +259,7 @@ function normalizeTableMeasurements(tableId) {
   },1000);
 }
 
-/**
- * [positioningOfInnerRightScroll позиціонує правий вертикальний скрол]
- * @param  {[String]} tableId [ідентифікатор твблиці]
- */
+
 function positioningOfInnerRightScroll(tableId) {
   let elem = document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll .wjs-scroll__wrapper_right');
   if(!elem) return;
@@ -259,7 +268,8 @@ function positioningOfInnerRightScroll(tableId) {
 
   let content = document.querySelector('#' + tableId + ' .wjs-scroll__content');
 
-  elem.style.left =  container.clientWidth + content.scrollLeft - elem.offsetWidth + 'px';
+  elem.style.left = container.clientWidth + content.scrollLeft - elem.offsetWidth + 'px';
+  // elem.style.height = document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll').clientHeight;
 
   container.querySelector('.wjs-scroll__content').addEventListener('scroll', foo);
   function foo(event) {
