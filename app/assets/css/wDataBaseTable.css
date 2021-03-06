@@ -151,6 +151,10 @@ a, a:hover {
   font-family: c;
 }
 
+.w-tar {
+  text-align: right;
+}
+
 .wjs-dbtable {
   margin: 0 20px;
   height: 100vh;
@@ -183,6 +187,17 @@ a, a:hover {
 
 .wjs-dbtable__label_discols {
   display: none;
+}
+
+.wjs-dbtable__label_discols + .wjs-dbtable__items-amount {
+  display: none;
+}
+
+.wjs-dbtable__items-amount, .wjs-dbtable__filtered-amount, .wjs-dbtable__selected-amount {
+  text-align: right;
+  justify-self: start;
+  min-width: 55px;
+  font-family: c;
 }
 
 .wjs-dbtable__items-amount {
@@ -347,10 +362,11 @@ a, a:hover {
 
 .wjs-dbtable__header-cell {
   border-right: 1px solid grey;
-  border-bottom: 1px solid lightgrey;
+  border-bottom: 1px solid grey;
+  border-top: 1px solid grey;
   cursor: -webkit-grab;
   cursor: grab;
-  height: 40px;
+  height: 42px;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -373,6 +389,7 @@ a, a:hover {
       -ms-flex-pack: center;
           justify-content: center;
   padding-top: 2.5px;
+  border-left: 1px solid grey;
 }
 
 .wjs-dbtable__th-name {
@@ -481,6 +498,48 @@ a, a:hover {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+  padding-left: 7px;
+}
+
+.wjs-dbtable__page-btn {
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  border: 1px solid grey;
+  -webkit-border-radius: 3px;
+          border-radius: 3px;
+  padding: 0 0 0 0;
+  min-width: 26px;
+  height: 26px;
+  margin: 0;
+  -webkit-box-shadow: 1px 1px 3px grey;
+          box-shadow: 1px 1px 3px grey;
+}
+
+.wjs-dbtable__page-btn:hover {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+
+.wjs-dbtable__page-btn_active {
+  background-color: white;
+  border: 1px solid DarkSlateBlue;
+  -webkit-box-shadow: 1px 1px 2px grey inset, -1px -1px 2px grey inset;
+          box-shadow: 1px 1px 2px grey inset, -1px -1px 2px grey inset;
+}
+
+.wjs-dbtable__page-btn_active:hover {
+  -webkit-box-shadow: 1px 1px 2px grey inset, -1px -1px 2px grey inset;
+          box-shadow: 1px 1px 2px grey inset, -1px -1px 2px grey inset;
+}
+
+.wjs-dbtable__pagination-dotts {
+  font-weight: 900;
+  font-size: 1.2em;
+  letter-spacing: 1px;
+  padding-left: 3px;
 }
 
 .wjs-dbtable__table-wrapper.wjs-scroll .wjs-scroll__wrapper_bottom {

@@ -20,10 +20,21 @@
     grid-gap              : 6px 12px;
     padding-bottom        : 10px;
   }
-  &__label{
+  &__label {
     &_discols {
       display: none;
+      & + .wjs-dbtable__items-amount {
+        display: none;
+      }
     }
+  }
+  &__items-amount,
+  &__filtered-amount,
+  &__selected-amount {
+    text-align: right;
+    justify-self: start;
+    min-width: 55px;
+    font-family: c;
   }
   &__items-amount {
     font-weight           : 900;
@@ -121,9 +132,10 @@
   }
   &__header-cell {
     border-right          : 1px solid grey;
-    border-bottom         : 1px solid lightgrey;
+    border-bottom         : 1px solid grey;
+    border-top            : 1px solid grey;
     cursor                : grab;
-    height                : 40px;
+    height                : 42px;
     display               : flex;
     justify-content       : space-between;
     align-items           : center;
@@ -132,6 +144,7 @@
       width               : 40px !important;
       justify-content     : center;
       padding-top         : 2.5px;
+      border-left          : 1px solid grey;
     }
   }
   &__th-name {
@@ -206,6 +219,35 @@
   &__pagination-wrapper {
     margin                : 10px 0;
     user-select           : none;
+    padding-left          : 7px;
+  }
+  &__page-btn {
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid grey;
+    border-radius: 3px;
+    padding: 0 0 0 0;
+    min-width: 26px;
+    height: 26px;
+    margin: 0;
+    box-shadow: 1px 1px 3px grey;
+    &:hover {
+      box-shadow: none;
+    }
+    &_active {
+      background-color: white;
+      border: 1px solid DarkSlateBlue;
+      box-shadow: 1px 1px 2px grey inset, -1px -1px 2px grey inset;
+      &:hover {
+        box-shadow: 1px 1px 2px grey inset, -1px -1px 2px grey inset;
+      }
+    }
+  }
+  &__pagination-dotts {
+    font-weight: 900;
+    font-size: 1.2em;
+    letter-spacing: 1px;
+    padding-left: 3px;
   }
 }
 
