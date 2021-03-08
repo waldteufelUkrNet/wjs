@@ -81,6 +81,15 @@ initLocalStorage('clientTable');
       normalizeTableMeasurements(tableId);
     }
   });
+
+  document.querySelector('#clientTable').addEventListener('change', function(event){
+    if ( event.target.getAttribute('type') == 'checkbox'
+        && (event.target.closest('.wjs-dbtable__body-cell_checkbox')
+            || event.target.closest('.wjs-dbtable__header-cell_checkbox') ) ) {
+
+      handleDBCheckboxes(event.target);
+    }
+  });
 /* ↑↑↑ appointment of event handlers ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ functions declaration ↓↓↓ */
@@ -796,6 +805,30 @@ initLocalStorage('clientTable');
    */
   function hideLoader(tableId){
     document.querySelector('#' + tableId + ' .wjs-dbtable__loader').classList.remove('wjs-dbtable__loader_active');
+  }
+
+  function handleDBCheckboxes(checkbox) {
+    let id = checkbox.getAttribute('id');
+    let isChecked = checkbox.checked;
+    console.log("id / isChecked: " + id + ' / ' + isChecked);
+
+
+
+    // htmlStr += '\
+    //               <div class="wjs-dbtable__header-cell wjs-dbtable__header-cell_checkbox">\
+    //                 <div class="wjs-dbtable__th-name">\
+    //                   <input type="checkbox" id="chboxAll">\
+    //                   <label for="chboxAll"></label>\
+    //                 </div>\
+    //               </div>\
+    //            ';
+
+    // item = item + '<div class="wjs-dbtable__body-cell wjs-dbtable__body-cell_checkbox ' + styleClass + '">\
+    //                  <input type="checkbox" id="chbox' + tableData[i].id + '">\
+    //                  <label for="chbox' + tableData[i].id + '"></label>\
+    //                </div>';
+
+
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
