@@ -220,6 +220,7 @@
     margin                : 10px 0;
     user-select           : none;
     padding-left          : 7px;
+    display: flex;
   }
   &__page-btn {
     cursor: pointer;
@@ -229,8 +230,16 @@
     padding: 0 0 0 0;
     min-width: 26px;
     height: 26px;
-    margin: 0;
+    margin: 0 5px 0 0;
     box-shadow: 1px 1px 3px grey;
+    position: relative;
+    svg {
+      height: 20px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+    }
     &:hover {
       box-shadow: none;
     }
@@ -242,12 +251,28 @@
         box-shadow: 1px 1px 2px grey inset, -1px -1px 2px grey inset;
       }
     }
-  }
-  &__pagination-dotts {
-    font-weight: 900;
-    font-size: 1.2em;
-    letter-spacing: 1px;
-    padding-left: 3px;
+    &_disabled {
+      color: transparent;
+      cursor: default;
+      &:hover {
+        box-shadow: 1px 1px 3px grey;
+      }
+    }
+    &_passive {
+      cursor: default;
+      &:hover {
+        box-shadow: 1px 1px 3px grey;
+      }
+      svg {
+        fill: grey;
+      }
+    }
+    &_dotts {
+      border-color: transparent;
+      background-color: transparent;
+      box-shadow: none;
+      cursor: default;
+    }
   }
 }
 

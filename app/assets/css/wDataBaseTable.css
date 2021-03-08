@@ -499,6 +499,10 @@ a, a:hover {
       -ms-user-select: none;
           user-select: none;
   padding-left: 7px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
 }
 
 .wjs-dbtable__page-btn {
@@ -513,9 +517,20 @@ a, a:hover {
   padding: 0 0 0 0;
   min-width: 26px;
   height: 26px;
-  margin: 0;
+  margin: 0 5px 0 0;
   -webkit-box-shadow: 1px 1px 3px grey;
           box-shadow: 1px 1px 3px grey;
+  position: relative;
+}
+
+.wjs-dbtable__page-btn svg {
+  height: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
 }
 
 .wjs-dbtable__page-btn:hover {
@@ -535,11 +550,35 @@ a, a:hover {
           box-shadow: 1px 1px 2px grey inset, -1px -1px 2px grey inset;
 }
 
-.wjs-dbtable__pagination-dotts {
-  font-weight: 900;
-  font-size: 1.2em;
-  letter-spacing: 1px;
-  padding-left: 3px;
+.wjs-dbtable__page-btn_disabled {
+  color: transparent;
+  cursor: default;
+}
+
+.wjs-dbtable__page-btn_disabled:hover {
+  -webkit-box-shadow: 1px 1px 3px grey;
+          box-shadow: 1px 1px 3px grey;
+}
+
+.wjs-dbtable__page-btn_passive {
+  cursor: default;
+}
+
+.wjs-dbtable__page-btn_passive:hover {
+  -webkit-box-shadow: 1px 1px 3px grey;
+          box-shadow: 1px 1px 3px grey;
+}
+
+.wjs-dbtable__page-btn_passive svg {
+  fill: grey;
+}
+
+.wjs-dbtable__page-btn_dotts {
+  border-color: transparent;
+  background-color: transparent;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  cursor: default;
 }
 
 .wjs-dbtable__table-wrapper.wjs-scroll .wjs-scroll__wrapper_bottom {

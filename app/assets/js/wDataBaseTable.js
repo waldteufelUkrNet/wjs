@@ -66,11 +66,16 @@ initLocalStorage('clientTable');
       showDisabledColumn(event.target);
     }
 
-    if ( event.target.classList.contains('wjs-dbtable__page-btn') ) {
+    if ( event.target.closest('.wjs-dbtable__page-btn') ) {
+      if ( event.target.closest('.wjs-dbtable__page-btn_disabled')
+        || event.target.closest('.wjs-dbtable__page-btn_passive')
+        || event.target.closest('.wjs-dbtable__page-btn_dotts') ) return;
+
       let tableId     = event.target.closest('.wjs-dbtable').getAttribute('id'),
           data        = db[tableId],
-          itemsAmount = event.target.dataset.paginationperpage,
-          startValue  = event.target.dataset.paginationstart*itemsAmount;
+          btn         = event.target.closest('.wjs-dbtable__page-btn'),
+          itemsAmount = btn.dataset.paginationperpage,
+          startValue  = btn.dataset.paginationstart*itemsAmount;
 
       buildTableBody (tableId, data, startValue, itemsAmount);
       normalizeTableMeasurements(tableId);
@@ -505,15 +510,17 @@ initLocalStorage('clientTable');
 
   /**
    * [buildPagination вибудовує кнопки сторінок для таблиці]
-   * @param  {[String]} tableId     [ідентифікатор таблиці]
-   * @param  {[type]} total [кількість записів в базі даних]
+   * @param  {[String]} tableId    [ідентифікатор таблиці]
+   * @param  {[Number]} total      [кількість записів в базі даних]
+   * @param  {[Number]} perPage    [кількість записів на одну сторінку]
+   * @param  {[Number]} activePage [активна сторінка]
    */
   function buildPagination(tableId, total, perPage = 100, activePage) {
     let paginationWrapper = document.querySelector('#' + tableId + ' .wjs-dbtable__pagination-wrapper');
     
     paginationWrapper.innerHTML = '';
     
-    let pagesAmount = total/perPage;
+    let pagesAmount = Math.ceil(total/perPage);
 
     if (pagesAmount <= 7) {
       for (let i = 1; i < pagesAmount+1; i++) {
@@ -542,33 +549,53 @@ initLocalStorage('clientTable');
       let btnsStr = '';
       if (activePage == 0) {
         // самий початок
-        btnsStr = '<button class="wjs-dbtable__page-btn wjs-dbtable__page-btn_active"\
+        btnsStr = '<button class="wjs-dbtable__page-btn"\
                            data-paginationstart="0"\
                            data-paginationperpage="' + perPage + '">1</button>\
+                   <button class="wjs-dbtable__page-btn wjs-dbtable__page-btn_dotts">...</button>\
+                   <button class="wjs-dbtable__page-btn wjs-dbtable__page-btn_passive"\
+                           data-paginationstart="' +  (activePage-1) + '"\
+                           data-paginationperpage="' + perPage + '">-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path d="M192 127.338v257.324c0 17.818-21.543 26.741-34.142 14.142L29.196 270.142c-7.81-7.81-7.81-20.474 0-28.284l128.662-128.662c12.599-12.6 34.142-3.676 34.142 14.142z"/></svg></button>\
+                   <button class="wjs-dbtable__page-btn wjs-dbtable__page-btn_disabled"\
+                           data-paginationstart="' +  (activePage-1) + '"\
+                           data-paginationperpage="' + perPage + '">' + activePage + '</button>\
+                   <button class="wjs-dbtable__page-btn wjs-dbtable__page-btn_active"\
+                           data-paginationstart="' +  activePage + '"\
+                           data-paginationperpage="' + perPage + '">' + (activePage+1) + '</button>\
                    <button class="wjs-dbtable__page-btn"\
-                           data-paginationstart="1"\
-                           data-paginationperpage="' + perPage + '">2</button>\
+                           data-paginationstart="' +  (activePage+1) + '"\
+                           data-paginationperpage="' + perPage + '">' + (activePage+2) + '</button>\
                    <button class="wjs-dbtable__page-btn"\
-                           data-paginationstart="1"\
-                           data-paginationperpage="' + perPage + '">></button>\
-                   <span class="wjs-dbtable__pagination-dotts">...<span>\
+                           data-paginationstart="' +  (activePage+1) + '"\
+                           data-paginationperpage="' + perPage + '">-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path d="M0 384.662V127.338c0-17.818 21.543-26.741 34.142-14.142l128.662 128.662c7.81 7.81 7.81 20.474 0 28.284L34.142 398.804C21.543 411.404 0 402.48 0 384.662z"/></svg></button>\
+                   <button class="wjs-dbtable__page-btn wjs-dbtable__page-btn_dotts">...</button>\
                    <button class="wjs-dbtable__page-btn"\
                            data-paginationstart="' + (pagesAmount-1) + '"\
                            data-paginationperpage="' + perPage + '">' + pagesAmount + '</button>\
-                  ';        
+                  ';     
       } else if (activePage == pagesAmount-1) {
         // самий кінець
         btnsStr = '<button class="wjs-dbtable__page-btn"\
                            data-paginationstart="0"\
                            data-paginationperpage="' + perPage + '">1</button>\
-                   <span class="wjs-dbtable__pagination-dotts">...<span>\
+                   <button class="wjs-dbtable__page-btn wjs-dbtable__page-btn_dotts">...</button>\
                    <button class="wjs-dbtable__page-btn"\
-                           data-paginationstart="1"\
-                           data-paginationperpage="' + perPage + '"><</button>\
+                           data-paginationstart="' +  (activePage-1) + '"\
+                           data-paginationperpage="' + perPage + '">-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path d="M192 127.338v257.324c0 17.818-21.543 26.741-34.142 14.142L29.196 270.142c-7.81-7.81-7.81-20.474 0-28.284l128.662-128.662c12.599-12.6 34.142-3.676 34.142 14.142z"/></svg></button>\
                    <button class="wjs-dbtable__page-btn"\
-                           data-paginationstart="' + (pagesAmount-2) + '"\
-                           data-paginationperpage="' + perPage + '">' + (pagesAmount-1) + '</button>\
-                   <button class="wjs-dbtable__page-btn  wjs-dbtable__page-btn_active"\
+                           data-paginationstart="' +  (activePage-1) + '"\
+                           data-paginationperpage="' + perPage + '">' + activePage + '</button>\
+                   <button class="wjs-dbtable__page-btn wjs-dbtable__page-btn_active"\
+                           data-paginationstart="' +  activePage + '"\
+                           data-paginationperpage="' + perPage + '">' + (activePage+1) + '</button>\
+                   <button class="wjs-dbtable__page-btn  wjs-dbtable__page-btn_disabled"\
+                           data-paginationstart="' +  (activePage+1) + '"\
+                           data-paginationperpage="' + perPage + '">' + (activePage+2) + '</button>\
+                   <button class="wjs-dbtable__page-btn wjs-dbtable__page-btn_passive"\
+                           data-paginationstart="' +  (activePage+1) + '"\
+                           data-paginationperpage="' + perPage + '">-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path d="M0 384.662V127.338c0-17.818 21.543-26.741 34.142-14.142l128.662 128.662c7.81 7.81 7.81 20.474 0 28.284L34.142 398.804C21.543 411.404 0 402.48 0 384.662z"/></svg></button>\
+                   <button class="wjs-dbtable__page-btn wjs-dbtable__page-btn_dotts">...</button>\
+                   <button class="wjs-dbtable__page-btn"\
                            data-paginationstart="' + (pagesAmount-1) + '"\
                            data-paginationperpage="' + perPage + '">' + pagesAmount + '</button>\
                   ';
@@ -577,10 +604,10 @@ initLocalStorage('clientTable');
         btnsStr = '<button class="wjs-dbtable__page-btn"\
                            data-paginationstart="0"\
                            data-paginationperpage="' + perPage + '">1</button>\
-                   <span class="wjs-dbtable__pagination-dotts">...<span>\
+                   <button class="wjs-dbtable__page-btn wjs-dbtable__page-btn_dotts">...</button>\
                    <button class="wjs-dbtable__page-btn"\
                            data-paginationstart="' +  (activePage-1) + '"\
-                           data-paginationperpage="' + perPage + '"><</button>\
+                           data-paginationperpage="' + perPage + '">-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path d="M192 127.338v257.324c0 17.818-21.543 26.741-34.142 14.142L29.196 270.142c-7.81-7.81-7.81-20.474 0-28.284l128.662-128.662c12.599-12.6 34.142-3.676 34.142 14.142z"/></svg></button>\
                    <button class="wjs-dbtable__page-btn"\
                            data-paginationstart="' +  (activePage-1) + '"\
                            data-paginationperpage="' + perPage + '">' + activePage + '</button>\
@@ -592,8 +619,8 @@ initLocalStorage('clientTable');
                            data-paginationperpage="' + perPage + '">' + (activePage+2) + '</button>\
                    <button class="wjs-dbtable__page-btn"\
                            data-paginationstart="' +  (activePage+1) + '"\
-                           data-paginationperpage="' + perPage + '">></button>\
-                   <span class="wjs-dbtable__pagination-dotts">...<span>\
+                           data-paginationperpage="' + perPage + '"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path d="M0 384.662V127.338c0-17.818 21.543-26.741 34.142-14.142l128.662 128.662c7.81 7.81 7.81 20.474 0 28.284L34.142 398.804C21.543 411.404 0 402.48 0 384.662z"/></svg></button>\
+                   <button class="wjs-dbtable__page-btn wjs-dbtable__page-btn_dotts">...</button>\
                    <button class="wjs-dbtable__page-btn"\
                            data-paginationstart="' + (pagesAmount-1) + '"\
                            data-paginationperpage="' + perPage + '">' + pagesAmount + '</button>\
