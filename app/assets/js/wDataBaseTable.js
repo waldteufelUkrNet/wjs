@@ -808,11 +808,19 @@ initLocalStorage('clientTable');
   }
 
   function handleDBCheckboxes(checkbox) {
-    let id = checkbox.getAttribute('id');
+    let id = checkbox.getAttribute('id').slice(5).toLowerCase();
     let isChecked = checkbox.checked;
-    console.log("id / isChecked: " + id + ' / ' + isChecked);
+    console.log(id + ' / ' + isChecked);
 
-
+    if (id == 'all') {
+      console.info("isChecked", isChecked);
+      let checkboxArr = checkbox.closest('.wjs-dbtable').querySelectorAll('.wjs-dbtable__body-cell_checkbox input[type="checkbox"]');
+      checkboxArr.forEach(function(item){
+        item.checked = isChecked;
+      });
+    } else {
+      console.log('not all');
+    }
 
     // htmlStr += '\
     //               <div class="wjs-dbtable__header-cell wjs-dbtable__header-cell_checkbox">\
