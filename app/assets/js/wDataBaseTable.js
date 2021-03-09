@@ -80,6 +80,10 @@ initLocalStorage('clientTable');
       buildTableBody (tableId, data, startValue, itemsAmount);
       normalizeTableMeasurements(tableId);
     }
+
+    if ( event.target.closest('.wjs-dbtable__uncheckAll') ) {
+      uncheckAllCheckboxes(event.target);
+    }
   });
 
   document.querySelector('#clientTable').addEventListener('change', function(event){
@@ -422,7 +426,7 @@ initLocalStorage('clientTable');
       if ( i%2 == 0 ) {
         styleClass = '';
       }
-      
+
       if (!tableData[i]) break;
 
       for (let j = 0; j < order.length; j++) {
@@ -529,6 +533,7 @@ initLocalStorage('clientTable');
       }
       tableBody.insertAdjacentHTML('beforeEnd', item);
     }
+    handleDBCheckboxes(tableId);
   }
 
   /**
@@ -595,7 +600,7 @@ initLocalStorage('clientTable');
                    <button class="wjs-dbtable__page-btn"\
                            data-paginationstart="' + (pagesAmount-1) + '"\
                            data-paginationperpage="' + perPage + '">' + pagesAmount + '</button>\
-                  ';     
+                  ';
       } else if (activePage == pagesAmount-1) {
         // самий кінець
         btnsStr = '<button class="wjs-dbtable__page-btn"\
@@ -647,11 +652,10 @@ initLocalStorage('clientTable');
                    <button class="wjs-dbtable__page-btn"\
                            data-paginationstart="' + (pagesAmount-1) + '"\
                            data-paginationperpage="' + perPage + '">' + pagesAmount + '</button>\
-                  '; 
+                  ';
       }
       paginationWrapper.insertAdjacentHTML('beforeEnd', btnsStr);
     }
-    handleDBCheckboxes(tableId);
   }
 
   /**
@@ -825,7 +829,8 @@ initLocalStorage('clientTable');
   function handleDBCheckboxes(tableId, checkbox) {
     let tableObj   = JSON.parse( localStorage.getItem(tableId) ),
         checkedArr = tableObj.cc,
-        tempSet    = new Set(checkedArr);
+        tempSet    = new Set(checkedArr),
+        checkboxArr = document.querySelector('#' + tableId).querySelectorAll('.wjs-dbtable__body-cell_checkbox input[type="checkbox"]');
 
     if (checkbox) {
       // виклик з двома аргументами (клік по чекбоксу)
@@ -833,8 +838,6 @@ initLocalStorage('clientTable');
           isChecked = checkbox.checked;
 
       if (id == 'all') {
-
-        let checkboxArr = document.querySelector('#' + tableId).querySelectorAll('.wjs-dbtable__body-cell_checkbox input[type="checkbox"]');
         checkboxArr.forEach(function(item) {
           item.checked = isChecked;
           if (isChecked) {
@@ -843,7 +846,6 @@ initLocalStorage('clientTable');
             tempSet.delete( item.getAttribute('id').slice(5).toLowerCase() );
           }
         });
-
       } else {
         if (isChecked) {
           tempSet.add( checkbox.getAttribute('id').slice(5).toLowerCase() );
@@ -857,7 +859,21 @@ initLocalStorage('clientTable');
       localStorage.setItem( tableId, JSON.stringify(tableObj) );
     } else {
       // виклик з одним аргументом (клік на іншу сторінку тощо)
-      console.log("клік на іншу сторінку");
+      checkboxArr.forEach(function(item) {
+        if (tempSet.has( item.getAttribute('id').slice(5).toLowerCase() ) ) {
+          item.checked = true;
+        }
+      });
+    }
+
+    // якщо усі пташки на сторінці поставлені, то і головна пташка теж має бути
+    let headerCheckbox = document.querySelector('#' + tableId + ' .wjs-dbtable__header-cell_checkbox input[type="checkbox"]');
+    headerCheckbox.checked = true;
+    for (let i = 0; i < checkboxArr.length; i++) {
+      if ( !checkboxArr[i].checked ) {
+        headerCheckbox.checked = false;
+        break
+      }
     }
 
     // показ кількості відмічених записів в мета-даних таблиці
@@ -865,11 +881,26 @@ initLocalStorage('clientTable');
         labelValue = label.nextElementSibling;
 
         labelValue.innerHTML = tempSet.size;
-    if(tempSet.size) {
+    if (tempSet.size) {
       label.style.display = 'block';
       labelValue.style.display = 'block';
       labelValue.innerHTML = tempSet.size;
     }
+  }
+
+  function uncheckAllCheckboxes(btn) {
+    let tableElement   = btn.closest('.wjs-dbtable'),
+        tableId        = tableElement.getAttribute('id'),
+        checkboxArr    = tableElement.querySelectorAll('.wjs-dbtable__body-cell_checkbox input[type="checkbox"]'),
+        headerCheckbox = tableElement.querySelector('.wjs-dbtable__header-cell_checkbox input[type="checkbox"]');
+
+    let tableObj   = JSON.parse( localStorage.getItem(tableId) );
+
+    headerCheckbox.checked = false;
+    checkboxArr.forEach( item => item.checked = false );
+
+    tableObj.cc.length = 0;
+    localStorage.setItem( tableId, JSON.stringify(tableObj) );
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////

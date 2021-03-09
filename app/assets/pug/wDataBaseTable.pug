@@ -39,7 +39,9 @@ html(lang='ru')
         .wjs-dbtable__items-amount
         .wjs-dbtable__label filtered items:
         .wjs-dbtable__filtered-amount 0
-        .wjs-dbtable__label.wjs-dbtable__label_selected selected items:
+        .wjs-dbtable__label.wjs-dbtable__label_selected
+          span selected items:
+          button(type='button' title='снять все выделения').wjs-dbtable__uncheckAll
         .wjs-dbtable__selected-amount 0
       .wjs-dbtable__table-wrapper.wjs-scroll(data-scroll='bottom' data-scroll-hidden='vertical')
 

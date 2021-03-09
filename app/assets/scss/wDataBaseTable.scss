@@ -21,6 +21,7 @@
     padding-bottom        : 10px;
   }
   &__label {
+    position: relative;
     &_discols {
       display: none;
       & + .wjs-dbtable__items-amount {
@@ -44,6 +45,34 @@
   }
   &__items-amount {
     font-weight           : 900;
+  }
+  &__uncheckAll {
+    height                : 24px;
+    width                 : 24px;
+    border                : 1px solid red;
+    border-radius         : 4px;
+    background-color      : red;
+    background-image      : url('../img/close.png');
+    background-size       : 12px;
+    background-repeat     : no-repeat;
+    background-position   : center center;
+    cursor                : pointer;
+    position: absolute;
+    top: calc(50% + 2px);
+    left: calc(100% + 80px);
+    transform: translate(0, -50%);
+    &:after {
+      content: '';
+      display: block;
+      height: 26px;
+      width: 26px;
+      border: 1px solid lightsteelblue;
+      border-radius: 4px;
+      position: absolute; 
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+    }
   }
   &__filters-wrapper {
     display               : flex;
