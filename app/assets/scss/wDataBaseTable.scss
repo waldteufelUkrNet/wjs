@@ -27,6 +27,12 @@
         display: none;
       }
     }
+    &_selected {
+      display: none;
+      & + .wjs-dbtable__selected-amount {
+        display: none;
+      }
+    }
   }
   &__items-amount,
   &__filtered-amount,

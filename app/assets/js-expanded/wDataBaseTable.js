@@ -87,7 +87,7 @@ initLocalStorage('clientTable');
         && (event.target.closest('.wjs-dbtable__body-cell_checkbox')
             || event.target.closest('.wjs-dbtable__header-cell_checkbox') ) ) {
 
-      handleDBCheckboxes(event.target);
+      handleDBCheckboxes('clientTable', event.target);
     }
   });
 /* ↑↑↑ appointment of event handlers ↑↑↑ */
@@ -99,9 +99,23 @@ initLocalStorage('clientTable');
    * @param  {[String]} tableId [ідентифікатор таблиці]
    */
   function initLocalStorage(tableId) {
+
+    // tableId = {
+    //   h: [      //  headers: [
+    //     {       //    {
+    //       n: "" //      name     : "id",
+    //       b: [] //      buttons  : ["search", "close", "sort"],
+    //       s: "" //      source   : "id",
+    //       d: "" //      display  : true
+    //     }       //    }
+    //   ],        //  ]
+    //   cc: []    //  checkedCheckboxes: [1,2,3 ... n]
+    // };
+
     let tableObj = JSON.parse( localStorage.getItem(tableId) ) || {};
 
     if ( !('h' in tableObj) ) tableObj.h = [];
+    if ( !('cc' in tableObj) ) tableObj.h = [];
 
     localStorage.setItem( tableId, JSON.stringify(tableObj) );
   }
@@ -292,7 +306,7 @@ initLocalStorage('clientTable');
             thumbHeight   = thumb.offsetHeight,
             maxAviableTop = lineHeight - thumbHeight,
             top           = +getComputedStyle(thumb).top.slice(0,-2);
-        
+
         if (top > maxAviableTop) {
           thumb.style.top = maxAviableTop + 'px';
         }
@@ -526,9 +540,9 @@ initLocalStorage('clientTable');
    */
   function buildPagination(tableId, total, perPage = 100, activePage) {
     let paginationWrapper = document.querySelector('#' + tableId + ' .wjs-dbtable__pagination-wrapper');
-    
+
     paginationWrapper.innerHTML = '';
-    
+
     let pagesAmount = Math.ceil(total/perPage);
 
     if (pagesAmount <= 7) {
@@ -637,6 +651,7 @@ initLocalStorage('clientTable');
       }
       paginationWrapper.insertAdjacentHTML('beforeEnd', btnsStr);
     }
+    handleDBCheckboxes(tableId);
   }
 
   /**
@@ -807,36 +822,54 @@ initLocalStorage('clientTable');
     document.querySelector('#' + tableId + ' .wjs-dbtable__loader').classList.remove('wjs-dbtable__loader_active');
   }
 
-  function handleDBCheckboxes(checkbox) {
-    let id = checkbox.getAttribute('id').slice(5).toLowerCase();
-    let isChecked = checkbox.checked;
-    console.log(id + ' / ' + isChecked);
+  function handleDBCheckboxes(tableId, checkbox) {
+    let tableObj   = JSON.parse( localStorage.getItem(tableId) ),
+        checkedArr = tableObj.cc,
+        tempSet    = new Set(checkedArr);
 
-    if (id == 'all') {
-      console.info("isChecked", isChecked);
-      let checkboxArr = checkbox.closest('.wjs-dbtable').querySelectorAll('.wjs-dbtable__body-cell_checkbox input[type="checkbox"]');
-      checkboxArr.forEach(function(item){
-        item.checked = isChecked;
-      });
+    if (checkbox) {
+      // виклик з двома аргументами (клік по чекбоксу)
+      let id        = checkbox.getAttribute('id').slice(5).toLowerCase(),
+          isChecked = checkbox.checked;
+
+      if (id == 'all') {
+
+        let checkboxArr = document.querySelector('#' + tableId).querySelectorAll('.wjs-dbtable__body-cell_checkbox input[type="checkbox"]');
+        checkboxArr.forEach(function(item) {
+          item.checked = isChecked;
+          if (isChecked) {
+            tempSet.add( item.getAttribute('id').slice(5).toLowerCase() );
+          } else {
+            tempSet.delete( item.getAttribute('id').slice(5).toLowerCase() );
+          }
+        });
+
+      } else {
+        if (isChecked) {
+          tempSet.add( checkbox.getAttribute('id').slice(5).toLowerCase() );
+        } else {
+          tempSet.delete( checkbox.getAttribute('id').slice(5).toLowerCase() );
+        }
+      }
+
+      checkedArr  = Array.from(tempSet);
+      tableObj.cc = checkedArr;
+      localStorage.setItem( tableId, JSON.stringify(tableObj) );
     } else {
-      console.log('not all');
+      // виклик з одним аргументом (клік на іншу сторінку тощо)
+      console.log("клік на іншу сторінку");
     }
 
-    // htmlStr += '\
-    //               <div class="wjs-dbtable__header-cell wjs-dbtable__header-cell_checkbox">\
-    //                 <div class="wjs-dbtable__th-name">\
-    //                   <input type="checkbox" id="chboxAll">\
-    //                   <label for="chboxAll"></label>\
-    //                 </div>\
-    //               </div>\
-    //            ';
+    // показ кількості відмічених записів в мета-даних таблиці
+    let label      = document.querySelector('.wjs-dbtable__label_selected'),
+        labelValue = label.nextElementSibling;
 
-    // item = item + '<div class="wjs-dbtable__body-cell wjs-dbtable__body-cell_checkbox ' + styleClass + '">\
-    //                  <input type="checkbox" id="chbox' + tableData[i].id + '">\
-    //                  <label for="chbox' + tableData[i].id + '"></label>\
-    //                </div>';
-
-
+        labelValue.innerHTML = tempSet.size;
+    if(tempSet.size) {
+      label.style.display = 'block';
+      labelValue.style.display = 'block';
+      labelValue.innerHTML = tempSet.size;
+    }
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////

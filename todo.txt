@@ -14,7 +14,8 @@ tableId = {
       s: "" //      source   : "id",
       d: "" //      display  : true
     }       //    }
-  ]         //  ]
+  ],        //  ],
+  cc: []    //  checkedCheckboxes: [1,2,3 ... n]
 };
 
 елемент з БД:
