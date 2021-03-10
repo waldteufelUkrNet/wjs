@@ -66,6 +66,7 @@ initLocalStorage('clientTable');
       showDisabledColumn(event.target);
     }
 
+    // pagination 1
     if ( event.target.closest('.wjs-dbtable__page-btn') ) {
       if ( event.target.closest('.wjs-dbtable__page-btn_disabled')
         || event.target.closest('.wjs-dbtable__page-btn_passive')
@@ -80,18 +81,40 @@ initLocalStorage('clientTable');
       buildTableBody (tableId, data, startValue, itemsAmount);
       normalizeTableMeasurements(tableId);
     }
+    // pagination 2
+    if ( event.target.closest('.wjs-dbtable__go-to-page-btn') ) {
+      goToPage(event.target);
+    }
 
+    // зняти усі пташки
     if ( event.target.closest('.wjs-dbtable__uncheckAll') ) {
       uncheckAllCheckboxes(event.target);
     }
   });
 
   document.querySelector('#clientTable').addEventListener('change', function(event){
+    // логіка пташок
     if ( event.target.getAttribute('type') == 'checkbox'
         && (event.target.closest('.wjs-dbtable__body-cell_checkbox')
             || event.target.closest('.wjs-dbtable__header-cell_checkbox') ) ) {
-
       handleDBCheckboxes('clientTable', event.target);
+    }
+  });
+
+  document.querySelector('#clientTable').addEventListener('keydown', function(event){
+    // контроль максимально допустимої сторінки
+    if ( event.target.closest('.wjs-dbtable__go-to-page-wrapper') ) {
+      let maxValue     = +event.target.dataset.maxValue,
+          currentValue = +(event.target.value + event.key);
+
+      if ( maxValue < currentValue) {
+        event.target.value = maxValue;
+        event.preventDefault();
+      }
+    }
+
+    if ( event.key.toLowerCase() == 'enter' ) {
+      goToPage(event.target);
     }
   });
 /* ↑↑↑ appointment of event handlers ↑↑↑ */
@@ -600,6 +623,12 @@ initLocalStorage('clientTable');
                    <button class="wjs-dbtable__page-btn"\
                            data-paginationstart="' + (pagesAmount-1) + '"\
                            data-paginationperpage="' + perPage + '">' + pagesAmount + '</button>\
+                   <div class="wjs-dbtable__go-to-page-wrapper">\
+                     <input class="wjs-dbtable__go-to-page-input" type="text" data-max-value="' + pagesAmount + '" onkeydown="return checkNumber(event.key)">\
+                     <button class="wjs-dbtable__go-to-page-btn">\
+                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M500.5 231.4l-192-160C287.9 54.3 256 68.6 256 96v320c0 27.4 31.9 41.8 52.5 24.6l192-160c15.3-12.8 15.3-36.4 0-49.2zm-256 0l-192-160C31.9 54.3 0 68.6 0 96v320c0 27.4 31.9 41.8 52.5 24.6l192-160c15.3-12.8 15.3-36.4 0-49.2z"/></svg>\
+                     </button>\
+                   </div>\
                   ';
       } else if (activePage == pagesAmount-1) {
         // самий кінець
@@ -626,6 +655,12 @@ initLocalStorage('clientTable');
                    <button class="wjs-dbtable__page-btn"\
                            data-paginationstart="' + (pagesAmount-1) + '"\
                            data-paginationperpage="' + perPage + '">' + pagesAmount + '</button>\
+                   <div class="wjs-dbtable__go-to-page-wrapper">\
+                     <input class="wjs-dbtable__go-to-page-input" type="text" data-max-value="' + pagesAmount + '" onkeydown="return checkNumber(event.key)">\
+                     <button class="wjs-dbtable__go-to-page-btn">\
+                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M500.5 231.4l-192-160C287.9 54.3 256 68.6 256 96v320c0 27.4 31.9 41.8 52.5 24.6l192-160c15.3-12.8 15.3-36.4 0-49.2zm-256 0l-192-160C31.9 54.3 0 68.6 0 96v320c0 27.4 31.9 41.8 52.5 24.6l192-160c15.3-12.8 15.3-36.4 0-49.2z"/></svg>\
+                     </button>\
+                   </div>\
                   ';
       } else {
         // по середині
@@ -652,10 +687,34 @@ initLocalStorage('clientTable');
                    <button class="wjs-dbtable__page-btn"\
                            data-paginationstart="' + (pagesAmount-1) + '"\
                            data-paginationperpage="' + perPage + '">' + pagesAmount + '</button>\
+                   <div class="wjs-dbtable__go-to-page-wrapper">\
+                     <input class="wjs-dbtable__go-to-page-input" type="text" data-max-value="' + pagesAmount + '" onkeydown="return checkNumber(event.key)">\
+                     <button class="wjs-dbtable__go-to-page-btn">\
+                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M500.5 231.4l-192-160C287.9 54.3 256 68.6 256 96v320c0 27.4 31.9 41.8 52.5 24.6l192-160c15.3-12.8 15.3-36.4 0-49.2zm-256 0l-192-160C31.9 54.3 0 68.6 0 96v320c0 27.4 31.9 41.8 52.5 24.6l192-160c15.3-12.8 15.3-36.4 0-49.2z"/></svg>\
+                     </button>\
+                   </div>\
                   ';
       }
       paginationWrapper.insertAdjacentHTML('beforeEnd', btnsStr);
     }
+  }
+
+  /**
+   * [goToPage перехід до певної сторінки]
+   * @param  {[DOM-елемент]} target [елемент, на якому спрацювала подія]
+   */
+  function goToPage(target) {
+    let tableId     = event.target.closest('.wjs-dbtable').getAttribute('id'),
+        data        = db[tableId],
+        btn         = document.querySelector('#' + tableId + ' .wjs-dbtable__page-btn[data-paginationperpage]'),
+        itemsAmount = btn.dataset.paginationperpage,
+        inputValue  = event.target.closest('.wjs-dbtable__go-to-page-wrapper').querySelector('.wjs-dbtable__go-to-page-input').value;
+
+    if (!+inputValue ) return;
+    let startValue  = (inputValue-1)*itemsAmount;
+
+    buildTableBody (tableId, data, startValue, itemsAmount);
+    normalizeTableMeasurements(tableId);
   }
 
   /**
@@ -827,9 +886,9 @@ initLocalStorage('clientTable');
   }
 
   function handleDBCheckboxes(tableId, checkbox) {
-    let tableObj   = JSON.parse( localStorage.getItem(tableId) ),
-        checkedArr = tableObj.cc,
-        tempSet    = new Set(checkedArr),
+    let tableObj    = JSON.parse( localStorage.getItem(tableId) ),
+        checkedArr  = tableObj.cc,
+        tempSet     = new Set(checkedArr),
         checkboxArr = document.querySelector('#' + tableId).querySelectorAll('.wjs-dbtable__body-cell_checkbox input[type="checkbox"]');
 
     if (checkbox) {
@@ -886,6 +945,8 @@ initLocalStorage('clientTable');
       labelValue.style.display = 'block';
       labelValue.innerHTML = tempSet.size;
     }
+
+    return checkedArr;
   }
 
   function uncheckAllCheckboxes(btn) {
@@ -901,6 +962,11 @@ initLocalStorage('clientTable');
 
     tableObj.cc.length = 0;
     localStorage.setItem( tableId, JSON.stringify(tableObj) );
+
+    let label = tableElement.querySelector('.wjs-dbtable__label_selected');
+    label.style.display = 'none';
+    label.nextElementSibling.style.display = 'none';
   }
+
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////

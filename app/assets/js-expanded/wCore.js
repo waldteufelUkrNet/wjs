@@ -59,5 +59,17 @@
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+
+/**
+ * [checkNumber перевіряє, чи є натиснута клавіша цифрою]
+ * @param  {[String]}  key [клавішний символ]
+ * @return {[Boolean]}     [результат перевірки]
+ */
+  function checkNumber(key) {
+    return (key >= '0' && key <= '9')
+           || key == 'ArrowLeft' || key == 'ArrowRight'
+           || key == 'Delete' || key == 'Backspace';
+
+  }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////

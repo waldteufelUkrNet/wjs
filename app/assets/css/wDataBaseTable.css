@@ -630,6 +630,57 @@ a, a:hover {
   cursor: default;
 }
 
+.wjs-dbtable__go-to-page-wrapper {
+  height: 26px;
+  border: 1px solid grey;
+  -webkit-border-radius: 3px;
+          border-radius: 3px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-shadow: 1px 1px 3px grey;
+          box-shadow: 1px 1px 3px grey;
+}
+
+.wjs-dbtable__go-to-page-input {
+  height: 24px;
+  width: 50px;
+  border: 1px solid transparent;
+  -webkit-border-radius: 3px;
+          border-radius: 3px;
+  padding: 3px;
+}
+
+.wjs-dbtable__go-to-page-btn {
+  height: 24px;
+  width: 24px;
+  border: 1px solid transparent;
+  border-left-color: grey;
+  -webkit-border-radius: 0 3px 3px 0;
+          border-radius: 0 3px 3px 0;
+  position: relative;
+  cursor: pointer;
+}
+
+.wjs-dbtable__go-to-page-btn svg {
+  height: 15px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+
 .wjs-dbtable__table-wrapper.wjs-scroll .wjs-scroll__wrapper_bottom {
   width: 100%;
   left: 0;
