@@ -481,7 +481,7 @@ a, a:hover {
   width: 20px;
   margin: 0;
   padding: 0;
-  border: 1px solid lightgrey;
+  border: 1px solid lightsteelblue;
   cursor: pointer;
 }
 
@@ -496,6 +496,13 @@ a, a:hover {
   width: 30px;
   -webkit-border-radius: 4px;
           border-radius: 4px;
+  -webkit-box-shadow: 0px 0px 3px grey;
+          box-shadow: 0px 0px 3px grey;
+}
+
+.wjs-dbtable__btn_search:hover {
+  -webkit-box-shadow: none;
+          box-shadow: none;
 }
 
 .wjs-dbtable__btn_close {
@@ -513,6 +520,16 @@ a, a:hover {
           background-size: 13px 13px;
   background-position: center center;
   background-repeat: no-repeat;
+}
+
+.wjs-dbtable__btn_sort_active_down {
+  background-image: url("../img/caret-active-down.png");
+  background-color: lightgrey;
+}
+
+.wjs-dbtable__btn_sort_active_up {
+  background-image: url("../img/caret-active-up.png");
+  background-color: lightgrey;
 }
 
 .wjs-dbtable__btn_options {

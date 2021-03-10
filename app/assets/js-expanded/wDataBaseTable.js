@@ -90,6 +90,11 @@ initLocalStorage('clientTable');
     if ( event.target.closest('.wjs-dbtable__uncheckAll') ) {
       uncheckAllCheckboxes(event.target);
     }
+
+    // sort
+    if ( event.target.closest('.wjs-dbtable__btn_sort') ) {
+      sortDB(event.target);
+    }
   });
 
   document.querySelector('#clientTable').addEventListener('change', function(event){
@@ -410,6 +415,11 @@ initLocalStorage('clientTable');
       }
     }
     theader.innerHTML = htmlStr;
+
+    // підсвічування тупу сортування
+    let activeHeaderCell = theader.querySelector('.wjs-dbtable__header-cell[data-source="id"]'),
+        activeSortButton = activeHeaderCell.querySelector('.wjs-dbtable__btn_sort');
+    activeSortButton.classList.add('wjs-dbtable__btn_sort_active_down');
   }
 
   /**
@@ -968,5 +978,37 @@ initLocalStorage('clientTable');
     label.nextElementSibling.style.display = 'none';
   }
 
+  function sortDB(btn) {
+    let tableElement = btn.closest('.wjs-dbtable'),
+        tableId      = tableElement.getAttribute('id'),
+        sortBtns     = tableElement.querySelectorAll('.wjs-dbtable__header-cell .wjs-dbtable__btn_sort'),
+        sortSource   = btn.closest('.wjs-dbtable__header-cell').dataset.source;
+    let sortType;
+
+    // visualisation
+    if ( btn.classList.contains('wjs-dbtable__btn_sort_active_down') ) {
+      btn.classList.remove('wjs-dbtable__btn_sort_active_down');
+      btn.classList.add('wjs-dbtable__btn_sort_active_up');
+      sortType = 'up';
+    } else if ( btn.classList.contains('wjs-dbtable__btn_sort_active_up') ) {
+      btn.classList.remove('wjs-dbtable__btn_sort_active_up');
+      btn.classList.add('wjs-dbtable__btn_sort_active_down');
+      sortType = 'down';
+    } else if (!btn.classList.contains('wjs-dbtable__btn_sort_active_down')
+               && !btn.classList.contains('wjs-dbtable__btn_sort_active_up')) {
+      btn.classList.add('wjs-dbtable__btn_sort_active_down');
+      sortType = 'down';
+    }
+
+    sortBtns.forEach( item => {
+      if (item == btn) return;
+      item.classList.remove('wjs-dbtable__btn_sort_active_down');
+      item.classList.remove('wjs-dbtable__btn_sort_active_up');
+    } );
+
+    // sort
+    console.log(sortType);
+    console.log(sortSource);
+  }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
