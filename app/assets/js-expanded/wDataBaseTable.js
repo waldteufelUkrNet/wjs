@@ -4,7 +4,7 @@
 /* ↓↓↓ variables declaration ↓↓↓ */
   let db = {};
   let headerURL = '../db/clientsDB-headers.txt';
-  let bodyURL = '../db/clientsDB-100000.txt';
+  let bodyURL = '../db/clientsDB-1000.txt';
 /* ↑↑↑ variables declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -147,20 +147,20 @@ initLocalStorage('clientTable');
     let tableObj = JSON.parse( localStorage.getItem(tableId) ) || {};
 
     if ( !('h' in tableObj) ) tableObj.h = [];
-    if ( !('cc' in tableObj) ) tableObj.h = [];
+    if ( !('cc' in tableObj) ) tableObj.cc = [];
 
     localStorage.setItem( tableId, JSON.stringify(tableObj) );
   }
 
   /**
    * [handleTableBody функція-колбек на запит бази даних]
-   * @param  {[Object]} arg [база даних]
+   * @param  {[String]} arg [база даних]
    */
   function handleTableBody(arg, tableId) {
     showLoader('clientTable', 'обработка данных ...');
-    db[tableId] = arg;
+    db[tableId] = JSON.parse(arg);
 
-    buildTableBody('clientTable', arg);
+    buildTableBody('clientTable', db[tableId]);
 
     // при синхронному виклику normalizeTableMeasurements(arg) дає осічку до 40%:
     // шапка і колонки отримують різну ширину. Я не знаю, чому. Можливо через те,
@@ -425,14 +425,15 @@ initLocalStorage('clientTable');
   /**
    * [buildTableBody відповідає за динамічну побудову тіла таблиці]
    * @param  {[String]} tableId     [ідентифікатор таблиці]
-   * @param  {[String]} data        [дані, з яких будується таблиця]
+   * @param  {[Array ]} data        [дані, з яких будується таблиця]
    * @param  {[Number]} startValue  [порядковий номер запису в базі даних, з
    * якого починається побудова таблиці]
    * @param  {[Number]} itemsAmount [кількість відображуваних елементів]
    */
   function buildTableBody (tableId, data, startValue, itemsAmount) {
+
     let headerData  = JSON.parse( localStorage.getItem(tableId) ).h,
-        tableData   = JSON.parse(data),
+        tableData = data,
         tableBody   = document.querySelector('#' + tableId + ' .wjs-dbtable__tbody'),
         tableHeader = document.querySelector('#' + tableId + ' .wjs-dbtable__theader'),
         start       = startValue || 0,
@@ -895,6 +896,12 @@ initLocalStorage('clientTable');
     document.querySelector('#' + tableId + ' .wjs-dbtable__loader').classList.remove('wjs-dbtable__loader_active');
   }
 
+  /**
+   * [handleDBCheckboxes обробка кліків по чекбоксах]
+   * @param  {[String]}     tableId [ідентифікатор таблиці]
+   * @param  {[DOM-Object]} checkbox [DOM-елемент (чекбокс)]
+   * @return {[Array]}      [масив ідентифікаторів помічених чекбоксів]
+   */
   function handleDBCheckboxes(tableId, checkbox) {
     let tableObj    = JSON.parse( localStorage.getItem(tableId) ),
         checkedArr  = tableObj.cc,
@@ -959,7 +966,12 @@ initLocalStorage('clientTable');
     return checkedArr;
   }
 
+  /**
+   * [uncheckAllCheckboxes зняття пташок з усіх чекбоксів]
+   * @param  {[DOM-Object]} btn [DOM-елемент (кнопка)]
+   */
   function uncheckAllCheckboxes(btn) {
+    console.log("btn", btn);
     let tableElement   = btn.closest('.wjs-dbtable'),
         tableId        = tableElement.getAttribute('id'),
         checkboxArr    = tableElement.querySelectorAll('.wjs-dbtable__body-cell_checkbox input[type="checkbox"]'),
@@ -978,6 +990,10 @@ initLocalStorage('clientTable');
     label.nextElementSibling.style.display = 'none';
   }
 
+  /**
+   * [sortDB пересортування бази даних]
+   * @param  {[DOM-Object]} btn [DOM-елемент (кнопка)]
+   */
   function sortDB(btn) {
     let tableElement = btn.closest('.wjs-dbtable'),
         tableId      = tableElement.getAttribute('id'),
@@ -1007,8 +1023,22 @@ initLocalStorage('clientTable');
     } );
 
     // sort
-    console.log(sortType);
-    console.log(sortSource);
+    if (sortType == 'down') {
+      db[tableId].sort(function (a, b){
+        if (a[sortSource] > b[sortSource]) return 1;
+        if (a[sortSource] < b[sortSource]) return -1;
+        if (a[sortSource] == b[sortSource]) return 0;
+      });
+    } else {
+      db[tableId].sort(function (a, b){
+        if (a[sortSource] > b[sortSource]) return -1;
+        if (a[sortSource] < b[sortSource]) return 1;
+        if (a[sortSource] == b[sortSource]) return 0;
+      });
+    }
+
+    buildTableBody (tableId, db[tableId]);
+    normalizeTableMeasurements('clientTable');
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
