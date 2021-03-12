@@ -95,6 +95,12 @@ initLocalStorage('clientTable');
     if ( event.target.closest('.wjs-dbtable__btn_sort') ) {
       sortDB(event.target);
     }
+
+    // build filters list
+    if ( event.target.closest('.wjs-dbtable__btn_options') ) {
+      buildFiltersList(event.target);
+    }
+
   });
 
   document.querySelector('#clientTable').addEventListener('change', function(event){
@@ -139,6 +145,7 @@ initLocalStorage('clientTable');
     //       b: [] //      buttons  : ["search", "close", "sort"],
     //       s: "" //      source   : "id",
     //       d: "" //      display  : true
+    //       v: [] //      values   : ["status1", "satus2", ...]
     //     }       //    }
     //   ],        //  ]
     //   cc: []    //  checkedCheckboxes: [1,2,3 ... n]
@@ -160,8 +167,8 @@ initLocalStorage('clientTable');
     showLoader('clientTable', 'обработка данных ...');
     db[tableId] = JSON.parse(arg);
 
-    buildTableBody('clientTable', db[tableId]);
-
+    buildTableBody(tableId, db[tableId]);
+    collectFilters(tableId, db[tableId]);
     // при синхронному виклику normalizeTableMeasurements(arg) дає осічку до 40%:
     // шапка і колонки отримують різну ширину. Я не знаю, чому. Можливо через те,
     // що рушій не встигає відмалювати сторінку до порівняння. setTimeout - це
@@ -971,7 +978,6 @@ initLocalStorage('clientTable');
    * @param  {[DOM-Object]} btn [DOM-елемент (кнопка)]
    */
   function uncheckAllCheckboxes(btn) {
-    console.log("btn", btn);
     let tableElement   = btn.closest('.wjs-dbtable'),
         tableId        = tableElement.getAttribute('id'),
         checkboxArr    = tableElement.querySelectorAll('.wjs-dbtable__body-cell_checkbox input[type="checkbox"]'),
@@ -1040,5 +1046,43 @@ initLocalStorage('clientTable');
     buildTableBody (tableId, db[tableId]);
     normalizeTableMeasurements('clientTable');
   }
+
+  /**
+   * [collectFilters перебирає базу даних, вишукуючи усі варіанти фільтрів, та
+   * записує їх в ls]
+   * @param  {[String]}   tableId [ідентифікатор таблиці]
+   * @param  {[Array]} db [база даних]
+   */
+  function collectFilters(tableId, db) {
+    let tableObj = JSON.parse( localStorage.getItem(tableId) );
+    let headers = tableObj;
+
+    for (let i = 0; i < headers.h.length; i++) {
+      if ( headers.h[i].b && headers.h[i].b.includes('menu') ) {
+        let source = headers.h[i].s;
+        let tempSet = new Set();
+        for (let i = 0; i < db.length; i++) {
+          tempSet.add( db[i][source] );
+        }
+        headers.h[i].v = Array.from(tempSet);
+      }
+    }
+    localStorage.setItem( tableId, JSON.stringify(tableObj) );
+  }
+
+  function buildFiltersList(btn) {
+    let tableId  = btn.closest('.wjs-dbtable').getAttribute('id'),
+        source   = btn.closest('.wjs-dbtable__header-cell').dataset.source,
+        tableObj = JSON.parse( localStorage.getItem(tableId) ),
+        headers  = tableObj;
+
+    for (let i = 0; i < headers.h.length; i++) {
+      if (headers.h[i].s == source) {
+        console.log(headers.h[i].v);
+        break
+      }
+    }
+  }
+
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////

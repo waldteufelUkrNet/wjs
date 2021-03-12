@@ -1,5 +1,4 @@
 let arrH = [
-  
   {"name":"checkbox","source":"checkbox"},
   {"name":"id","buttons":["search","close","sort"],"source":"id"},
   {"name":"Клиент","buttons":["search","close","sort"],"source":"clientName"},
