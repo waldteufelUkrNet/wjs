@@ -429,6 +429,7 @@ a, a:hover {
       -ms-flex-align: center;
           align-items: center;
   background-color: #bde0f6;
+  position: relative;
 }
 
 .wjs-dbtable__header-cell_checkbox {
@@ -540,6 +541,17 @@ a, a:hover {
           background-size: 13px 13px;
   background-position: center center;
   background-repeat: no-repeat;
+}
+
+.wjs-dbtable__filters-list-wrapper {
+  border: 1px dotted red;
+  position: absolute;
+  z-index: 1;
+  top: calc(100% + 1px);
+  left: 0;
+  width: 100%;
+  padding: 3px;
+  background-color: #fff;
 }
 
 .wjs-dbtable__tbody {

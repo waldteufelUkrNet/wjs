@@ -175,6 +175,7 @@
     justify-content       : space-between;
     align-items           : center;
     background-color      : #bde0f6;
+    position              : relative;
     &_checkbox {
       width               : 40px !important;
       justify-content     : center;
@@ -247,6 +248,16 @@
       background-position : center center;
       background-repeat   : no-repeat;
     }
+  }
+
+  &__filters-list-wrapper { border: 1px dotted red;
+    position: absolute;
+    z-index: 1;
+    top: calc(100% + 1px);
+    left: 0;
+    width: 100%;
+    padding: 3px;
+    background-color: #fff;
   }
 
   &__tbody {

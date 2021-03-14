@@ -1071,18 +1071,26 @@ initLocalStorage('clientTable');
   }
 
   function buildFiltersList(btn) {
-    let tableId  = btn.closest('.wjs-dbtable').getAttribute('id'),
-        source   = btn.closest('.wjs-dbtable__header-cell').dataset.source,
-        tableObj = JSON.parse( localStorage.getItem(tableId) ),
-        headers  = tableObj;
+    let tableElement = btn.closest('.wjs-dbtable'),
+        tableId      = tableElement.getAttribute('id'),
+        tHeaderCell  = btn.closest('.wjs-dbtable__header-cell'),
+        source       = tHeaderCell.dataset.source,
+        tableObj     = JSON.parse( localStorage.getItem(tableId) ),
+        headers      = tableObj.h;
 
-    for (let i = 0; i < headers.h.length; i++) {
-      if (headers.h[i].s == source) {
-        console.log(headers.h[i].v);
+    for (let i = 0; i < headers.length; i++) {
+      if (headers[i].s == source) {
+        console.log(headers[i].v);
+        let html = '<div class="wjs-dbtable__filters-list-wrapper">\
+                      <ul>\
+                        <li>qqq<li>\
+                      </ul>\
+                    </div>\
+        ';
+        tHeaderCell.insertAdjacentHTML('beforeEnd', html);
         break
       }
     }
   }
-
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
