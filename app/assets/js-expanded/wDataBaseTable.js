@@ -1071,23 +1071,70 @@ initLocalStorage('clientTable');
   }
 
   function buildFiltersList(btn) {
-    let tableElement = btn.closest('.wjs-dbtable'),
-        tableId      = tableElement.getAttribute('id'),
-        tHeaderCell  = btn.closest('.wjs-dbtable__header-cell'),
-        source       = tHeaderCell.dataset.source,
-        tableObj     = JSON.parse( localStorage.getItem(tableId) ),
-        headers      = tableObj.h;
+    let tableElement   = btn.closest('.wjs-dbtable'),
+        tableId        = tableElement.getAttribute('id'),
+        tHeaderCell    = btn.closest('.wjs-dbtable__header-cell'),
+        innerContainer = tableElement.querySelector('.wjs-scroll__content-wrapper .wjs-scroll'),
+        source         = tHeaderCell.dataset.source,
+        tableObj       = JSON.parse( localStorage.getItem(tableId) ),
+        headers        = tableObj.h;
 
     for (let i = 0; i < headers.length; i++) {
       if (headers[i].s == source) {
-        console.log(headers[i].v);
-        let html = '<div class="wjs-dbtable__filters-list-wrapper">\
-                      <ul>\
-                        <li>qqq<li>\
-                      </ul>\
+
+        // початкова структура з елементом "позначити все"
+        let html = '<div class="wjs-dbtable__filters-list-wrapper wjs-scroll">\
+                      <div class="wjs-scroll__content-wrapper">\
+                        <div class="wjs-scroll__content">\
+                          <ul class="wjs-dbtable__filters-list">\
+                            <li class="wjs-dbtable__filters-list-item">\
+                                <input type="checkbox" id="' + tableId + '-filterchbox-All">\
+                                <label for="' + tableId + '-filterchbox-All">\
+                                  <span>Все</span>\
+                                </label>\
+                              </label>\
+                            </li>\
+                          </ul>\
+                        </div>\
+                      </div>\
                     </div>\
-        ';
+                   ';
         tHeaderCell.insertAdjacentHTML('beforeEnd', html);
+
+        // заповнення структури рештою елементів з фільтрами
+        let tempHeadersArr = headers[i].v.sort();
+        console.log("tempHeadersArr", tempHeadersArr);
+        let list = tHeaderCell.querySelector('.wjs-dbtable__filters-list');
+        for (let i = 0; i < tempHeadersArr.length; i++ ) {
+          let html = '\
+                      <li class="wjs-dbtable__filters-list-item">\
+                          <input type="checkbox" id="' + tableId + '-filterchbox-' + tempHeadersArr[i] + '">\
+                          <label for="' + tableId + '-filterchbox-' + tempHeadersArr[i] + '">\
+                            <span>' + tempHeadersArr[i] + '</span>\
+                          </label>\
+                        </label>\
+                      </li>\
+                     ';
+          list.insertAdjacentHTML('beforeEnd', html);
+        }
+
+        // встановлення чіткої висоти списку (потрібно для кастомного скролу)
+        let filtersListWrapper = tHeaderCell.querySelector('.wjs-dbtable__filters-list-wrapper.wjs-scroll'),
+            filtersList        = tHeaderCell.querySelector('.wjs-dbtable__filters-list'),
+            currentHeight      = filtersList.offsetHeight,
+            maxAviableHeight   = innerContainer.clientHeight;
+        console.log(currentHeight + '/' + maxAviableHeight);
+
+        if (currentHeight > maxAviableHeight) {
+          filtersListWrapper.style.height = maxAviableHeight + 'px';
+        } else {
+          filtersListWrapper.style.height = currentHeight + 2 + 'px';
+        }
+
+        // кастомний скрол
+        wSetScroll(filtersListWrapper, {bottom:false, right:true})
+
+
         break
       }
     }

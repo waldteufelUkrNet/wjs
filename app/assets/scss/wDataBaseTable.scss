@@ -250,14 +250,57 @@
     }
   }
 
-  &__filters-list-wrapper { border: 1px dotted red;
+  &__filters-list-wrapper {
     position: absolute;
     z-index: 1;
     top: calc(100% + 1px);
-    left: 0;
-    width: 100%;
-    padding: 3px;
+    left: -1px;
+    width: calc(100% + 2px);
     background-color: #fff;
+    border: 1px solid grey;
+    cursor: default;
+  }
+
+  &__filters-list {
+    // border: 1px dotted red;
+    padding: 3px;
+  }
+
+  &__filters-list-item {
+    font-size: 0.9em;
+    height: 25px;
+    display: flex;
+    align-items: center;
+  }
+
+  .wjs-dbtable__filters-list-item [type='checkbox'] {
+    display: none;
+  }
+
+  .wjs-dbtable__filters-list-item [type='checkbox'] + label {
+    cursor: pointer;
+    display: block;
+    width: 100%;
+  }
+
+  .wjs-dbtable__filters-list-item [type='checkbox'] + label span {
+    position: relative;
+    top: -3px;
+  }
+
+  .wjs-dbtable__filters-list-item [type='checkbox'] + label::before {
+    content: '';
+    display: inline-block;
+    height: 16px !important;
+    width: 16px !important;
+    background-image: url('../img/checkbox-sprite.png');
+    background-position: -3px -13px;
+    background-size: 42px 42px;
+    background-repeat: no-repeat;
+  }
+
+  .wjs-dbtable__filters-list-item [type='checkbox']:checked + label:before {
+    background-position: -23.3px -13px;
   }
 
   &__tbody {
@@ -367,7 +410,7 @@
   }
 }
 
-// scrol customization
+// scrol customization (table scroll)
 .wjs-dbtable__table-wrapper.wjs-scroll { //border: 3px dotted blue;
   .wjs-scroll__content {
     // padding-bottom        : 20px;
@@ -388,15 +431,40 @@
   }
 }
 
-input[type='checkbox'] {
+// scrol customization (filter-list scroll)
+.wjs-dbtable__filters-list-wrapper.wjs-scroll { //border: 3px dotted blue;
+  .wjs-scroll__content {
+    // padding-bottom        : 20px;
+  }
+  .wjs-scroll__wrapper_bottom {
+    width                 : 100%;
+    left                  : 0;
+    background-color      : white;
+    // border-top            : 1px solid lightgrey;
+  }
+  .wjs-dbtable__table {
+    .wjs-scroll__wrapper_right {
+      height              : 100%;
+      top                 : 0;
+      background-color    : white;
+      // border-left         : 1px solid lightgrey;
+    }
+  }
+}
+
+// checkbox customisation
+.wjs-dbtable__body-cell_checkbox [type='checkbox'],
+.wjs-dbtable__header-cell [type='checkbox'] {
   display: none;
 }
 
-input[type='checkbox'] + label {
+.wjs-dbtable__body-cell_checkbox [type='checkbox'] + label,
+.wjs-dbtable__header-cell [type='checkbox'] + label {
   cursor: pointer;
 }
 
-input[type='checkbox'] + label::before {
+.wjs-dbtable__body-cell_checkbox [type='checkbox'] + label::before,
+.wjs-dbtable__header-cell [type='checkbox'] + label::before {
   content: '';
   display: inline-block;
   height: 26px !important;
@@ -407,6 +475,7 @@ input[type='checkbox'] + label::before {
   background-repeat: no-repeat;
 }
 
-input[type='checkbox']:checked + label:before {
+.wjs-dbtable__body-cell_checkbox [type='checkbox']:checked + label:before,
+.wjs-dbtable__header-cell [type='checkbox']:checked + label:before {
   background-position: -36.7px -20px;
 }
