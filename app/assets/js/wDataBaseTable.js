@@ -171,6 +171,7 @@ initLocalStorage('clientTable');
 
     if ( !('h' in tableObj) ) tableObj.h = [];
     if ( !('cc' in tableObj) ) tableObj.cc = [];
+    if ( !('cf' in tableObj) ) tableObj.cf = [];
 
     localStorage.setItem( tableId, JSON.stringify(tableObj) );
   }
@@ -1189,7 +1190,20 @@ initLocalStorage('clientTable');
                                .querySelectorAll('.wjs-dbtable__filters-list-item input[type="checkbox"]'),
         isChecked    = checkbox.checked;
 
+    let filterGroup = checkbox.closest('.wjs-dbtable__header-cell')
+                              .dataset.source;
+
+    let pos = checkboxId.match('-filterchbox-').index;
+    let filterName = checkboxId.slice( (pos + 13) );
+
     let tableObj   = JSON.parse( localStorage.getItem(tableId) );
+
+    let tempSet;
+    if ( tableObj.cf[filterGroup] ) {
+      tempSet = new Set(tableObj.cf[filterGroup]);
+    } else {
+      tempSet = new Set();
+    }
 
     if (checkboxId.endsWith('-filterchbox-All')) {
       checkboxArr.forEach( item => item.checked = isChecked );
