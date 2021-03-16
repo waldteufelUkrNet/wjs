@@ -770,16 +770,17 @@ a, a:hover {
   background-color: white;
 }
 
-.wjs-dbtable__filters-list-wrapper.wjs-scroll .wjs-scroll__wrapper_bottom {
-  width: 100%;
-  left: 0;
-  background-color: white;
+.wjs-dbtable__filters-list-wrapper.wjs-scroll .wjs-scroll__wrapper.wjs-scroll__wrapper_right {
+  width: 10px;
 }
 
-.wjs-dbtable__filters-list-wrapper.wjs-scroll .wjs-dbtable__table .wjs-scroll__wrapper_right {
-  height: 100%;
-  top: 0;
-  background-color: white;
+.wjs-dbtable__filters-list-wrapper.wjs-scroll .wjs-scroll__wrapper.wjs-scroll__wrapper_right .wjs-scroll__line.wjs-scroll__line_right {
+  width: 6px;
+}
+
+.wjs-dbtable__filters-list-wrapper.wjs-scroll .wjs-scroll__wrapper.wjs-scroll__wrapper_right .wjs-scroll__line.wjs-scroll__line_right .wjs-scroll__thumb.wjs-scroll__thumb_right {
+  width: 6px;
+  border-color: transparent;
 }
 
 .wjs-dbtable__body-cell_checkbox [type='checkbox'],

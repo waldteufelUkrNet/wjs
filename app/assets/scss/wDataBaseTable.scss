@@ -432,22 +432,16 @@
 }
 
 // scrol customization (filter-list scroll)
-.wjs-dbtable__filters-list-wrapper.wjs-scroll { //border: 3px dotted blue;
-  .wjs-scroll__content {
-    // padding-bottom        : 20px;
-  }
-  .wjs-scroll__wrapper_bottom {
-    width                 : 100%;
-    left                  : 0;
-    background-color      : white;
-    // border-top            : 1px solid lightgrey;
-  }
-  .wjs-dbtable__table {
-    .wjs-scroll__wrapper_right {
-      height              : 100%;
-      top                 : 0;
-      background-color    : white;
-      // border-left         : 1px solid lightgrey;
+
+.wjs-dbtable__filters-list-wrapper.wjs-scroll {
+  .wjs-scroll__wrapper.wjs-scroll__wrapper_right {
+    width: 10px;
+    .wjs-scroll__line.wjs-scroll__line_right {
+      width: 6px;
+      .wjs-scroll__thumb.wjs-scroll__thumb_right {
+        width: 6px;
+        border-color: transparent;
+      }
     }
   }
 }

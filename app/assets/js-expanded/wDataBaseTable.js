@@ -4,7 +4,7 @@
 /* ↓↓↓ variables declaration ↓↓↓ */
   let db = {};
   let headerURL = '../db/clientsDB-headers.txt';
-  let bodyURL = '../db/clientsDB-1000.txt';
+  let bodyURL = '../db/clientsDB-100000.txt';
 /* ↑↑↑ variables declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -55,6 +55,9 @@ initLocalStorage('clientTable');
 /* ↓↓↓ appointment of event handlers ↓↓↓ */
   window.addEventListener('resize', function(){
     normalizeTableMeasurements('clientTable');
+
+    // закриття списку фільтрів
+    closeFiltersList();
   });
 
   document.querySelector('#clientTable').addEventListener('click', function(event){
@@ -101,14 +104,26 @@ initLocalStorage('clientTable');
       buildFiltersList(event.target);
     }
 
+    // close filters list
+    if ( !event.target.closest('.wjs-dbtable__filters-list-wrapper')
+         && !event.target.closest('.wjs-dbtable__btn.wjs-dbtable__btn_options')
+         && document.querySelector('.wjs-dbtable__filters-list-wrapper') ) {
+      closeFiltersList();
+    }
   });
 
   document.querySelector('#clientTable').addEventListener('change', function(event){
-    // логіка пташок
+    // логіка пташок для елементів таблиці
     if ( event.target.getAttribute('type') == 'checkbox'
         && (event.target.closest('.wjs-dbtable__body-cell_checkbox')
             || event.target.closest('.wjs-dbtable__header-cell_checkbox') ) ) {
       handleDBCheckboxes('clientTable', event.target);
+    }
+
+    // логіка пташок для фільтрів
+    if ( event.target.getAttribute('type') == 'checkbox'
+        && event.target.closest('.wjs-dbtable__filters-list-item') ) {
+      handleFiltersCheckboxes('clientTable', event.target);
     }
   });
 
@@ -147,8 +162,9 @@ initLocalStorage('clientTable');
     //       d: "" //      display  : true
     //       v: [] //      values   : ["status1", "satus2", ...]
     //     }       //    }
-    //   ],        //  ]
-    //   cc: []    //  checkedCheckboxes: [1,2,3 ... n]
+    //   ],        //  ],
+    //   cc: []    //  checkedCheckboxes : [1,2,3 ... n]
+    //   cf: []    //  closedFilters : ['filter1', 'filter2']
     // };
 
     let tableObj = JSON.parse( localStorage.getItem(tableId) ) || {};
@@ -1071,13 +1087,23 @@ initLocalStorage('clientTable');
   }
 
   function buildFiltersList(btn) {
+
     let tableElement   = btn.closest('.wjs-dbtable'),
         tableId        = tableElement.getAttribute('id'),
         tHeaderCell    = btn.closest('.wjs-dbtable__header-cell'),
-        innerContainer = tableElement.querySelector('.wjs-scroll__content-wrapper .wjs-scroll'),
+        innerContainer = tableElement.querySelector('.wjs-dbtable__table-wrapper .wjs-scroll__content-wrapper .wjs-scroll__content .wjs-dbtable__table .wjs-dbtable__theader + .wjs-scroll'),
         source         = tHeaderCell.dataset.source,
         tableObj       = JSON.parse( localStorage.getItem(tableId) ),
         headers        = tableObj.h;
+
+    if ( tHeaderCell.querySelector('.wjs-dbtable__filters-list-wrapper') ) {
+      closeFiltersList();
+      return
+    }
+
+    if ( document.querySelector('.wjs-dbtable__filters-list-wrapper') ) {
+      closeFiltersList();
+    }
 
     for (let i = 0; i < headers.length; i++) {
       if (headers[i].s == source) {
@@ -1088,8 +1114,8 @@ initLocalStorage('clientTable');
                         <div class="wjs-scroll__content">\
                           <ul class="wjs-dbtable__filters-list">\
                             <li class="wjs-dbtable__filters-list-item">\
-                                <input type="checkbox" id="' + tableId + '-filterchbox-All">\
-                                <label for="' + tableId + '-filterchbox-All">\
+                                <input type="checkbox" id="' + tableId + '-' + source + '-filterchbox-All">\
+                                <label for="' + tableId + '-' + source + '-filterchbox-All">\
                                   <span>Все</span>\
                                 </label>\
                               </label>\
@@ -1103,13 +1129,12 @@ initLocalStorage('clientTable');
 
         // заповнення структури рештою елементів з фільтрами
         let tempHeadersArr = headers[i].v.sort();
-        console.log("tempHeadersArr", tempHeadersArr);
         let list = tHeaderCell.querySelector('.wjs-dbtable__filters-list');
         for (let i = 0; i < tempHeadersArr.length; i++ ) {
           let html = '\
                       <li class="wjs-dbtable__filters-list-item">\
-                          <input type="checkbox" id="' + tableId + '-filterchbox-' + tempHeadersArr[i] + '">\
-                          <label for="' + tableId + '-filterchbox-' + tempHeadersArr[i] + '">\
+                          <input type="checkbox" id="' + tableId + '-' + source + '-filterchbox-' + tempHeadersArr[i] + '">\
+                          <label for="' + tableId + '-' + source + '-filterchbox-' + tempHeadersArr[i] + '">\
                             <span>' + tempHeadersArr[i] + '</span>\
                           </label>\
                         </label>\
@@ -1123,7 +1148,6 @@ initLocalStorage('clientTable');
             filtersList        = tHeaderCell.querySelector('.wjs-dbtable__filters-list'),
             currentHeight      = filtersList.offsetHeight,
             maxAviableHeight   = innerContainer.clientHeight;
-        console.log(currentHeight + '/' + maxAviableHeight);
 
         if (currentHeight > maxAviableHeight) {
           filtersListWrapper.style.height = maxAviableHeight + 'px';
@@ -1132,9 +1156,52 @@ initLocalStorage('clientTable');
         }
 
         // кастомний скрол
-        wSetScroll(filtersListWrapper, {bottom:false, right:true})
+        wSetScroll(filtersListWrapper, {right:true, overflowXHidden:true})
 
+        break
+      }
+    }
 
+    // перевірка включених/виключених фільтрів
+    let filterInputsArr = tHeaderCell.querySelectorAll('.wjs-dbtable__filters-list-wrapper input');
+
+    for (let i = 0; i < filterInputsArr.length; i++) {
+      if (1) {
+        filterInputsArr[i].checked = true;
+      } else {
+        filterInputsArr[0].checked = false;
+        filterInputsArr[i].checked = false;
+      }
+    }
+  }
+
+  function closeFiltersList() {
+    if ( document.querySelector('.wjs-dbtable__filters-list-wrapper') ) {
+      let list = document.querySelectorAll('.wjs-dbtable__filters-list-wrapper');
+      list.forEach( item => item.remove() );
+    }
+  }
+
+  function handleFiltersCheckboxes(tableId, checkbox) {
+    let tableElement = checkbox.closest('.wjs-dbtable'),
+        checkboxId   = checkbox.getAttribute('id'),
+        checkboxArr  = checkbox.closest('.wjs-dbtable__filters-list')
+                               .querySelectorAll('.wjs-dbtable__filters-list-item input[type="checkbox"]'),
+        isChecked    = checkbox.checked;
+
+    let tableObj   = JSON.parse( localStorage.getItem(tableId) );
+
+    if (checkboxId.endsWith('-filterchbox-All')) {
+      checkboxArr.forEach( item => item.checked = isChecked );
+    } else {
+      //
+    }
+
+    // якщо усе відмічено - поставити головну пташку на "все"
+    checkboxArr[0].checked = true;
+    for (let i = 1; i < checkboxArr.length; i++) {
+      if (!checkboxArr[i].checked) {
+        checkboxArr[0].checked = false;
         break
       }
     }

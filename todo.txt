@@ -5,19 +5,6 @@
 // функції/змінні з префіксом w
 
 
-вигляд LS:
-tableId = {
-  h: [      //  headers: [
-    {       //    {
-      n: "" //      name     : "id",
-      b: [] //      buttons  : ["search", "close", "sort"],
-      s: "" //      source   : "id",
-      d: "" //      display  : true
-    }       //    }
-  ],        //  ],
-  cc: []    //  checkedCheckboxes: [1,2,3 ... n]
-};
-
 елемент з БД:
 {
 "checkbox"         : true,
