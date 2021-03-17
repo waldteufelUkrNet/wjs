@@ -189,6 +189,10 @@ a, a:hover {
   position: relative;
 }
 
+.wjs-dbtable__label_filters {
+  display: none;
+}
+
 .wjs-dbtable__label_discols {
   display: none;
 }
@@ -254,10 +258,7 @@ a, a:hover {
 }
 
 .wjs-dbtable__filters-wrapper {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
+  display: none;
   -webkit-flex-wrap: wrap;
       -ms-flex-wrap: wrap;
           flex-wrap: wrap;
@@ -296,6 +297,10 @@ a, a:hover {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+}
+
+.wjs-dbtable__filter-item span {
+  text-decoration: line-through;
 }
 
 .wjs-dbtable__filter-close-btn, .wjs-dbtable__discols-close-btn {
@@ -525,12 +530,12 @@ a, a:hover {
 
 .wjs-dbtable__btn_sort_active_down {
   background-image: url("../img/caret-active-down.png");
-  background-color: lightgrey;
+  background-color: grey;
 }
 
 .wjs-dbtable__btn_sort_active_up {
   background-image: url("../img/caret-active-up.png");
-  background-color: lightgrey;
+  background-color: grey;
 }
 
 .wjs-dbtable__btn_options {
@@ -541,6 +546,10 @@ a, a:hover {
           background-size: 13px 13px;
   background-position: center center;
   background-repeat: no-repeat;
+}
+
+.wjs-dbtable__btn_options_active {
+  background-color: grey;
 }
 
 .wjs-dbtable__filters-list-wrapper {

@@ -22,6 +22,9 @@
   }
   &__label {
     position: relative;
+    &_filters {
+      display: none;
+    }
     &_discols {
       display: none;
       & + .wjs-dbtable__items-amount {
@@ -75,7 +78,7 @@
     }
   }
   &__filters-wrapper {
-    display               : flex;
+    display               : none;
     flex-wrap             : wrap;
   }
   &__discols-wrapper {
@@ -94,6 +97,11 @@
     span {
       margin              : 0 10px;
       user-select         : none;
+    }
+  }
+  &__filter-item {
+    span {
+      text-decoration: line-through;
     }
   }
   &__filter-close-btn,
@@ -233,11 +241,11 @@
       background-repeat   : no-repeat;
       &_active_down {
         background-image  : url('../img/caret-active-down.png');
-        background-color  : lightgrey;
+        background-color  : grey;
       }
       &_active_up {
         background-image  : url('../img/caret-active-up.png');
-        background-color  : lightgrey;
+        background-color  : grey;
       }
     }
     &_options {
@@ -247,6 +255,9 @@
       background-size     : 13px 13px;
       background-position : center center;
       background-repeat   : no-repeat;
+      &_active {
+        background-color  : grey;
+      }
     }
   }
 

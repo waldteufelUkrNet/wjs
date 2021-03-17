@@ -43,6 +43,7 @@ initLocalStorage('clientTable');
     } else {
       // заголoвки таблиці записані в ls, будуємо таблицю
       showDisabledColumnMarkerAtStartUp('clientTable');
+      addAllFilterMarkersAtStartUp('clientTable');
       buildTableHeader('clientTable');
 
       // заголовки таблиці готові, вантажимо тіло
@@ -164,14 +165,14 @@ initLocalStorage('clientTable');
     //     }       //    }
     //   ],        //  ],
     //   cc: []    //  checkedCheckboxes : [1,2,3 ... n]
-    //   cf: []    //  closedFilters : ['filter1', 'filter2']
+    //   cf: {}    //  closedFilters : { filterGroup1: [filterName1, ...], ...}
     // };
 
     let tableObj = JSON.parse( localStorage.getItem(tableId) ) || {};
 
     if ( !('h' in tableObj) ) tableObj.h = [];
     if ( !('cc' in tableObj) ) tableObj.cc = [];
-    if ( !('cf' in tableObj) ) tableObj.cf = [];
+    if ( !('cf' in tableObj) ) tableObj.cf = {};
 
     localStorage.setItem( tableId, JSON.stringify(tableObj) );
   }
@@ -844,7 +845,7 @@ initLocalStorage('clientTable');
    * @param  {[String]} tableId [ідентифікатор таблиці]
    */
   function showDisabledColumnMarkerAtStartUp(tableId) {
-    let tableData = JSON.parse( localStorage.getItem('clientTable') );
+    let tableData = JSON.parse( localStorage.getItem(tableId) );
 
     for (let i = 0; i < tableData.h.length; i++) {
       if (!tableData.h[i].d) {
@@ -1087,6 +1088,10 @@ initLocalStorage('clientTable');
     localStorage.setItem( tableId, JSON.stringify(tableObj) );
   }
 
+  /**
+   * [buildFiltersList будує список фільтрів для даної колонки]
+   * @param {[DOM-Object]} btn [кнопка "меню" в чарунці шапки]
+   */
   function buildFiltersList(btn) {
 
     let tableElement   = btn.closest('.wjs-dbtable'),
@@ -1097,11 +1102,11 @@ initLocalStorage('clientTable');
         tableObj       = JSON.parse( localStorage.getItem(tableId) ),
         headers        = tableObj.h;
 
+    // закриття списку при подвійному кліку або іншого списку
     if ( tHeaderCell.querySelector('.wjs-dbtable__filters-list-wrapper') ) {
       closeFiltersList();
       return
     }
-
     if ( document.querySelector('.wjs-dbtable__filters-list-wrapper') ) {
       closeFiltersList();
     }
@@ -1167,7 +1172,7 @@ initLocalStorage('clientTable');
     let filterInputsArr = tHeaderCell.querySelectorAll('.wjs-dbtable__filters-list-wrapper input');
 
     for (let i = 0; i < filterInputsArr.length; i++) {
-      if (1) {
+      if ( !tableObj.cf[source] || !tableObj.cf[source].includes( getFilterId(filterInputsArr[i]) ) ) {
         filterInputsArr[i].checked = true;
       } else {
         filterInputsArr[0].checked = false;
@@ -1176,6 +1181,9 @@ initLocalStorage('clientTable');
     }
   }
 
+  /**
+   * [closeFiltersList закриття списку фільтрів]
+   */
   function closeFiltersList() {
     if ( document.querySelector('.wjs-dbtable__filters-list-wrapper') ) {
       let list = document.querySelectorAll('.wjs-dbtable__filters-list-wrapper');
@@ -1183,20 +1191,22 @@ initLocalStorage('clientTable');
     }
   }
 
+  /**
+   * [handleFiltersCheckboxes обробка кліків по чекбоксах, запис фільтрів у LS]
+   * @param  {[String]}     tableId  [ідентифікатор таблиці]
+   * @param  {[DOM-Object]} checkbox [чекбокс зі списку фільтрів]
+   */
   function handleFiltersCheckboxes(tableId, checkbox) {
     let tableElement = checkbox.closest('.wjs-dbtable'),
         checkboxId   = checkbox.getAttribute('id'),
         checkboxArr  = checkbox.closest('.wjs-dbtable__filters-list')
                                .querySelectorAll('.wjs-dbtable__filters-list-item input[type="checkbox"]'),
-        isChecked    = checkbox.checked;
-
-    let filterGroup = checkbox.closest('.wjs-dbtable__header-cell')
-                              .dataset.source;
-
-    let pos = checkboxId.match('-filterchbox-').index;
-    let filterName = checkboxId.slice( (pos + 13) );
-
-    let tableObj   = JSON.parse( localStorage.getItem(tableId) );
+        isChecked    = checkbox.checked,
+        tHeaderCell  = checkbox.closest('.wjs-dbtable__header-cell'),
+        menuButton   = tHeaderCell.querySelector('.wjs-dbtable__btn_options'),
+        filterGroup  = tHeaderCell.dataset.source,
+        filterName   = checkboxId.slice( (checkboxId.match('-filterchbox-').index + 13) ),
+        tableObj     = JSON.parse( localStorage.getItem(tableId) );
 
     let tempSet;
     if ( tableObj.cf[filterGroup] ) {
@@ -1206,19 +1216,123 @@ initLocalStorage('clientTable');
     }
 
     if (checkboxId.endsWith('-filterchbox-All')) {
-      checkboxArr.forEach( item => item.checked = isChecked );
+      checkboxArr.forEach( item => {
+        item.checked = isChecked;
+      });
+      if (isChecked) {
+        tempSet.clear();
+      } else {
+        checkboxArr.forEach( item => {
+          tempSet.add( getFilterId(checkbox) );
+        } );
+      }
     } else {
-      //
+      if (isChecked) {
+        tempSet.delete(filterName);
+      } else {
+        tempSet.add(filterName);
+        addFilterMarker(tableId, filterGroup, filterName);
+      }
     }
+    tableObj.cf[filterGroup] = Array.from(tempSet);
+    localStorage.setItem( tableId, JSON.stringify(tableObj) );
 
-    // якщо усе відмічено - поставити головну пташку на "все"
+    // якщо усе відмічено - поставити головну пташку на "все" та прибрати
+    // підсвітку кнопки меню
     checkboxArr[0].checked = true;
+    menuButton.classList.remove('wjs-dbtable__btn_options_active');
     for (let i = 1; i < checkboxArr.length; i++) {
       if (!checkboxArr[i].checked) {
         checkboxArr[0].checked = false;
+        menuButton.classList.add('wjs-dbtable__btn_options_active');
         break
       }
     }
   }
+
+  /**
+   * [getFilterId шукає повний id фільтра і обрізає його до потрібного стану]
+   * @param  {[DOM-Object]} checkbox [чекбокс зі списку фільтрів]
+   * @return {[String]}              [id чекбокса]
+   */
+  function getFilterId(checkbox) {
+    return checkbox.getAttribute('id').slice( (checkbox.getAttribute('id').match('-filterchbox-').index + 13) )
+  }
+
+  function addFilterMarker(tableId, filterGroup, filterName) {
+    let filtersWrapper      = document.querySelector('#' + tableId + ' .wjs-dbtable__filters-wrapper'),
+        filtersWrapperLabel = filtersWrapper.previousElementSibling,
+        tableObj          = JSON.parse( localStorage.getItem(tableId) );
+
+    let groupName;
+    for (let i = 0; i < tableObj.h.length; i++) {
+      if ( tableObj.h[i].s == filterGroup ) {
+        groupName = tableObj.h[i].n;
+        break
+      }
+    }
+
+    let html = '\
+            <div class="wjs-dbtable__filter-item" data-filtergroup="' + filterGroup + ' data-filtername="' + filterName + '">\
+              <span>' + groupName + ': ' + filterName + '</span>\
+              <button type="button" class="wjs-dbtable__filter-close-btn"></buton>\
+            </div>\
+    ';
+
+    filtersWrapper.style.display = 'flex';
+    filtersWrapperLabel.style.display = 'block';
+    filtersWrapper.insertAdjacentHTML('beforeEnd', html);
+
+    let allCloseMarker = document.querySelector('#' + tableId + ' .wjs-dbtable__filter-item[data-role="closeAll"]');
+    if (!allCloseMarker) {
+      let html = '\
+              <div class="wjs-dbtable__filter-item" data-role="closeAll">\
+                <span style="text-decoration:none">reset all filters</span>\
+                <button type="button" class="wjs-dbtable__filter-close-btn"></buton>\
+              </div>\
+      ';
+      filtersWrapper.insertAdjacentHTML('afterBegin', html);
+    }
+  }
+
+  function addAllFilterMarkers(tableId, filterGroup) {
+    console.log("tableId", tableId);
+    console.log("filterGroup", filterGroup);
+  }
+
+  function addAllFilterMarkersAtStartUp(tableId) {
+
+    let tableData = JSON.parse( localStorage.getItem(tableId) );
+
+    // tableId = {
+    //   h: [      //  headers: [
+    //     {       //    {
+    //       n: "" //      name     : "id",
+    //       b: [] //      buttons  : ["search", "close", "sort"],
+    //       s: "" //      source   : "id",
+    //       d: "" //      display  : true
+    //       v: [] //      values   : ["status1", "satus2", ...]
+    //     }       //    }
+    //   ],        //  ],
+    //   cc: []    //  checkedCheckboxes : [1,2,3 ... n]
+    //   cf: {}    //  closedFilters : { filterGroup1: [filterName1, ...], ...}
+    // };
+
+    if (tableData.cf) {
+      for (let key in tableData.cf) {
+        console.log(key);
+        console.log(tableData.cf[key]);
+        if (tableData.cf[key].length) {
+          tableData.cf[key].forEach( item => {
+            if (item == 'All') return;
+            addFilterMarker(tableId, key, item);
+          });
+        }
+      }
+    }
+  }
+
+  function deleteFilterMarker(tableId, filterGroup, filterName) {}
+  function deleteAllFilterMarkers(tableId, filterGroup) {}
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
