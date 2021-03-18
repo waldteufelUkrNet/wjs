@@ -446,10 +446,12 @@ initLocalStorage('clientTable');
     }
     theader.innerHTML = htmlStr;
 
-    // підсвічування тупу сортування
+    // підсвічування типу сортування
     let activeHeaderCell = theader.querySelector('.wjs-dbtable__header-cell[data-source="id"]'),
         activeSortButton = activeHeaderCell.querySelector('.wjs-dbtable__btn_sort');
     activeSortButton.classList.add('wjs-dbtable__btn_sort_active_down');
+
+    highlightMenuBtns(tableId);
   }
 
   /**
@@ -927,7 +929,7 @@ initLocalStorage('clientTable');
   }
 
   /**
-   * [handleDBCheckboxes обробка кліків по чекбоксах]
+   * [handleDBCheckboxes обробка кліків по чекбоксах: візуалізація + запис в ls]
    * @param  {[String]}     tableId [ідентифікатор таблиці]
    * @param  {[DOM-Object]} checkbox [DOM-елемент (чекбокс)]
    * @return {[Array]}      [масив ідентифікаторів помічених чекбоксів]
@@ -1335,6 +1337,8 @@ initLocalStorage('clientTable');
                                   '[data-filtername="' + filterName + '"]')
                   .remove();
     }
+
+    normalizeTableMeasurements(tableId);
   }
 
   function addAllFilterMarkers(tableId, filterGroup) {
@@ -1350,28 +1354,6 @@ initLocalStorage('clientTable');
         } );
       }
     }
-
-    //<div class="wjs-dbtable__filter-item"
-    //     data-filtergroup="networkStatus"
-    //     data-filtername="online">
-    //  <span>Login: online</span>
-    //  <button type="button" class="wjs-dbtable__filter-close-btn"></button>
-    //</div>
-
-    // tableId = {
-    //   h: [      //  headers: [
-    //     {       //    {
-    //       n: "" //      name     : "id",
-    //       b: [] //      buttons  : ["search", "close", "sort"],
-    //       s: "" //      source   : "id",
-    //       d: "" //      display  : true
-    //       v: [] //      values   : ["status1", "satus2", ...]
-    //     }       //    }
-    //   ],        //  ],
-    //   cc: []    //  checkedCheckboxes : [1,2,3 ... n]
-    //   cf: {}    //  closedFilters : { filterGroup1: [filterName1, ...], ...}
-    // };
-
   }
 
   function deleteAllFilterMarkers(tableId, filterGroup) {
@@ -1439,6 +1421,18 @@ initLocalStorage('clientTable');
     }
 
     localStorage.setItem( tableId, JSON.stringify(tableObj) );
+  }
+
+  function highlightMenuBtns(tableId) {
+    let tableElement = document.getElementById(tableId),
+        tableObj     = JSON.parse( localStorage.getItem(tableId) );
+
+    for (let key in tableObj.cf) {
+      if (tableObj.cf[key].length) {
+        let tHeaderCell = tableElement.querySelector('.wjs-dbtable__header-cell[data-source="' + key + '"]');
+        tHeaderCell.querySelector('.wjs-dbtable__btn_options').classList.add('wjs-dbtable__btn_options_active');
+      }
+    }
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
