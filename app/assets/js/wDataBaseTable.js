@@ -111,6 +111,11 @@ initLocalStorage('clientTable');
          && document.querySelector('.wjs-dbtable__filters-list-wrapper') ) {
       closeFiltersList();
     }
+
+    // close filter markers
+    if ( event.target.closest('.wjs-dbtable__filter-close-btn') ) {
+      handleFilterMarkerClicks(event.target);
+    }
   });
 
   document.querySelector('#clientTable').addEventListener('change', function(event){
@@ -1221,14 +1226,21 @@ initLocalStorage('clientTable');
       });
       if (isChecked) {
         tempSet.clear();
+        deleteAllFilterMarkers(tableId, filterGroup);
       } else {
         checkboxArr.forEach( item => {
-          tempSet.add( getFilterId(checkbox) );
+          if ( getFilterId(item) == 'All' ) {
+            return;
+          } else {
+            tempSet.add( getFilterId(item) );
+          }
         } );
+        addAllFilterMarkers(tableId, filterGroup);
       }
     } else {
       if (isChecked) {
         tempSet.delete(filterName);
+        deleteFilterMarker(tableId, filterGroup, filterName);
       } else {
         tempSet.add(filterName);
         addFilterMarker(tableId, filterGroup, filterName);
@@ -1259,6 +1271,12 @@ initLocalStorage('clientTable');
     return checkbox.getAttribute('id').slice( (checkbox.getAttribute('id').match('-filterchbox-').index + 13) )
   }
 
+  /**
+   * [addFilterMarker додавання одиничного маркера фільтру]
+   * @param {[String]} tableId [ідентифікатор таблиці]
+   * @param {[String]} filterGroup [назва групи фільтрів]
+   * @param {[String]} filterName  [назва конкретного фільтру]
+   */
   function addFilterMarker(tableId, filterGroup, filterName) {
     let filtersWrapper      = document.querySelector('#' + tableId + ' .wjs-dbtable__filters-wrapper'),
         filtersWrapperLabel = filtersWrapper.previousElementSibling,
@@ -1273,7 +1291,7 @@ initLocalStorage('clientTable');
     }
 
     let html = '\
-            <div class="wjs-dbtable__filter-item" data-filtergroup="' + filterGroup + ' data-filtername="' + filterName + '">\
+            <div class="wjs-dbtable__filter-item" data-filtergroup="' + filterGroup + '" data-filtername="' + filterName + '">\
               <span>' + groupName + ': ' + filterName + '</span>\
               <button type="button" class="wjs-dbtable__filter-close-btn"></buton>\
             </div>\
@@ -1295,14 +1313,50 @@ initLocalStorage('clientTable');
     }
   }
 
-  function addAllFilterMarkers(tableId, filterGroup) {
-    console.log("tableId", tableId);
-    console.log("filterGroup", filterGroup);
+  /**
+   * [deleteFilterMarker видалення одиничного маркера фільтру]
+   * @param {[String]} tableId [ідентифікатор таблиці]
+   * @param {[String]} filterGroup [назва групи фільтрів]
+   * @param {[String]} filterName  [назва конкретного фільтру]
+   */
+  function deleteFilterMarker(tableId, filterGroup, filterName) {
+    let tableElement        = document.getElementById(tableId),
+        filtersWrapper      = tableElement.querySelector('.wjs-dbtable__filters-wrapper'),
+        filtersWrapperLabel = filtersWrapper.previousElementSibling;
+
+    let markers = tableElement.querySelectorAll('.wjs-dbtable__filter-item');
+    if (markers.length == 2) {
+      filtersWrapper.innerHTML = '';
+      filtersWrapper.style.display = 'none';
+      filtersWrapperLabel.style.display = 'none';
+    } else {
+      tableElement.querySelector('.wjs-dbtable__filter-item' +
+                                  '[data-filtergroup="' + filterGroup + '"]' +
+                                  '[data-filtername="' + filterName + '"]')
+                  .remove();
+    }
   }
 
-  function addAllFilterMarkersAtStartUp(tableId) {
+  function addAllFilterMarkers(tableId, filterGroup) {
+    let tableElement        = document.getElementById(tableId),
+        filtersWrapper      = tableElement.querySelector('.wjs-dbtable__filters-wrapper'),
+        filtersWrapperLabel = filtersWrapper.previousElementSibling,
+        tableObj            = JSON.parse( localStorage.getItem(tableId) );
 
-    let tableData = JSON.parse( localStorage.getItem(tableId) );
+    for (let i = 0; i < tableObj.h.length; i++) {
+      if (tableObj.h[i].s == filterGroup) {
+        tableObj.h[i].v.forEach( item => {
+          addFilterMarker(tableId, filterGroup, item);
+        } );
+      }
+    }
+
+    //<div class="wjs-dbtable__filter-item"
+    //     data-filtergroup="networkStatus"
+    //     data-filtername="online">
+    //  <span>Login: online</span>
+    //  <button type="button" class="wjs-dbtable__filter-close-btn"></button>
+    //</div>
 
     // tableId = {
     //   h: [      //  headers: [
@@ -1318,10 +1372,28 @@ initLocalStorage('clientTable');
     //   cf: {}    //  closedFilters : { filterGroup1: [filterName1, ...], ...}
     // };
 
+  }
+
+  function deleteAllFilterMarkers(tableId, filterGroup) {
+    let tableElement        = document.getElementById(tableId),
+        markers             = tableElement.querySelectorAll('.wjs-dbtable__filter-item[data-filtergroup="' + filterGroup + '"]'),
+        filtersWrapper      = tableElement.querySelector('.wjs-dbtable__filters-wrapper'),
+        filtersWrapperLabel = filtersWrapper.previousElementSibling;
+    markers.forEach( item => item.remove() );
+
+    markers = tableElement.querySelectorAll('.wjs-dbtable__filter-item');
+    if (markers.length == 1) {
+      filtersWrapper.innerHTML = '';
+      filtersWrapper.style.display = 'none';
+      filtersWrapperLabel.style.display = 'none';
+    }
+  }
+
+  function addAllFilterMarkersAtStartUp(tableId) {
+    let tableData = JSON.parse( localStorage.getItem(tableId) );
+
     if (tableData.cf) {
       for (let key in tableData.cf) {
-        console.log(key);
-        console.log(tableData.cf[key]);
         if (tableData.cf[key].length) {
           tableData.cf[key].forEach( item => {
             if (item == 'All') return;
@@ -1332,7 +1404,41 @@ initLocalStorage('clientTable');
     }
   }
 
-  function deleteFilterMarker(tableId, filterGroup, filterName) {}
-  function deleteAllFilterMarkers(tableId, filterGroup) {}
+  function handleFilterMarkerClicks(button) {
+    let tableElement        = button.closest('.wjs-dbtable'),
+        tableId             = tableElement.getAttribute('id'),
+        currentMarker       = button.closest('.wjs-dbtable__filter-item'),
+        filtersWrapper      = tableElement.querySelector('.wjs-dbtable__filters-wrapper'),
+        filtersWrapperLabel = filtersWrapper.previousElementSibling,
+        tableObj            = JSON.parse( localStorage.getItem(tableId) );
+
+    if ( currentMarker.dataset.role == 'closeAll' ) {
+      filtersWrapper.innerHTML = '';
+      filtersWrapper.style.display = 'none';
+      filtersWrapperLabel.style.display = 'none';
+
+      for (let key in tableObj.cf) {
+        delete tableObj.cf[key];
+      }
+    } else {
+      currentMarker.remove();
+
+      let markers = tableElement.querySelectorAll('.wjs-dbtable__filter-item');
+      if (markers.length == 1) {
+        filtersWrapper.innerHTML = '';
+        filtersWrapper.style.display = 'none';
+        filtersWrapperLabel.style.display = 'none';
+      }
+
+      let filterGroup = currentMarker.dataset.filtergroup,
+          filterName  = currentMarker.dataset.filtername,
+          tempSet = new Set(tableObj.cf[filterGroup]);
+
+      tempSet.delete(filterName);
+      tableObj.cf[filterGroup] = Array.from(tempSet);
+    }
+
+    localStorage.setItem( tableId, JSON.stringify(tableObj) );
+  }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
