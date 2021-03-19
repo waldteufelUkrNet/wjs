@@ -71,5 +71,17 @@
            || key == 'Delete' || key == 'Backspace';
 
   }
+
+  /**
+   * [isObjectEmpty description]
+   * @param  {[Object]} obj [об1экт для перевірки на пустоту]
+   * @return {Boolean}      [результат перевірки]
+   */
+  function isObjectEmpty(obj) {
+    for (let key in obj) {
+      return false
+    }
+    return true
+  }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////

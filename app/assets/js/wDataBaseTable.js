@@ -1337,10 +1337,13 @@ initLocalStorage('clientTable');
                                   '[data-filtername="' + filterName + '"]')
                   .remove();
     }
-
-    normalizeTableMeasurements(tableId);
   }
 
+  /**
+   * [addAllFilterMarkers додає групу фільтрів (при натисненні на "Все")]
+   * @param {[String]} tableId [ідентифікатор таблиці]
+   * @param {[String]} filterGroup [назва групи фільтрів]
+   */
   function addAllFilterMarkers(tableId, filterGroup) {
     let tableElement        = document.getElementById(tableId),
         filtersWrapper      = tableElement.querySelector('.wjs-dbtable__filters-wrapper'),
@@ -1356,6 +1359,11 @@ initLocalStorage('clientTable');
     }
   }
 
+  /**
+   * [deleteAllFilterMarkers видаляє групу фільтрів (при натисненні на "Все")]
+   * @param {[String]} tableId [ідентифікатор таблиці]
+   * @param {[String]} filterGroup [назва групи фільтрів]
+   */
   function deleteAllFilterMarkers(tableId, filterGroup) {
     let tableElement        = document.getElementById(tableId),
         markers             = tableElement.querySelectorAll('.wjs-dbtable__filter-item[data-filtergroup="' + filterGroup + '"]'),
@@ -1371,6 +1379,11 @@ initLocalStorage('clientTable');
     }
   }
 
+  /**
+   * [addAllFilterMarkersAtStartUp додає включені фільтри на сторінку під час
+   * завантаження]
+   * @param {[String]} tableId [ідентифікатор таблиці]
+   */
   function addAllFilterMarkersAtStartUp(tableId) {
     let tableData = JSON.parse( localStorage.getItem(tableId) );
 
@@ -1386,6 +1399,12 @@ initLocalStorage('clientTable');
     }
   }
 
+  /**
+   * [handleFilterMarkerClicks обробляє кліки на маркерах фільтрів (візуал та
+   * запис в ls. Викликає функцію підсвітки кнопки меню)]
+   * @param  {[type]} button [description]
+   * @return {[type]}        [description]
+   */
   function handleFilterMarkerClicks(button) {
     let tableElement        = button.closest('.wjs-dbtable'),
         tableId             = tableElement.getAttribute('id'),
@@ -1419,18 +1438,30 @@ initLocalStorage('clientTable');
       tempSet.delete(filterName);
       tableObj.cf[filterGroup] = Array.from(tempSet);
     }
-
     localStorage.setItem( tableId, JSON.stringify(tableObj) );
+    highlightMenuBtns(tableId);
   }
 
+  /**
+   * [highlightMenuBtns перевіряє наявність фільтів і відповідно до результату
+   * підсвічує кнопки опцій у заголовках таблиці]
+   * @param {[String]} tableId [ідентифікатор таблиці]
+   */
   function highlightMenuBtns(tableId) {
     let tableElement = document.getElementById(tableId),
         tableObj     = JSON.parse( localStorage.getItem(tableId) );
 
-    for (let key in tableObj.cf) {
-      if (tableObj.cf[key].length) {
-        let tHeaderCell = tableElement.querySelector('.wjs-dbtable__header-cell[data-source="' + key + '"]');
-        tHeaderCell.querySelector('.wjs-dbtable__btn_options').classList.add('wjs-dbtable__btn_options_active');
+    if( isObjectEmpty(tableObj.cf) ) {
+      let tempBtnsArr = tableElement.querySelectorAll('.wjs-dbtable__btn_options_active');
+      tempBtnsArr.forEach( item => item.classList.remove('wjs-dbtable__btn_options_active') );
+    } else {
+      for (let key in tableObj.cf) {
+        let tHeaderCell  = tableElement.querySelector('.wjs-dbtable__header-cell[data-source="' + key + '"]');
+        if (tableObj.cf[key].length) {
+          tHeaderCell.querySelector('.wjs-dbtable__btn_options').classList.add('wjs-dbtable__btn_options_active');
+        } else {
+          tHeaderCell.querySelector('.wjs-dbtable__btn_options').classList.remove('wjs-dbtable__btn_options_active');
+        }
       }
     }
   }
