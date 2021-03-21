@@ -1,0 +1,16 @@
+@import "fonts";
+@import "reset";
+@import "style_general";
+@import "wMobileHeightFix";
+
+////////////////////////////////////////////////////////////////////////////////
+/* ↓↓↓ scroll-fix ↓↓↓ */
+// customisation
+.wjs-scrollfix {
+  &__content {
+    padding: 30px;
+    background-color: red;
+  }
+}
+/* ↑↑↑ scroll-fix ↑↑↑ */
+////////////////////////////////////////////////////////////////////////////////
