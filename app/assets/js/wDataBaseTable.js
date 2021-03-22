@@ -2,9 +2,24 @@
 // wDataBaseTable
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ variables declaration ↓↓↓ */
-  let db = {};
   let headerURL = '../db/clientsDB-headers.txt';
-  let bodyURL = '../db/clientsDB-100000.txt';
+  let bodyURL = '../db/clientsDB-1000.txt';
+
+  /**
+   * [db об'єкт, властивості якого (db[tableId]) бази даних конкретних таблиць]
+   * @type {Object}
+   */
+  let db = {}; // db[tableId] - база даних конкретної таблиці є властивістю об1єкта
+
+  /**
+   * [fingerprint Коли у списку фільтрів вмикати/вимикати фільтри, кожен раз
+   * викликати функцію фільтрації бази даних і перебудови таблиці буде
+   * контрпродуктивно. Краще при відкритті списку фільтрів робити "відбиток"
+   * фільтрів, а при закритті списку - порівнювати новий відбиток зі старим.
+   * Якщо вони різні - тоді один раз викликати функцію фільтрації БД]
+   * @type {String}
+   */
+  let fingerprint = '';
 /* ↑↑↑ variables declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -109,7 +124,7 @@ initLocalStorage('clientTable');
     if ( !event.target.closest('.wjs-dbtable__filters-list-wrapper')
          && !event.target.closest('.wjs-dbtable__btn.wjs-dbtable__btn_options')
          && document.querySelector('.wjs-dbtable__filters-list-wrapper') ) {
-      closeFiltersList();
+      closeFiltersList('clientTable');
     }
 
     // close filter markers
@@ -460,7 +475,8 @@ initLocalStorage('clientTable');
    * @param  {[Array ]} data        [дані, з яких будується таблиця]
    * @param  {[Number]} startValue  [порядковий номер запису в базі даних, з
    * якого починається побудова таблиці]
-   * @param  {[Number]} itemsAmount [кількість відображуваних елементів]
+   * @param  {[Number]} itemsAmount [кількість відображуваних елементів на одній
+   * сторінці]
    */
   function buildTableBody (tableId, data, startValue, itemsAmount) {
 
@@ -993,6 +1009,7 @@ initLocalStorage('clientTable');
       label.style.display = 'block';
       labelValue.style.display = 'block';
       labelValue.innerHTML = tempSet.size;
+      normalizeTableMeasurements(tableId);
     }
 
     return checkedArr;
@@ -1019,6 +1036,7 @@ initLocalStorage('clientTable');
     let label = tableElement.querySelector('.wjs-dbtable__label_selected');
     label.style.display = 'none';
     label.nextElementSibling.style.display = 'none';
+    normalizeTableMeasurements(tableId);
   }
 
   /**
@@ -1111,11 +1129,11 @@ initLocalStorage('clientTable');
 
     // закриття списку при подвійному кліку або іншого списку
     if ( tHeaderCell.querySelector('.wjs-dbtable__filters-list-wrapper') ) {
-      closeFiltersList();
+      closeFiltersList(tableId);
       return
     }
     if ( document.querySelector('.wjs-dbtable__filters-list-wrapper') ) {
-      closeFiltersList();
+      closeFiltersList(tableId);
     }
 
     for (let i = 0; i < headers.length; i++) {
@@ -1175,23 +1193,47 @@ initLocalStorage('clientTable');
       }
     }
 
-    // перевірка включених/виключених фільтрів
+    // перевірка включених/виключених фільтрів, побудова відбитку фільтрів
+    fingerprint = '';
     let filterInputsArr = tHeaderCell.querySelectorAll('.wjs-dbtable__filters-list-wrapper input');
-
     for (let i = 0; i < filterInputsArr.length; i++) {
       if ( !tableObj.cf[source] || !tableObj.cf[source].includes( getFilterId(filterInputsArr[i]) ) ) {
         filterInputsArr[i].checked = true;
+        fingerprint += 1;
       } else {
         filterInputsArr[0].checked = false;
         filterInputsArr[i].checked = false;
+        fingerprint += 0;
       }
+    }
+
+    if (!filterInputsArr[0].checked) {
+      fingerprint = '0' + fingerprint.slice(1);
     }
   }
 
   /**
    * [closeFiltersList закриття списку фільтрів]
    */
-  function closeFiltersList() {
+  function closeFiltersList(tableId) {
+
+    // порівняння відбитків, за потреби - запуск функції фільтрування БД та
+    // перебудови таблиці
+    let fingerprintForCompare = '';
+    let filterInputsArr = document.querySelectorAll('#' + tableId + ' .wjs-dbtable__filters-list-wrapper input');
+    filterInputsArr.forEach( item => {
+      if (item.checked) {
+        fingerprintForCompare += 1;
+      } else {
+        fingerprintForCompare += 0;
+      }
+    });
+
+    if (fingerprint != fingerprintForCompare) {
+      filterDB(tableId);
+    }
+
+    // закрити усі списки фільтрів в усіх таблицях
     if ( document.querySelector('.wjs-dbtable__filters-list-wrapper') ) {
       let list = document.querySelectorAll('.wjs-dbtable__filters-list-wrapper');
       list.forEach( item => item.remove() );
@@ -1440,6 +1482,7 @@ initLocalStorage('clientTable');
     }
     localStorage.setItem( tableId, JSON.stringify(tableObj) );
     highlightMenuBtns(tableId);
+    filterDB(tableId);
   }
 
   /**
@@ -1464,6 +1507,81 @@ initLocalStorage('clientTable');
         }
       }
     }
+  }
+
+  function filterDB(tableId) {
+    console.log("filter", tableId);
+
+    let filters = JSON.parse( localStorage.getItem(tableId) ).cf;
+
+    db[tableId + 'Filtered'] = [];
+
+    db[tableId].forEach( item => {
+      for (let key in filters) {
+        if( filters[key].includes(item[key]) ) {
+          break
+        }
+        db[tableId + 'Filtered'].push(item);
+      }
+    });
+    console.log("розмір відфільтрованої бази даних", db[tableId + 'Filtered'].length);
+    buildTableBody (tableId, db[tableId + 'Filtered']);
+
+
+    // tableObj.cf
+    // {
+    //   "status": [
+    //     "Charge Backs",
+    //     "No answer3",
+    //     "No answer1",
+    //     "Мусор Ретена",
+    //     "Замена"
+    //   ],
+    //   "networkStatus": [
+    //     "offline"
+    //   ],
+    //   "company": [
+    //     "Im_JETsignals",
+    //     "OneStep2",
+    //     "ORI",
+    //     "J-Signals"
+    //   ],
+    //   "brokerTeam": [
+    //     "RetTeam_2"
+    //   ]
+    // }
+
+    // db item
+    // {
+    //   "checkbox": true,
+    //   "id": 1,
+    //   "clientName": "Chas Jarrette",
+    //   "networkStatus": "offline",
+    //   "status": "Refund",
+    //   "specStatus": "sstatus2",
+    //   "phone": 96090456784,
+    //   "email": "chas.jarrette@pharyngoscopy.net",
+    //   "company": "EU_ALL",
+    //   "platform": "CFD",
+    //   "verification": "частичная верификация",
+    //   "country": "Lesotho",
+    //   "language": "русский",
+    //   "currency": "RUB",
+    //   "money": 28793,
+    //   "deposits": "с депозитами",
+    //   "activity": "не активен",
+    //   "isTradeAble": "доступна",
+    //   "accountType": "VIP",
+    //   "lastNote": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia quaerat voluptatum nisi sapiente veritatis quam sunt pariatur at, quidem, officiis.",
+    //   "dateRegistration": 1527742456616,
+    //   "lastActivity": 1553858222889,
+    //   "dateLastNote": 1572020263094,
+    //   "broker": "Diana Gornaya",
+    //   "brokerPosition": "retention",
+    //   "brokerTeam": "RetTeam_2"
+    // }
+
+
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////

@@ -27,8 +27,10 @@ function wSetScrollFix() {
       currentTop    = item.getBoundingClientRect().top,
       fixedTop      = item.dataset.scrollfix || 0,
       contentHeight = content.clientHeight;
+
   item.style.height = contentHeight + 'px';
   content.style.top = '0px';
+  content.style.left = '0px';
 
   if (currentTop <= fixedTop) {
     // fixed'
