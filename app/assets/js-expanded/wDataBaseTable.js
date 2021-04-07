@@ -1093,8 +1093,8 @@ initLocalStorage('clientTable');
   /**
    * [collectFilters перебирає базу даних, вишукуючи усі варіанти фільтрів, та
    * записує їх в ls]
-   * @param  {[String]}   tableId [ідентифікатор таблиці]
-   * @param  {[Array]} db [база даних]
+   * @param {[String]}   tableId [ідентифікатор таблиці]
+   * @param {[Array]} db [база даних]
    */
   function collectFilters(tableId, db) {
     let tableObj = JSON.parse( localStorage.getItem(tableId) );
@@ -1213,24 +1213,28 @@ initLocalStorage('clientTable');
   }
 
   /**
-   * [closeFiltersList закриття списку фільтрів]
+   * [closeFiltersList закриття списку фільтрів. Може викликатися без параметра,
+   * тоді закриває усі відкриті списки]
+   * @param {[String]} tableId [ідентифікатор таблиці]
    */
   function closeFiltersList(tableId) {
 
     // порівняння відбитків, за потреби - запуск функції фільтрування БД та
     // перебудови таблиці
-    let fingerprintForCompare = '';
-    let filterInputsArr = document.querySelectorAll('#' + tableId + ' .wjs-dbtable__filters-list-wrapper input');
-    filterInputsArr.forEach( item => {
-      if (item.checked) {
-        fingerprintForCompare += 1;
-      } else {
-        fingerprintForCompare += 0;
-      }
-    });
+    if (tableId) {
+      let fingerprintForCompare = '';
+      let filterInputsArr = document.querySelectorAll('#' + tableId + ' .wjs-dbtable__filters-list-wrapper input');
+      filterInputsArr.forEach( item => {
+        if (item.checked) {
+          fingerprintForCompare += 1;
+        } else {
+          fingerprintForCompare += 0;
+        }
+      });
 
-    if (fingerprint != fingerprintForCompare) {
-      filterDB(tableId);
+      if (fingerprint != fingerprintForCompare) {
+        filterDB(tableId);
+      }
     }
 
     // закрити усі списки фільтрів в усіх таблицях
