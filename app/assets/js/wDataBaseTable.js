@@ -246,16 +246,16 @@ initLocalStorage('clientTable');
     //             .wjs-scroll__content
     //               .wjs-dbtable__tbody
 
-    let tableElement        = document.getElementById(tableId),
-        outerContainer      = tableElement.querySelector('.wjs-dbtable__table-wrapper'),
-        outerScrollContent  = tableElement.querySelector('.wjs-dbtable__table-wrapper .wjs-scroll__content'),
-        innerContainer      = tableElement.querySelector('.wjs-scroll__content-wrapper .wjs-scroll'),
-        innerScrollContent  = tableElement.querySelector('.wjs-scroll__content-wrapper .wjs-scroll .wjs-scroll__content'),
-        table               = tableElement.querySelector('.wjs-dbtable__table'),
-        theader             = tableElement.querySelector('.wjs-dbtable__theader'),
-        hCells              = tableElement.querySelectorAll('.wjs-dbtable__header-cell'),
-        tbody               = tableElement.querySelector('.wjs-dbtable__tbody'),
-        bCells              = tableElement.querySelectorAll('.wjs-dbtable__body-cell');
+    let tableElement       = document.getElementById(tableId),
+        outerContainer     = tableElement.querySelector('.wjs-dbtable__table-wrapper'),
+        outerScrollContent = tableElement.querySelector('.wjs-dbtable__table-wrapper .wjs-scroll__content'),
+        innerContainer     = tableElement.querySelector('.wjs-scroll__content-wrapper .wjs-scroll'),
+        innerScrollContent = tableElement.querySelector('.wjs-scroll__content-wrapper .wjs-scroll .wjs-scroll__content'),
+        table              = tableElement.querySelector('.wjs-dbtable__table'),
+        theader            = tableElement.querySelector('.wjs-dbtable__theader'),
+        hCells             = tableElement.querySelectorAll('.wjs-dbtable__header-cell'),
+        tbody              = tableElement.querySelector('.wjs-dbtable__tbody'),
+        bCells             = tableElement.querySelectorAll('.wjs-dbtable__body-cell');
 
     /* ↓↓↓ outerContainer height ↓↓↓ */
       // розраховуємо точні розміри обгортки для таблиці, максимально-доступні у
@@ -361,6 +361,8 @@ initLocalStorage('clientTable');
       let height = outerContainer.clientHeight
                    - theader.offsetHeight
                    - getComputedStyle(outerScrollContent).paddingBottom.slice(0,-2);
+
+      console.log("height", height);
 
       innerScrollContent.style.height = height + 'px';
       innerScrollContent.style.width = innerContainer.clientWidth + 'px';
@@ -1308,6 +1310,9 @@ initLocalStorage('clientTable');
         break
       }
     }
+    // тут потрібен код для нормалізації скролів таблиці, але
+    // normalizeTableMeasurements(tableId) не працює
+
   }
 
   /**
@@ -1514,8 +1519,6 @@ initLocalStorage('clientTable');
   }
 
   function filterDB(tableId) {
-    console.log("filter", tableId);
-
     let filters = JSON.parse( localStorage.getItem(tableId) ).cf;
 
     db[tableId + 'Filtered'] = [];
@@ -1528,8 +1531,8 @@ initLocalStorage('clientTable');
         db[tableId + 'Filtered'].push(item);
       }
     });
-    console.log("розмір відфільтрованої бази даних", db[tableId + 'Filtered'].length);
-    buildTableBody (tableId, db[tableId + 'Filtered']);
+    // console.log("розмір відфільтрованої бази даних", db[tableId + 'Filtered'].length);
+    // buildTableBody (tableId, db[tableId + 'Filtered']);
 
 
     // tableObj.cf
