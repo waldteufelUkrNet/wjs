@@ -38,3 +38,16 @@
 .wjs-dbtable__loader-dots - хочу зробити анімацію ходу завантаження і обробки даних (щосекундне додавання крапки). Через setInterval не получається.
 
 при перемальовуванні таблиці довга затримка (до 10с на 1000 записів в таблиці).
+
+                                                     спочатку  | увімкнути | crtl+f5  |
+.wjs-dbtable__table-wrapper.wjs-scroll  // bottom // 1880x800  | 1880x761  | 1880x761 |
+
+  .wjs-scroll__content-wrapper                    // 1878x798  | 1878x759  | 1878x759 |
+    .wjs-scroll__content                          // 1878x815  | 1878x776  |  |
+      .wjs-dbtable__table                         // 5058x778  | 5058x778  |  |
+        .wjs-dbtable__theader                     // 5058x43   | 5058x43   |  |
+
+        .wjs-scroll                     // right  // 5058x735  | 5058x735  |  |
+          .wjs-scroll__content-wrapper            // 5058x735  | 5058x735  |  |
+            .wjs-scroll__content                  // 5075x735  | 5075x735  |  |
+              .wjs-dbtable__tbody                 // 5058x3850 | 5058x3850 |  |

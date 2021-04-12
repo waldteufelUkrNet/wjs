@@ -222,6 +222,7 @@ initLocalStorage('clientTable');
    * @param  {[String]} tableId [ідентифікатор таблиці]
    */
   function normalizeTableMeasurements(tableId) {
+    console.log("normalizeTableMeasurements");
 
     // html-структура:
     // --------------
@@ -361,8 +362,6 @@ initLocalStorage('clientTable');
       let height = outerContainer.clientHeight
                    - theader.offsetHeight
                    - getComputedStyle(outerScrollContent).paddingBottom.slice(0,-2);
-
-      console.log("height", height);
 
       innerScrollContent.style.height = height + 'px';
       innerScrollContent.style.width = innerContainer.clientWidth + 'px';
@@ -1408,6 +1407,7 @@ initLocalStorage('clientTable');
         } );
       }
     }
+    normalizeTableMeasurements(tableId);
   }
 
   /**
@@ -1428,6 +1428,7 @@ initLocalStorage('clientTable');
       filtersWrapper.style.display = 'none';
       filtersWrapperLabel.style.display = 'none';
     }
+    normalizeTableMeasurements(tableId);
   }
 
   /**
@@ -1587,7 +1588,6 @@ initLocalStorage('clientTable');
     //   "brokerPosition": "retention",
     //   "brokerTeam": "RetTeam_2"
     // }
-
 
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
