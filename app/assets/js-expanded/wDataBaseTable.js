@@ -377,8 +377,10 @@ ${bottomScrollLineHeight},
 ${aaa},
 ${innerContainer.offsetHeight}
 `);
-debugger
+
 innerContainer.setAttribute('style','');
+console.log("innerContainer", innerContainer);
+
       let height = outerContainer.clientHeight
                    - theader.offsetHeight
                    - getComputedStyle(outerScrollContent).paddingBottom.slice(0,-2);
@@ -388,7 +390,7 @@ innerContainer.setAttribute('style','');
       innerScrollContent.style.width = innerContainer.clientWidth + 'px';
     /* ↑↑↑ innerContainer height&width ↑↑↑ */
 
-      console.log(`${innerContainer.offsetHeight}`);
+console.log(`${innerContainer.offsetHeight}`);
 
     wSetScroll( document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
 
@@ -427,7 +429,8 @@ console.log(`${innerContainer.offsetHeight}`);
 console.log(`${innerContainer.offsetHeight}`);
 
     setTimeout(function(){
-      hideLoader(tableId);console.log(`${innerContainer.offsetHeight}`);
+      hideLoader(tableId);
+console.log(`${innerContainer.offsetHeight}`);
     },1000);
   }
 
