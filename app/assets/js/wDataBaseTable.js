@@ -334,7 +334,12 @@ initLocalStorage('clientTable');
       }
     /* ↑↑↑ left scroll review ↑↑↑ */
 
+    table.style.height = outerScrollContent.clientHeight + 'px';
+
     wSetScroll( document.querySelector('#' + tableId + ' .wjs-dbtable__table-wrapper.wjs-scroll'), {bottom:true,overvlowYHidden:true});
+
+    // виправлення висоти елементів при появі/зникненні фільтрів
+    table.style.height = outerContainer.clientHeight + 'px';
 
     // це для прибирання нижнього скролу, якщо після закриття колонки таблиця
     // повністю вписується в сторінку. Логічніше було б використовувати порівняння
@@ -351,23 +356,43 @@ initLocalStorage('clientTable');
       // таблиці). Це потрібно для появи прокрутки та коректного відображення
       // контенту
 
+      let bottomScrollLineHeight;
       if ( tableElement.querySelector('.wjs-scroll__wrapper_bottom') ) {
         // chrome і mozilla по різному сприймають padding-bottom. Якщо це зробити через
         // стилі, у chrom'a буде зайвий padding.
         outerScrollContent.style.paddingBottom = '20px';
+        bottomScrollLineHeight = tableElement.querySelector('.wjs-scroll__wrapper_bottom').offsetHeight;
       } else {
         outerScrollContent.style.paddingBottom = '0px';
+        bottomScrollLineHeight = 0;
       }
 
+      let aaa = table.clientHeight - theader.offsetHeight - bottomScrollLineHeight;
+      innerContainer.style.height = aaa + 'px';
+
+      console.log(`
+${table.clientHeight},
+${theader.offsetHeight},
+${bottomScrollLineHeight},
+${aaa},
+${innerContainer.offsetHeight}
+`);
+debugger
+innerContainer.setAttribute('style','');
       let height = outerContainer.clientHeight
                    - theader.offsetHeight
                    - getComputedStyle(outerScrollContent).paddingBottom.slice(0,-2);
 
-      innerScrollContent.style.height = height + 'px';
+      // innerContainer.style.height = height + 'px';
+      innerScrollContent.style.height = aaa + 'px';
       innerScrollContent.style.width = innerContainer.clientWidth + 'px';
     /* ↑↑↑ innerContainer height&width ↑↑↑ */
 
+      console.log(`${innerContainer.offsetHeight}`);
+
     wSetScroll( document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
+
+console.log(`${innerContainer.offsetHeight}`);
 
     /* ↓↓↓ right scroll positioning ↓↓↓ */
       let scrollWrapperRight = tableElement.querySelector('.wjs-scroll__wrapper_right');
@@ -399,8 +424,10 @@ initLocalStorage('clientTable');
       }
     /* ↑↑↑ right scroll positioning ↑↑↑ */
 
+console.log(`${innerContainer.offsetHeight}`);
+
     setTimeout(function(){
-      hideLoader(tableId);
+      hideLoader(tableId);console.log(`${innerContainer.offsetHeight}`);
     },1000);
   }
 
