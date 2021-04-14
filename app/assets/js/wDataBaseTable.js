@@ -1095,8 +1095,9 @@ initLocalStorage('clientTable');
         if (a[sortSource] == b[sortSource]) return 0;
       });
     }
+    console.log("db[tableId]", db[tableId]);
 
-    buildTableBody ({tableId, data:db[tableId], dataLength: data.length});
+    buildTableBody ({tableId, data: db[tableId], dataLength: db[tableId].length});
     normalizeTableMeasurements('clientTable');
   }
 
@@ -1555,6 +1556,7 @@ initLocalStorage('clientTable');
       filteredAmountLabel.style.display = 'none';
     } else if (db[tableId + 'Filtered'].length == 0) {
       document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">Совпадения отсутствуют. Попробуйте упростить критерии поиска</p>';
+      // коли таблиця порожня, будувати і вирівнювати нічого
       return
     } else {
       filteredAmount.innerHTML = db[tableId + 'Filtered'].length;
