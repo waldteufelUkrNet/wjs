@@ -209,6 +209,14 @@ a, a:hover {
   display: none;
 }
 
+.wjs-dbtable__label_filtered {
+  display: none;
+}
+
+.wjs-dbtable__label_filtered + .wjs-dbtable__filtered-amount {
+  display: none;
+}
+
 .wjs-dbtable__items-amount, .wjs-dbtable__filtered-amount, .wjs-dbtable__selected-amount {
   text-align: right;
   justify-self: start;

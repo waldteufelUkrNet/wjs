@@ -9,7 +9,7 @@
    * [db об'єкт, властивості якого (db[tableId]) бази даних конкретних таблиць]
    * @type {Object}
    */
-  let db = {}; // db[tableId] - база даних конкретної таблиці є властивістю об1єкта
+  let db = {}; // db[tableId] - база даних конкретної таблиці є властивістю об'єкта
 
   /**
    * [fingerprint Коли у списку фільтрів вмикати/вимикати фільтри, кожен раз
@@ -97,7 +97,7 @@ initLocalStorage('clientTable');
           itemsAmount = btn.dataset.paginationperpage,
           startValue  = btn.dataset.paginationstart*itemsAmount;
 
-      buildTableBody (tableId, data, startValue, itemsAmount);
+      buildTableBody ({tableId, data, startValue, itemsAmount, dataLength: data.length});
       normalizeTableMeasurements(tableId);
     }
     // pagination 2
@@ -205,7 +205,7 @@ initLocalStorage('clientTable');
     showLoader('clientTable', 'обработка данных ...');
     db[tableId] = JSON.parse(arg);
 
-    buildTableBody(tableId, db[tableId]);
+    buildTableBody({tableId, data: db[tableId], dataLength: db[tableId].length});
     collectFilters(tableId, db[tableId]);
     // при синхронному виклику normalizeTableMeasurements(arg) дає осічку до 40%:
     // шапка і колонки отримують різну ширину. Я не знаю, чому. Можливо через те,
@@ -222,8 +222,6 @@ initLocalStorage('clientTable');
    * @param  {[String]} tableId [ідентифікатор таблиці]
    */
   function normalizeTableMeasurements(tableId) {
-    console.log("normalizeTableMeasurements");
-
     // html-структура:
     // --------------
     // .wjs-dbtable__table-wrapper.wjs-scroll(data-scroll='bottom' data-scroll-hidden='vertical')
@@ -237,7 +235,7 @@ initLocalStorage('clientTable');
     //
     //       .wjs-dbtable__table
     //         .wjs-dbtable__theader
-    //         .wjs-scroll(data-scroll='right' data-scroll-hidden='horizontal')
+    //         .wjs-dbtable__inner-table-container.wjs-scroll(data-scroll='right' data-scroll-hidden='horizontal')
     //
     //           .wjs-scroll__wrapper.wjs-scroll__wrapper_right
     //             .wjs-scroll__line wjs-scroll__line_right
@@ -248,12 +246,12 @@ initLocalStorage('clientTable');
     //               .wjs-dbtable__tbody
 
     let tableElement       = document.getElementById(tableId),
-        outerContainer     = tableElement.querySelector('.wjs-dbtable__table-wrapper'),
-        outerScrollContent = tableElement.querySelector('.wjs-dbtable__table-wrapper .wjs-scroll__content'),
-        innerContainer     = tableElement.querySelector('.wjs-scroll__content-wrapper .wjs-scroll'),
-        innerScrollContent = tableElement.querySelector('.wjs-scroll__content-wrapper .wjs-scroll .wjs-scroll__content'),
+        outerContainer     = tableElement.querySelector('.wjs-dbtable__table-wrapper.wjs-scroll'),
+        outerScrollContent = tableElement.querySelector('.wjs-dbtable__table-wrapper > .wjs-scroll__content-wrapper > .wjs-scroll__content'),
         table              = tableElement.querySelector('.wjs-dbtable__table'),
-        theader            = tableElement.querySelector('.wjs-dbtable__theader'),
+        theader            = table.querySelector('.wjs-dbtable__theader'),
+        innerContainer     = table.querySelector('.wjs-dbtable__inner-table-container.wjs-scroll'),
+        innerScrollContent = innerContainer.querySelector('.wjs-scroll__content'),
         hCells             = tableElement.querySelectorAll('.wjs-dbtable__header-cell'),
         tbody              = tableElement.querySelector('.wjs-dbtable__tbody'),
         bCells             = tableElement.querySelectorAll('.wjs-dbtable__body-cell');
@@ -367,34 +365,16 @@ initLocalStorage('clientTable');
         bottomScrollLineHeight = 0;
       }
 
-      let aaa = table.clientHeight - theader.offsetHeight - bottomScrollLineHeight;
-      innerContainer.style.height = aaa + 'px';
-
-      console.log(`
-${table.clientHeight},
-${theader.offsetHeight},
-${bottomScrollLineHeight},
-${aaa},
-${innerContainer.offsetHeight}
-`);
-
-innerContainer.setAttribute('style','');
-console.log("innerContainer", innerContainer);
-
-      let height = outerContainer.clientHeight
+      let height = table.clientHeight
                    - theader.offsetHeight
-                   - getComputedStyle(outerScrollContent).paddingBottom.slice(0,-2);
+                   - bottomScrollLineHeight;
 
-      // innerContainer.style.height = height + 'px';
-      innerScrollContent.style.height = aaa + 'px';
+      innerContainer.style.height = height + 'px';
+      innerScrollContent.style.height = height + 'px';
       innerScrollContent.style.width = innerContainer.clientWidth + 'px';
     /* ↑↑↑ innerContainer height&width ↑↑↑ */
 
-console.log(`${innerContainer.offsetHeight}`);
-
     wSetScroll( document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
-
-console.log(`${innerContainer.offsetHeight}`);
 
     /* ↓↓↓ right scroll positioning ↓↓↓ */
       let scrollWrapperRight = tableElement.querySelector('.wjs-scroll__wrapper_right');
@@ -426,11 +406,8 @@ console.log(`${innerContainer.offsetHeight}`);
       }
     /* ↑↑↑ right scroll positioning ↑↑↑ */
 
-console.log(`${innerContainer.offsetHeight}`);
-
     setTimeout(function(){
       hideLoader(tableId);
-console.log(`${innerContainer.offsetHeight}`);
     },1000);
   }
 
@@ -502,14 +479,16 @@ console.log(`${innerContainer.offsetHeight}`);
 
   /**
    * [buildTableBody відповідає за динамічну побудову тіла таблиці]
-   * @param  {[String]} tableId     [ідентифікатор таблиці]
-   * @param  {[Array ]} data        [дані, з яких будується таблиця]
-   * @param  {[Number]} startValue  [порядковий номер запису в базі даних, з
-   * якого починається побудова таблиці]
-   * @param  {[Number]} itemsAmount [кількість відображуваних елементів на одній
-   * сторінці]
+   * @param {[Object]} params [об'єкт з параметрами]
    */
-  function buildTableBody (tableId, data, startValue, itemsAmount) {
+  // function buildTableBody (tableId, data, startValue, itemsAmount) {
+  function buildTableBody (params = {}) {
+
+    let tableId     = params.tableId,          // ідентифікатор таблиці
+        data        = params.data       || [], // дані, з яких будується таблиця (оригінальна або фільтрована база даних)
+        dataLength  = params.dataLength || 0,  // кількість записів в оригінальній базі даних
+        startValue  = params.startValue,       // порядковий номер запису в базі даних, з якого починається побудова таблиці
+        itemsAmount = params.itemsAmount;      // кількість відображуваних елементів на одній сторінці
 
     let headerData  = JSON.parse( localStorage.getItem(tableId) ).h,
         tableData = data,
@@ -519,7 +498,7 @@ console.log(`${innerContainer.offsetHeight}`);
         end         = start + +itemsAmount || 100,
         activePage  = start / +itemsAmount || 0;
 
-    document.querySelector('.wjs-dbtable__items-amount').innerHTML = tableData.length;
+    document.querySelector('.wjs-dbtable__items-amount').innerHTML = dataLength;
     buildPagination(tableId, tableData.length, itemsAmount, activePage);
 
     tableBody.innerHTML = '';
@@ -803,7 +782,7 @@ console.log(`${innerContainer.offsetHeight}`);
     if (!+inputValue ) return;
     let startValue  = (inputValue-1)*itemsAmount;
 
-    buildTableBody (tableId, data, startValue, itemsAmount);
+    buildTableBody ({tableId, data, startValue, itemsAmount, dataLength: data.length});
     normalizeTableMeasurements(tableId);
   }
 
@@ -951,7 +930,7 @@ console.log(`${innerContainer.offsetHeight}`);
 
       // перебудувати таблицю
       buildTableHeader('clientTable');
-      buildTableBody('clientTable', db[tableId]);
+      buildTableBody ({tableId:'clientTable', data: db[tableId], dataLength: data.length});
       normalizeTableMeasurements('clientTable');
     },100);
   }
@@ -1117,7 +1096,7 @@ console.log(`${innerContainer.offsetHeight}`);
       });
     }
 
-    buildTableBody (tableId, db[tableId]);
+    buildTableBody ({tableId, data:db[tableId], dataLength: data.length});
     normalizeTableMeasurements('clientTable');
   }
 
@@ -1393,6 +1372,8 @@ console.log(`${innerContainer.offsetHeight}`);
       ';
       filtersWrapper.insertAdjacentHTML('afterBegin', html);
     }
+
+    normalizeTableMeasurements(tableId);
   }
 
   /**
@@ -1417,6 +1398,8 @@ console.log(`${innerContainer.offsetHeight}`);
                                   '[data-filtername="' + filterName + '"]')
                   .remove();
     }
+
+    normalizeTableMeasurements(tableId)
   }
 
   /**
@@ -1437,7 +1420,6 @@ console.log(`${innerContainer.offsetHeight}`);
         } );
       }
     }
-    normalizeTableMeasurements(tableId);
   }
 
   /**
@@ -1485,7 +1467,6 @@ console.log(`${innerContainer.offsetHeight}`);
    * [handleFilterMarkerClicks обробляє кліки на маркерах фільтрів (візуал та
    * запис в ls. Викликає функцію підсвітки кнопки меню)]
    * @param  {[type]} button [description]
-   * @return {[type]}        [description]
    */
   function handleFilterMarkerClicks(button) {
     let tableElement        = button.closest('.wjs-dbtable'),
@@ -1521,6 +1502,8 @@ console.log(`${innerContainer.offsetHeight}`);
       tableObj.cf[filterGroup] = Array.from(tempSet);
     }
     localStorage.setItem( tableId, JSON.stringify(tableObj) );
+
+    normalizeTableMeasurements(tableId);
     highlightMenuBtns(tableId);
     filterDB(tableId);
   }
@@ -1550,6 +1533,9 @@ console.log(`${innerContainer.offsetHeight}`);
   }
 
   function filterDB(tableId) {
+    let filteredAmount      = document.querySelector('#' + tableId + ' .wjs-dbtable__filtered-amount'),
+        filteredAmountLabel = document.querySelector('#' + tableId + ' .wjs-dbtable__label_filtered');
+
     let filters = JSON.parse( localStorage.getItem(tableId) ).cf;
 
     db[tableId + 'Filtered'] = [];
@@ -1557,68 +1543,27 @@ console.log(`${innerContainer.offsetHeight}`);
     db[tableId].forEach( item => {
       for (let key in filters) {
         if( filters[key].includes(item[key]) ) {
-          break
+          return
         }
-        db[tableId + 'Filtered'].push(item);
       }
+      db[tableId + 'Filtered'].push(item);
     });
-    // console.log("розмір відфільтрованої бази даних", db[tableId + 'Filtered'].length);
-    // buildTableBody (tableId, db[tableId + 'Filtered']);
 
+    if (db[tableId + 'Filtered'].length == db[tableId].length) {
+      filteredAmount.innerHTML = 0;
+      filteredAmount.style.display = 'none';
+      filteredAmountLabel.style.display = 'none';
+    } else if (db[tableId + 'Filtered'].length == 0) {
+      document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">Совпадения отсутствуют. Попробуйте упростить критерии поиска</p>';
+      return
+    } else {
+      filteredAmount.innerHTML = db[tableId + 'Filtered'].length;
+      filteredAmount.style.display = 'block';
+      filteredAmountLabel.style.display = 'block';
+    }
 
-    // tableObj.cf
-    // {
-    //   "status": [
-    //     "Charge Backs",
-    //     "No answer3",
-    //     "No answer1",
-    //     "Мусор Ретена",
-    //     "Замена"
-    //   ],
-    //   "networkStatus": [
-    //     "offline"
-    //   ],
-    //   "company": [
-    //     "Im_JETsignals",
-    //     "OneStep2",
-    //     "ORI",
-    //     "J-Signals"
-    //   ],
-    //   "brokerTeam": [
-    //     "RetTeam_2"
-    //   ]
-    // }
-
-    // db item
-    // {
-    //   "checkbox": true,
-    //   "id": 1,
-    //   "clientName": "Chas Jarrette",
-    //   "networkStatus": "offline",
-    //   "status": "Refund",
-    //   "specStatus": "sstatus2",
-    //   "phone": 96090456784,
-    //   "email": "chas.jarrette@pharyngoscopy.net",
-    //   "company": "EU_ALL",
-    //   "platform": "CFD",
-    //   "verification": "частичная верификация",
-    //   "country": "Lesotho",
-    //   "language": "русский",
-    //   "currency": "RUB",
-    //   "money": 28793,
-    //   "deposits": "с депозитами",
-    //   "activity": "не активен",
-    //   "isTradeAble": "доступна",
-    //   "accountType": "VIP",
-    //   "lastNote": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia quaerat voluptatum nisi sapiente veritatis quam sunt pariatur at, quidem, officiis.",
-    //   "dateRegistration": 1527742456616,
-    //   "lastActivity": 1553858222889,
-    //   "dateLastNote": 1572020263094,
-    //   "broker": "Diana Gornaya",
-    //   "brokerPosition": "retention",
-    //   "brokerTeam": "RetTeam_2"
-    // }
-
+    buildTableBody ({tableId, data: db[tableId + 'Filtered'], dataLength: db[tableId].length});
+    normalizeTableMeasurements(tableId);
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
