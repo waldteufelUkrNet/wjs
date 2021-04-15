@@ -91,11 +91,16 @@ initLocalStorage('clientTable');
         || event.target.closest('.wjs-dbtable__page-btn_passive')
         || event.target.closest('.wjs-dbtable__page-btn_dotts') ) return;
 
-      let tableId     = event.target.closest('.wjs-dbtable').getAttribute('id'),
+      let table       = event.target.closest('.wjs-dbtable'),
+          tableId     = table.getAttribute('id'),
           data        = db[tableId],
           btn         = event.target.closest('.wjs-dbtable__page-btn'),
           itemsAmount = btn.dataset.paginationperpage,
           startValue  = btn.dataset.paginationstart*itemsAmount;
+
+      if ( table.querySelector('.wjs-dbtable__filter-item') ) {
+        data = filterDB(tableId);
+      }
 
       buildTableBody ({tableId, data, startValue, itemsAmount, dataLength: data.length});
       normalizeTableMeasurements(tableId);
@@ -205,7 +210,12 @@ initLocalStorage('clientTable');
     showLoader('clientTable', 'обработка данных ...');
     db[tableId] = JSON.parse(arg);
 
-    buildTableBody({tableId, data: db[tableId], dataLength: db[tableId].length});
+    let data = db[tableId];
+    if ( document.querySelector('.wjs-dbtable__filter-item') ) {
+      data = filterDB(tableId);
+    }
+
+    buildTableBody({tableId, data: data, dataLength: db[tableId].length});
     collectFilters(tableId, db[tableId]);
     // при синхронному виклику normalizeTableMeasurements(arg) дає осічку до 40%:
     // шапка і колонки отримують різну ширину. Я не знаю, чому. Можливо через те,
@@ -770,7 +780,7 @@ initLocalStorage('clientTable');
 
   /**
    * [goToPage перехід до певної сторінки]
-   * @param  {[DOM-елемент]} target [елемент, на якому спрацювала подія]
+   * @param {[DOM-елемент]} target [елемент, на якому спрацювала подія]
    */
   function goToPage(target) {
     let tableId     = event.target.closest('.wjs-dbtable').getAttribute('id'),
@@ -928,9 +938,16 @@ initLocalStorage('clientTable');
         }
       }
 
+      let data;
+      if ( document.querySelector('#' + tableId + ' .wjs-dbtable__filter-item') ) {
+        data = filterDB(tableId);
+      } else {
+        data = db[tableId];
+      }
+
       // перебудувати таблицю
       buildTableHeader('clientTable');
-      buildTableBody ({tableId:'clientTable', data: db[tableId], dataLength: data.length});
+      buildTableBody ({tableId:'clientTable', data, dataLength: db[tableId].length});
       normalizeTableMeasurements('clientTable');
     },100);
   }
@@ -1081,23 +1098,29 @@ initLocalStorage('clientTable');
       item.classList.remove('wjs-dbtable__btn_sort_active_up');
     } );
 
+    let dataForCompare;
+    if ( tableElement.querySelector('.wjs-dbtable__filter-item') ) {
+      dataForCompare = filterDB(tableId);
+    } else {
+      dataForCompare = db[tableId];
+    }
+
     // sort
     if (sortType == 'down') {
-      db[tableId].sort(function (a, b){
+      dataForCompare.sort(function (a, b){
         if (a[sortSource] > b[sortSource]) return 1;
         if (a[sortSource] < b[sortSource]) return -1;
         if (a[sortSource] == b[sortSource]) return 0;
       });
     } else {
-      db[tableId].sort(function (a, b){
+      dataForCompare.sort(function (a, b){
         if (a[sortSource] > b[sortSource]) return -1;
         if (a[sortSource] < b[sortSource]) return 1;
         if (a[sortSource] == b[sortSource]) return 0;
       });
     }
-    console.log("db[tableId]", db[tableId]);
 
-    buildTableBody ({tableId, data: db[tableId], dataLength: db[tableId].length});
+    buildTableBody ({tableId, data: dataForCompare, dataLength: db[tableId].length});
     normalizeTableMeasurements('clientTable');
   }
 
@@ -1244,7 +1267,7 @@ initLocalStorage('clientTable');
       });
 
       if (fingerprint != fingerprintForCompare) {
-        filterDB(tableId);
+        handleFilters(tableId);
       }
     }
 
@@ -1506,7 +1529,7 @@ initLocalStorage('clientTable');
 
     normalizeTableMeasurements(tableId);
     highlightMenuBtns(tableId);
-    filterDB(tableId);
+    handleFilters(tableId);
   }
 
   /**
@@ -1533,13 +1556,45 @@ initLocalStorage('clientTable');
     }
   }
 
-  function filterDB(tableId) {
+  /**
+   * [handleFilters викликається при зміні фільтра, відповідає за довкола
+   * фільтровий візуал, викликає функцію фільтрування бд та побудови таблиці]
+   * @param  {[String]} tableId [ідентифікатор таблиці]
+   */
+  function handleFilters(tableId) {
     let filteredAmount      = document.querySelector('#' + tableId + ' .wjs-dbtable__filtered-amount'),
         filteredAmountLabel = document.querySelector('#' + tableId + ' .wjs-dbtable__label_filtered');
 
+    let filteredDB = filterDB(tableId);
+
+    if (filteredDB.length == db[tableId].length) {
+      filteredAmount.innerHTML = 0;
+      filteredAmount.style.display = 'none';
+      filteredAmountLabel.style.display = 'none';
+    } else if (filteredDB.length == 0) {
+      document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">Совпадения отсутствуют. Попробуйте упростить критерии поиска</p>';
+      // коли таблиця порожня, будувати і вирівнювати нічого
+      return
+    } else {
+      filteredAmount.innerHTML = filteredDB.length;
+      filteredAmount.style.display = 'block';
+      filteredAmountLabel.style.display = 'block';
+    }
+
+    buildTableBody ({tableId, data: filteredDB, dataLength: db[tableId].length});
+    normalizeTableMeasurements(tableId);
+  }
+
+  /**
+   * [filterDB приймає id таблиці, знаходить по ньому вимклені фільтки в ls,
+   * фільтрує базу даних, видаляючи ел-ти, що підходять під ці фільтри]
+   * @param  {[String]} tableId [ідентифікатор таблиці]
+   * @return {[Array]}          [масив об'єктів, відфільтрована база даних]
+   */
+  function filterDB(tableId) {
     let filters = JSON.parse( localStorage.getItem(tableId) ).cf;
 
-    db[tableId + 'Filtered'] = [];
+    let resultDB = [];
 
     db[tableId].forEach( item => {
       for (let key in filters) {
@@ -1547,25 +1602,11 @@ initLocalStorage('clientTable');
           return
         }
       }
-      db[tableId + 'Filtered'].push(item);
+      resultDB.push(item);
     });
-
-    if (db[tableId + 'Filtered'].length == db[tableId].length) {
-      filteredAmount.innerHTML = 0;
-      filteredAmount.style.display = 'none';
-      filteredAmountLabel.style.display = 'none';
-    } else if (db[tableId + 'Filtered'].length == 0) {
-      document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">Совпадения отсутствуют. Попробуйте упростить критерии поиска</p>';
-      // коли таблиця порожня, будувати і вирівнювати нічого
-      return
-    } else {
-      filteredAmount.innerHTML = db[tableId + 'Filtered'].length;
-      filteredAmount.style.display = 'block';
-      filteredAmountLabel.style.display = 'block';
-    }
-
-    buildTableBody ({tableId, data: db[tableId + 'Filtered'], dataLength: db[tableId].length});
-    normalizeTableMeasurements(tableId);
+    return resultDB;
   }
+
+  function showFilteredItemsAnount(tableId) {}
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
