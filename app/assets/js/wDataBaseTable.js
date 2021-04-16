@@ -820,6 +820,7 @@ initLocalStorage('clientTable');
     // підкорегувати стилі
     let tableData   = JSON.parse( localStorage.getItem(parentId) );
     let enabledColumnsAmount = 0;
+
     for (let i = 0; i < tableData.h.length; i++) {
       if (tableData.h[i].d) {
         enabledColumnsAmount++;
@@ -903,6 +904,7 @@ initLocalStorage('clientTable');
    */
   function showDisabledColumn(elem) {
     showLoader('clientTable', 'обновление таблицы ...');
+
     let marker              = elem.closest('.wjs-dbtable__discols-item'),
         markersWrapper      = elem.closest('.wjs-dbtable__discols-wrapper'),
         markersWrapperLabel = markersWrapper.previousElementSibling,
@@ -1567,22 +1569,23 @@ initLocalStorage('clientTable');
 
     let filteredDB = filterDB(tableId);
 
-    if (filteredDB.length == db[tableId].length) {
-      filteredAmount.innerHTML = 0;
-      filteredAmount.style.display = 'none';
-      filteredAmountLabel.style.display = 'none';
-    } else if (filteredDB.length == 0) {
+    if (filteredDB.length == 0) {
       document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">Совпадения отсутствуют. Попробуйте упростить критерии поиска</p>';
-      // коли таблиця порожня, будувати і вирівнювати нічого
-      return
     } else {
-      filteredAmount.innerHTML = filteredDB.length;
-      filteredAmount.style.display = 'block';
-      filteredAmountLabel.style.display = 'block';
-    }
 
-    buildTableBody ({tableId, data: filteredDB, dataLength: db[tableId].length});
-    normalizeTableMeasurements(tableId);
+      if (filteredDB.length == db[tableId].length) {
+        filteredAmount.innerHTML = 0;
+        filteredAmount.style.display = 'none';
+        filteredAmountLabel.style.display = 'none';
+      } else {
+        filteredAmount.innerHTML = filteredDB.length;
+        filteredAmount.style.display = 'block';
+        filteredAmountLabel.style.display = 'block';
+      }
+
+      buildTableBody ({tableId, data: filteredDB, dataLength: db[tableId].length});
+      normalizeTableMeasurements(tableId);
+    }
   }
 
   /**
