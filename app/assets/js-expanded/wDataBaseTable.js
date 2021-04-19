@@ -1529,10 +1529,10 @@ initLocalStorage('clientTable');
     }
     localStorage.setItem( tableId, JSON.stringify(tableObj) );
 
+    handleFilters(tableId);
     normalizeTableMeasurements(tableId);
     highlightMenuBtns(tableId);
-    handleFilters(tableId);
-  }
+    }
 
   /**
    * [highlightMenuBtns перевіряє наявність фільтів і відповідно до результату
@@ -1559,7 +1559,7 @@ initLocalStorage('clientTable');
   }
 
   /**
-   * [handleFilters викликається при зміні фільтра, відповідає за довкола
+   * [handleFilters викликається при зміні фільтра, відповідає за довколо-
    * фільтровий візуал, викликає функцію фільтрування бд та побудови таблиці]
    * @param  {[String]} tableId [ідентифікатор таблиці]
    */
