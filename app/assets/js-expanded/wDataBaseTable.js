@@ -213,6 +213,7 @@ initLocalStorage('clientTable');
     let data = db[tableId];
     if ( document.querySelector('.wjs-dbtable__filter-item') ) {
       data = filterDB(tableId);
+      showFilteredItemsAnountAtStartUp(tableId);
     }
 
     buildTableBody({tableId, data: data, dataLength: db[tableId].length});
@@ -1610,6 +1611,31 @@ initLocalStorage('clientTable');
     return resultDB;
   }
 
-  function showFilteredItemsAnount(tableId) {}
+  /**
+   * [showFilteredItemsAnountAtStartUp під час завантаження перевіряє, чи є
+   * увімкнені фільтри і показує кількість елементів у відфільтрованій бд]
+   * @param {[String]} tableId [ідентифікатор таблиці]
+   */
+  function showFilteredItemsAnountAtStartUp(tableId) {
+    let filteredAmount      = document.querySelector('#' + tableId + ' .wjs-dbtable__filtered-amount'),
+        filteredAmountLabel = document.querySelector('#' + tableId + ' .wjs-dbtable__label_filtered');
+
+    let filteredDB = filterDB(tableId);
+
+    if (filteredDB.length == 0) {
+      document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">Совпадения отсутствуют. Попробуйте упростить критерии поиска</p>';
+    } else {
+
+      if (filteredDB.length == db[tableId].length) {
+        filteredAmount.innerHTML = 0;
+        filteredAmount.style.display = 'none';
+        filteredAmountLabel.style.display = 'none';
+      } else {
+        filteredAmount.innerHTML = filteredDB.length;
+        filteredAmount.style.display = 'block';
+        filteredAmountLabel.style.display = 'block';
+      }
+    }
+  }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
