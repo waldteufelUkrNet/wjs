@@ -314,24 +314,31 @@ initLocalStorage('clientTable');
       innerContainer.style.width     = outerContainer.clientWidth + 'px';
 
       // зрівнюємо ширини чарунок тіла таблиці і чарунок шапки
-      let countWidth = 0;
-      for (let i = 0; i < hCells.length; i++) {
-        bCells[i].style.width = 'auto';
-        hCells[i].style.width = 'auto';
-        if (hCells[i].clientWidth > bCells[i].clientWidth) {
-          bCells[i].style.width = hCells[i].offsetWidth + 'px';
-        } else {
-          hCells[i].style.width = bCells[i].offsetWidth + 'px';
-        }
-        countWidth += hCells[i].offsetWidth;
-      }
+      let condition = !!tableElement.querySelector('.wjs-dbtable__filter-item')
+                       && getComputedStyle( tableElement.querySelector('.wjs-dbtable__label_filtered') ).display == 'none';
 
-      if (countWidth > theader.clientWidth) {
-        theader.style.width            = countWidth + 'px';
-        tbody.style.width              = countWidth + 'px';
-        table.style.width              = countWidth + 'px';
-        outerScrollContent.style.width = countWidth + 'px';
-        innerContainer.style.width     = countWidth + 'px';
+      if ( condition ) {
+        document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">Совпадения отсутствуют. Попробуйте упростить критерии поиска</p>';
+      } else {
+        let countWidth = 0;
+        for (let i = 0; i < hCells.length; i++) {
+          bCells[i].style.width = 'auto';
+          hCells[i].style.width = 'auto';
+          if (hCells[i].clientWidth > bCells[i].clientWidth) {
+            bCells[i].style.width = hCells[i].offsetWidth + 'px';
+          } else {
+            hCells[i].style.width = bCells[i].offsetWidth + 'px';
+          }
+          countWidth += hCells[i].offsetWidth;
+        }
+
+        if (countWidth > theader.clientWidth) {
+          theader.style.width            = countWidth + 'px';
+          tbody.style.width              = countWidth + 'px';
+          table.style.width              = countWidth + 'px';
+          outerScrollContent.style.width = countWidth + 'px';
+          innerContainer.style.width     = countWidth + 'px';
+        }
       }
     /* ↑↑↑ table cells width ↑↑↑ */
 
