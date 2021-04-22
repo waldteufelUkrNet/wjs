@@ -1658,6 +1658,7 @@ initLocalStorage('clientTable');
         table        = event.target.closest('.wjs-dbtable__table'),
         source       = headerCell.dataset.source,
         tableId      = tableElement.getAttribute('id');
+
     let shiftX = event.clientX - headerCell.getBoundingClientRect().left,
         shiftY = event.clientY - headerCell.getBoundingClientRect().top;
 
@@ -1670,8 +1671,12 @@ initLocalStorage('clientTable');
         startX = event.pageX;
         startY = event.pageY;
       } else {
+
+        // зсув курсору після початку руху
         let deltaX = Math.abs(event.pageX - startX);
         let deltaY = Math.abs(event.pageY - startY);
+
+        // якщо зсув істотний - починати drag'n'drop
         if ( deltaX >= 10 || deltaY >= 10 ) {
           document.removeEventListener('mousemove', buildColumnMirror);
 
@@ -1693,13 +1698,22 @@ initLocalStorage('clientTable');
           mirror.style.top = mirrorY + 'px';
           mirror.style.left = mirrorX + 'px';
 
-          tableElement.querySelector('.wjs-dbtable__table').append(mirror);
+          table.append(mirror);
+
+          // перенесення дзеркала
           document.addEventListener('mousemove', moveColumnMirror);
           function moveColumnMirror(event){
-            mirror.style.left = event.pageX - table.getBoundingClientRect().left - shiftX + 'px';
-            mirror.style.top  = event.pageY - table.getBoundingClientRect().top - shiftY + 'px';
+            mirror.style.left = event.pageX
+                                - table.getBoundingClientRect().left
+                                - shiftX
+                                + 'px';
+            mirror.style.top  = event.pageY
+                                - table.getBoundingClientRect().top
+                                - shiftY
+                                + 'px';
           }
 
+          // завершення drag'n'drop
           document.addEventListener('mouseup', stopDragColumn);
           function stopDragColumn() {
             document.removeEventListener('mousemove', moveColumnMirror);
@@ -1709,6 +1723,5 @@ initLocalStorage('clientTable');
       }
     }
   }
-
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
