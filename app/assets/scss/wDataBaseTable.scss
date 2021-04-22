@@ -173,6 +173,7 @@
   &__table {
     white-space           : nowrap;
     user-select           : none;
+    position              : relative;
   }
   &__theader {
     display               : grid;
@@ -424,6 +425,14 @@
       left: 50%;
       transform: translate(-50%,-50%);
     }
+  }
+  &__column-mirror {
+    background-color: white;
+    opacity: 0.8;
+    position: absolute;
+    top :0;
+    left: 0;
+    border: 1px solid grey;
   }
 }
 

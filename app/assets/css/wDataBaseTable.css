@@ -414,6 +414,7 @@ a, a:hover {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
+  position: relative;
 }
 
 .wjs-dbtable__theader {
@@ -773,6 +774,15 @@ a, a:hover {
   -webkit-transform: translate(-50%, -50%);
       -ms-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
+}
+
+.wjs-dbtable__column-mirror {
+  background-color: white;
+  opacity: 0.8;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1px solid grey;
 }
 
 .wjs-dbtable__table-wrapper.wjs-scroll .wjs-scroll__wrapper_bottom {

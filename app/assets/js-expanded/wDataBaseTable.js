@@ -169,6 +169,13 @@ initLocalStorage('clientTable');
       goToPage(event.target);
     }
   });
+
+  // drag'n'drop
+  document.querySelector('#clientTable').addEventListener('mousedown', function(event) {
+    if ( event.target.closest('.wjs-dbtable__header-cell') ) {
+      startDragColumn(event);
+    }
+  });
 /* ↑↑↑ appointment of event handlers ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ functions declaration ↓↓↓ */
@@ -1644,5 +1651,64 @@ initLocalStorage('clientTable');
       }
     }
   }
+
+  function startDragColumn(event) {
+    let headerCell   = event.target.closest('.wjs-dbtable__header-cell'),
+        tableElement = event.target.closest('.wjs-dbtable'),
+        table        = event.target.closest('.wjs-dbtable__table'),
+        source       = headerCell.dataset.source,
+        tableId      = tableElement.getAttribute('id');
+    let shiftX = event.clientX - headerCell.getBoundingClientRect().left,
+        shiftY = event.clientY - headerCell.getBoundingClientRect().top;
+
+    let startX,startY;
+
+    // drag'n'drop починати тільки якщо є зсув більше 10 пікселів
+    document.addEventListener('mousemove', buildColumnMirror );
+    function buildColumnMirror(event) {
+      if (!startX) {
+        startX = event.pageX;
+        startY = event.pageY;
+      } else {
+        let deltaX = Math.abs(event.pageX - startX);
+        let deltaY = Math.abs(event.pageY - startY);
+        if ( deltaX >= 10 || deltaY >= 10 ) {
+          document.removeEventListener('mousemove', buildColumnMirror);
+
+          let mirror = document.createElement('div');
+          mirror.classList.add('wjs-dbtable__column-mirror');
+          mirror.append( headerCell.cloneNode(true) );
+
+          let bCells = tableElement.querySelectorAll('.wjs-dbtable__body-cell[data-source="' + source + '"]');
+          bCells.forEach(function(item){
+            let clonedCell = item.cloneNode(true);
+            clonedCell.style.height = item.offsetHeight + 'px';
+            mirror.append(clonedCell);
+          });
+
+          let mirrorX = headerCell.getBoundingClientRect().left
+                        - tableElement.getBoundingClientRect().left;
+          let mirrorY = 0;
+
+          mirror.style.top = mirrorY + 'px';
+          mirror.style.left = mirrorX + 'px';
+
+          tableElement.querySelector('.wjs-dbtable__table').append(mirror);
+          document.addEventListener('mousemove', moveColumnMirror);
+          function moveColumnMirror(event){
+            mirror.style.left = event.pageX - table.getBoundingClientRect().left - shiftX + 'px';
+            mirror.style.top  = event.pageY - table.getBoundingClientRect().top - shiftY + 'px';
+          }
+
+          document.addEventListener('mouseup', stopDragColumn);
+          function stopDragColumn() {
+            document.removeEventListener('mousemove', moveColumnMirror);
+            mirror.remove();
+          }
+        }
+      }
+    }
+  }
+
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
