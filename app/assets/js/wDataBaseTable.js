@@ -170,8 +170,8 @@ initLocalStorage('clientTable');
     }
   });
 
-  // drag'n'drop
   document.querySelector('#clientTable').addEventListener('mousedown', function(event) {
+    // drag'n'drop
     if ( event.target.closest('.wjs-dbtable__header-cell') ) {
       startDragColumn(event);
     }
@@ -1657,15 +1657,21 @@ initLocalStorage('clientTable');
         tableElement = event.target.closest('.wjs-dbtable'),
         table        = event.target.closest('.wjs-dbtable__table'),
         source       = headerCell.dataset.source,
-        tableId      = tableElement.getAttribute('id');
+        tableId      = tableElement.getAttribute('id'),
+        targetSource;
 
     let shiftX = event.clientX - headerCell.getBoundingClientRect().left,
         shiftY = event.clientY - headerCell.getBoundingClientRect().top;
 
-    let startX,startY;
+    let startX,startY,mirror;
+    let isMouseUp = false;
 
     // drag'n'drop починати тільки якщо є зсув більше 10 пікселів
     document.addEventListener('mousemove', buildColumnMirror );
+
+    // завершення drag'n'drop
+    document.addEventListener('mouseup', stopDragColumn);
+
     function buildColumnMirror(event) {
       if (!startX) {
         startX = event.pageX;
@@ -1677,10 +1683,10 @@ initLocalStorage('clientTable');
         let deltaY = Math.abs(event.pageY - startY);
 
         // якщо зсув істотний - починати drag'n'drop
-        if ( deltaX >= 10 || deltaY >= 10 ) {
+        if ( (deltaX >= 10 || deltaY >= 10) && !isMouseUp ) {
           document.removeEventListener('mousemove', buildColumnMirror);
 
-          let mirror = document.createElement('div');
+          mirror = document.createElement('div');
           mirror.classList.add('wjs-dbtable__column-mirror');
           mirror.append( headerCell.cloneNode(true) );
 
@@ -1702,25 +1708,82 @@ initLocalStorage('clientTable');
 
           // перенесення дзеркала
           document.addEventListener('mousemove', moveColumnMirror);
-          function moveColumnMirror(event){
-            mirror.style.left = event.pageX
-                                - table.getBoundingClientRect().left
-                                - shiftX
-                                + 'px';
-            mirror.style.top  = event.pageY
-                                - table.getBoundingClientRect().top
-                                - shiftY
-                                + 'px';
-          }
 
           // завершення drag'n'drop
           document.addEventListener('mouseup', stopDragColumn);
-          function stopDragColumn() {
-            document.removeEventListener('mousemove', moveColumnMirror);
-            mirror.remove();
-          }
         }
       }
+    }
+
+    function moveColumnMirror(event){
+      let x = mirror.getBoundingClientRect().left - 1,
+          y = mirror.getBoundingClientRect().top;
+
+      let target = document.elementFromPoint(x,y).closest('.wjs-dbtable__header-cell');
+
+      if (target) {
+        targetSource = target.dataset.source;
+        let headersArr = target.closest('.wjs-dbtable__theader').querySelectorAll('.wjs-dbtable__header-cell');
+        headersArr.forEach( item => {
+          item.classList.remove('wjs-dbtable__header-cell_dropable');
+        } );
+        target.classList.add('wjs-dbtable__header-cell_dropable');
+        target.nextElementSibling.classList.add('wjs-dbtable__header-cell_dropable');
+      }
+
+      mirror.style.left = event.pageX
+                          - table.getBoundingClientRect().left
+                          - shiftX
+                          + 'px';
+      mirror.style.top  = event.pageY
+                          - table.getBoundingClientRect().top
+                          - shiftY
+                          + 'px';
+    }
+
+    function stopDragColumn() {
+      isMouseUp = true;
+      document.removeEventListener('mousemove', moveColumnMirror);
+      document.removeEventListener('mouseup', stopDragColumn);
+
+      if (mirror) {
+        mirror.remove();
+      }
+
+      if ( document.querySelector('.wjs-dbtable__header-cell_dropable') ) {
+        let dragMarkered = document.querySelectorAll('.wjs-dbtable__header-cell_dropable');
+        dragMarkered.forEach( item => {
+          item.classList.remove('wjs-dbtable__header-cell_dropable')
+        } );
+      }
+
+      // save changes in ls
+      let tableObj   = JSON.parse( localStorage.getItem(tableId) ),
+          headersArr = tableObj.h;
+      let sourceObject,
+          tempArr = [];
+
+      for (let i = 0; i < headersArr.length; i++) {
+        if (headersArr[i].s == source) {
+          sourceObject = headersArr[i];
+          break
+        }
+      }
+      for (let i = 0; i < headersArr.length; i++) {
+        if (headersArr[i].s != source && headersArr[i].s != targetSource) {
+          tempArr.push(headersArr[i]);
+        } else if (headersArr[i].s == source) {
+          continue
+        } else if (headersArr[i].s == targetSource) {
+          tempArr.push(headersArr[i]);
+          tempArr.push(sourceObject);
+        }
+      }
+
+      tableObj.h = tempArr;
+      localStorage.setItem( tableId, JSON.stringify(tableObj) );
+
+      // buildTableBody(tableId);
     }
   }
 /* ↑↑↑ functions declaration ↑↑↑ */

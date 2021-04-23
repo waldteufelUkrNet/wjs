@@ -191,6 +191,11 @@
     align-items           : center;
     background-color      : #bde0f6;
     position              : relative;
+    transition: background-color .3s;
+    &_dropable {
+      background-color    : #6495ED;
+      border: 1px solid black;
+    }
     &_checkbox {
       width               : 40px !important;
       justify-content     : center;
