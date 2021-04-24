@@ -1666,8 +1666,11 @@ initLocalStorage('clientTable');
     let startX,startY,mirror;
     let isMouseUp = false;
 
+    // перша колонка з чекбоксом - не "тягабельна"
+    if ( headerCell.classList.contains('wjs-dbtable__header-cell_checkbox') ) return;
+
     // drag'n'drop починати тільки якщо є зсув більше 10 пікселів
-    document.addEventListener('mousemove', buildColumnMirror );
+    document.addEventListener('mousemove', buildColumnMirror);
 
     // завершення drag'n'drop
     document.addEventListener('mouseup', stopDragColumn);
@@ -1729,18 +1732,45 @@ initLocalStorage('clientTable');
         } );
         target.classList.add('wjs-dbtable__header-cell_dropable');
         target.nextElementSibling.classList.add('wjs-dbtable__header-cell_dropable');
+      // } else {
+      //   if ( !document.elementFromPoint(x,y).closest('.wjs-dbtable__table') ) {
+      //     console.log(x);
+      //     return
+      //   }
       }
 
-      mirror.style.left = event.pageX
-                          - table.getBoundingClientRect().left
-                          - shiftX
-                          + 'px';
-      mirror.style.top  = event.pageY
-                          - table.getBoundingClientRect().top
-                          - shiftY
-                          + 'px';
-    }
+      // перетягування не повинно виповзати за межі таблиці
+      let minX    = 1, // бо розрахунок target іде на -1 координату
+          minY    = 0,
+          maxX    = table.clientWidth
+                    - headerCell.offsetWidth,
+          maxY    = tableElement.querySelector('.wjs-dbtable__table-wrapper > .wjs-scroll__content-wrapper').clientHeight
+                   - tableElement.querySelector('.wjs-scroll__wrapper.wjs-scroll__wrapper_bottom').offsetHeight
+                   - headerCell.offsetHeight
+                   - 1,
+          scrollX = tableElement.querySelector('.wjs-dbtable__table-wrapper.wjs-scroll').clientWidth
+                    - tableElement.querySelector('.wjs-scroll__wrapper.wjs-scroll__wrapper_right').offsetWidth
+                    - headerCell.offsetWidth;
 
+      let left = event.pageX
+                 - table.getBoundingClientRect().left
+                 - shiftX;
+      let top  = event.pageY
+                 - table.getBoundingClientRect().top
+                 - shiftY;
+
+      if (left < minX) left = minX;
+      if (left > maxX) left = maxX;
+      if (top < minY) top = minY;
+      if (top > maxY) top = maxY;
+
+      if (left >= scrollX) {
+        console.log(scrollX)
+      }
+
+      mirror.style.left = left + 'px';
+      mirror.style.top = top + 'px';
+    }
     function stopDragColumn() {
       isMouseUp = true;
       document.removeEventListener('mousemove', moveColumnMirror);
@@ -1783,7 +1813,8 @@ initLocalStorage('clientTable');
       tableObj.h = tempArr;
       localStorage.setItem( tableId, JSON.stringify(tableObj) );
 
-      // buildTableBody(tableId);
+      // buildTableHeader (tableId);
+      // buildTableBody ({})
     }
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
