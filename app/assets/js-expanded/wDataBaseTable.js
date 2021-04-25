@@ -1657,13 +1657,12 @@ initLocalStorage('clientTable');
         tableElement = event.target.closest('.wjs-dbtable'),
         table        = event.target.closest('.wjs-dbtable__table'),
         source       = headerCell.dataset.source,
-        tableId      = tableElement.getAttribute('id'),
-        targetSource;
+        tableId      = tableElement.getAttribute('id');
 
     let shiftX = event.clientX - headerCell.getBoundingClientRect().left,
         shiftY = event.clientY - headerCell.getBoundingClientRect().top;
 
-    let startX,startY,mirror;
+    let startX,startY,mirror,targetSource;
     let isMouseUp = false;
 
     // перша колонка з чекбоксом - не "тягабельна"
@@ -1759,18 +1758,22 @@ initLocalStorage('clientTable');
                  - table.getBoundingClientRect().top
                  - shiftY;
 
-      if (left < minX) left = minX;
+      if (left < minX) {left = minX; console.log(scrollX);}
       if (left > maxX) left = maxX;
       if (top < minY) top = minY;
       if (top > maxY) top = maxY;
 
+      // якщо дзеркало підтягується до правого краю тягабельної зони -
+      // прокрутити таблицю вліво
       if (left >= scrollX) {
-        console.log(scrollX)
+        let outerScrollContent = tableElement.querySelector('.wjs-dbtable__table-wrapper > .wjs-scroll__content-wrapper > .wjs-scroll__content');
+        outerScrollContent.scrollLeft += 10;
       }
 
       mirror.style.left = left + 'px';
       mirror.style.top = top + 'px';
     }
+
     function stopDragColumn() {
       isMouseUp = true;
       document.removeEventListener('mousemove', moveColumnMirror);
