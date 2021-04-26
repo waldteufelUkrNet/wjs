@@ -1719,9 +1719,13 @@ initLocalStorage('clientTable');
 
     function moveColumnMirror(event){
       let x = mirror.getBoundingClientRect().left - 1,
-          y = mirror.getBoundingClientRect().top;
+          y = mirror.getBoundingClientRect().top,
+          outerScrollContent = tableElement.querySelector('.wjs-dbtable__table-wrapper > .wjs-scroll__content-wrapper > .wjs-scroll__content');;
 
-      let target = document.elementFromPoint(x,y).closest('.wjs-dbtable__header-cell');
+      let target;
+      if ( document.elementFromPoint(x,y) ) {
+        target = document.elementFromPoint(x,y).closest('.wjs-dbtable__header-cell');
+      }
 
       if (target) {
         targetSource = target.dataset.source;
@@ -1731,11 +1735,6 @@ initLocalStorage('clientTable');
         } );
         target.classList.add('wjs-dbtable__header-cell_dropable');
         target.nextElementSibling.classList.add('wjs-dbtable__header-cell_dropable');
-      // } else {
-      //   if ( !document.elementFromPoint(x,y).closest('.wjs-dbtable__table') ) {
-      //     console.log(x);
-      //     return
-      //   }
       }
 
       // перетягування не повинно виповзати за межі таблиці
@@ -1749,29 +1748,34 @@ initLocalStorage('clientTable');
                    - 1,
           scrollX = tableElement.querySelector('.wjs-dbtable__table-wrapper.wjs-scroll').clientWidth
                     - tableElement.querySelector('.wjs-scroll__wrapper.wjs-scroll__wrapper_right').offsetWidth
-                    - headerCell.offsetWidth;
-
-      let left = event.pageX
+                    - headerCell.offsetWidth,
+          left = event.pageX
                  - table.getBoundingClientRect().left
-                 - shiftX;
-      let top  = event.pageY
+                 - shiftX,
+          top  = event.pageY
                  - table.getBoundingClientRect().top
                  - shiftY;
 
-      if (left < minX) {left = minX; console.log(scrollX);}
+      if (left < minX) left = minX;
       if (left > maxX) left = maxX;
       if (top < minY) top = minY;
       if (top > maxY) top = maxY;
 
+      mirror.style.left = left + 'px';
+      mirror.style.top = top + 'px';
+
       // якщо дзеркало підтягується до правого краю тягабельної зони -
       // прокрутити таблицю вліво
-      if (left >= scrollX) {
-        let outerScrollContent = tableElement.querySelector('.wjs-dbtable__table-wrapper > .wjs-scroll__content-wrapper > .wjs-scroll__content');
+      if (left - outerScrollContent.scrollLeft >= scrollX) {
         outerScrollContent.scrollLeft += 10;
       }
 
-      mirror.style.left = left + 'px';
-      mirror.style.top = top + 'px';
+      // якщо дзеркало підтягується до лівого краю тягабельної зони -
+      // прокрутити таблицю вправо
+      if (outerScrollContent.scrollLeft > 0
+          && outerScrollContent.scrollLeft + table.getBoundingClientRect().left > x) {
+        outerScrollContent.scrollLeft -= 10;
+      }
     }
 
     function stopDragColumn() {
