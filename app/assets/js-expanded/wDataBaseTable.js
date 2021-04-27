@@ -77,6 +77,7 @@ initLocalStorage('clientTable');
   });
 
   document.querySelector('#clientTable').addEventListener('click', function(event){
+    console.log("click");
     if ( event.target.classList.contains('wjs-dbtable__btn_close') ) {
       closeColumn(event.target);
     }
@@ -1653,11 +1654,12 @@ initLocalStorage('clientTable');
   }
 
   function startDragColumn(event) {
-    let headerCell   = event.target.closest('.wjs-dbtable__header-cell'),
-        tableElement = event.target.closest('.wjs-dbtable'),
-        table        = event.target.closest('.wjs-dbtable__table'),
-        source       = headerCell.dataset.source,
-        tableId      = tableElement.getAttribute('id');
+    let headerCell         = event.target.closest('.wjs-dbtable__header-cell'),
+        tableElement       = event.target.closest('.wjs-dbtable'),
+        outerScrollContent = tableElement.querySelector('.wjs-dbtable__table-wrapper > .wjs-scroll__content-wrapper > .wjs-scroll__content'),
+        table              = event.target.closest('.wjs-dbtable__table'),
+        source             = headerCell.dataset.source,
+        tableId            = tableElement.getAttribute('id');
 
     let shiftX = event.clientX - headerCell.getBoundingClientRect().left,
         shiftY = event.clientY - headerCell.getBoundingClientRect().top;
@@ -1700,7 +1702,8 @@ initLocalStorage('clientTable');
           });
 
           let mirrorX = headerCell.getBoundingClientRect().left
-                        - tableElement.getBoundingClientRect().left;
+                        - tableElement.getBoundingClientRect().left
+                        + outerScrollContent.scrollLeft;
           let mirrorY = 0;
 
           mirror.style.top = mirrorY + 'px';
@@ -1719,8 +1722,7 @@ initLocalStorage('clientTable');
 
     function moveColumnMirror(event){
       let x = mirror.getBoundingClientRect().left - 1,
-          y = mirror.getBoundingClientRect().top,
-          outerScrollContent = tableElement.querySelector('.wjs-dbtable__table-wrapper > .wjs-scroll__content-wrapper > .wjs-scroll__content');;
+          y = mirror.getBoundingClientRect().top;
 
       let target;
       if ( document.elementFromPoint(x,y) ) {
@@ -1734,7 +1736,12 @@ initLocalStorage('clientTable');
           item.classList.remove('wjs-dbtable__header-cell_dropable');
         } );
         target.classList.add('wjs-dbtable__header-cell_dropable');
-        target.nextElementSibling.classList.add('wjs-dbtable__header-cell_dropable');
+
+        if (target.nextElementSibling) {
+          target.nextElementSibling.classList.add('wjs-dbtable__header-cell_dropable');
+        }
+      } else {
+        targetSource = null;
       }
 
       // перетягування не повинно виповзати за межі таблиці
@@ -1767,7 +1774,7 @@ initLocalStorage('clientTable');
       // якщо дзеркало підтягується до правого краю тягабельної зони -
       // прокрутити таблицю вліво
       if (left - outerScrollContent.scrollLeft >= scrollX) {
-        outerScrollContent.scrollLeft += 10;
+          outerScrollContent.scrollLeft += 10;
       }
 
       // якщо дзеркало підтягується до лівого краю тягабельної зони -
@@ -1802,26 +1809,38 @@ initLocalStorage('clientTable');
 
       for (let i = 0; i < headersArr.length; i++) {
         if (headersArr[i].s == source) {
-          sourceObject = headersArr[i];
+          sourceObject = Object.assign({}, headersArr[i]);
           break
         }
       }
-      for (let i = 0; i < headersArr.length; i++) {
-        if (headersArr[i].s != source && headersArr[i].s != targetSource) {
-          tempArr.push(headersArr[i]);
-        } else if (headersArr[i].s == source) {
-          continue
-        } else if (headersArr[i].s == targetSource) {
-          tempArr.push(headersArr[i]);
-          tempArr.push(sourceObject);
+
+      // якщо відпускання мишки відбувається поза заголовками таблиці,
+      // targetSource == null, перетягування не відбувається
+      if (targetSource) {
+        for (let i = 0; i < headersArr.length; i++) {
+          if (headersArr[i].s != source && headersArr[i].s != targetSource) {
+            tempArr.push(headersArr[i]);
+          } else if (headersArr[i].s == source) {
+            continue
+          } else if (headersArr[i].s == targetSource) {
+            tempArr.push(headersArr[i]);
+            tempArr.push(sourceObject);
+          }
         }
+        tableObj.h = tempArr;
+        localStorage.setItem( tableId, JSON.stringify(tableObj) );
       }
 
-      tableObj.h = tempArr;
-      localStorage.setItem( tableId, JSON.stringify(tableObj) );
-
       // buildTableHeader (tableId);
-      // buildTableBody ({})
+
+      // buildTableBody ({}) вимагає формування складного аргументу, простіше
+      // вибрати наявний HTML та перетасувати його
+      let bCellsArr    = tableElement.querySelectorAll('.wjs-dbtable__body-cell'),
+          tbody        = tableElement.querySelector('.wjs-dbtable__tbody'),
+          hCellsAmount = tableElement.querySelectorAll('.wjs-dbtable__header-cell').length;
+          console.log("hCellsAmount", hCellsAmount);
+
+      // normalizeTableMeasurements(tableId);
     }
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
