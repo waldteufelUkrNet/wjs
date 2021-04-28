@@ -77,7 +77,6 @@ initLocalStorage('clientTable');
   });
 
   document.querySelector('#clientTable').addEventListener('click', function(event){
-    console.log("click");
     if ( event.target.classList.contains('wjs-dbtable__btn_close') ) {
       closeColumn(event.target);
     }
@@ -1674,7 +1673,7 @@ initLocalStorage('clientTable');
     document.addEventListener('mousemove', buildColumnMirror);
 
     // завершення drag'n'drop
-    document.addEventListener('mouseup', stopDragColumn);
+    document.addEventListener('mouseup', () => isMouseUp = true );
 
     function buildColumnMirror(event) {
       if (!startX) {
@@ -1817,30 +1816,73 @@ initLocalStorage('clientTable');
       // якщо відпускання мишки відбувається поза заголовками таблиці,
       // targetSource == null, перетягування не відбувається
       if (targetSource) {
-        for (let i = 0; i < headersArr.length; i++) {
-          if (headersArr[i].s != source && headersArr[i].s != targetSource) {
-            tempArr.push(headersArr[i]);
-          } else if (headersArr[i].s == source) {
-            continue
-          } else if (headersArr[i].s == targetSource) {
-            tempArr.push(headersArr[i]);
-            tempArr.push(sourceObject);
+        if (source == targetSource) {} else {
+          for (let i = 0; i < headersArr.length; i++) {
+            if (headersArr[i].s != source && headersArr[i].s != targetSource) {
+              tempArr.push(headersArr[i]);
+            } else if (headersArr[i].s == source) {
+              continue
+            } else if (headersArr[i].s == targetSource) {
+              tempArr.push(headersArr[i]);
+              tempArr.push(sourceObject);
+            }
           }
+          tableObj.h = tempArr;
+          localStorage.setItem( tableId, JSON.stringify(tableObj) );
         }
-        tableObj.h = tempArr;
-        localStorage.setItem( tableId, JSON.stringify(tableObj) );
       }
 
-      // buildTableHeader (tableId);
+      buildTableHeader (tableId);
 
       // buildTableBody ({}) вимагає формування складного аргументу, простіше
       // вибрати наявний HTML та перетасувати його
-      let bCellsArr    = tableElement.querySelectorAll('.wjs-dbtable__body-cell'),
-          tbody        = tableElement.querySelector('.wjs-dbtable__tbody'),
-          hCellsAmount = tableElement.querySelectorAll('.wjs-dbtable__header-cell').length;
-          console.log("hCellsAmount", hCellsAmount);
+      let tbody        = tableElement.querySelector('.wjs-dbtable__tbody'),
+          bCellsArr    = tableElement.querySelectorAll('.wjs-dbtable__body-cell'),
+          bCellsAmount = bCellsArr.length,
+          hCellsArr    = tableElement.querySelectorAll('.wjs-dbtable__header-cell'),
+          hCellsAmount = hCellsArr.length;
 
-      // normalizeTableMeasurements(tableId);
+      // let t = bCellsArr[1].cloneNode(true);
+
+      // формуємо масив з порядком колонок по атрибуту data-source
+      let headerSourcesArr = [];
+      let headerData = JSON.parse( localStorage.getItem('clientTable') ).h;
+      headerData.forEach( item => {
+        if (item.d) {
+          headerSourcesArr.push(item.s);
+        }
+      });
+
+      let itemsAmount = bCellsAmount/hCellsAmount;
+      let sortedArr = [];
+
+      let counter;
+      for (let i = 0; i < itemsAmount; i++) {
+
+        // порядковий номер чарунки, з якої починається черговий рядок таблиці
+        let start = counter || i;
+        // порядковий номер чарунки, якою закінчується черговий рядок таблиці
+        let end = start + hCellsAmount-1;
+
+        counter = end + 1;
+
+        // перебір конкретного рядочка таблиці
+        let lineObj = [];
+        for ( let j = start; j < end+1; j++) {
+          let key = bCellsArr[j].dataset.source;
+          if (!key) key = 'checkbox';
+          lineObj[key] = bCellsArr[j];
+        }
+
+        let lineArr = [];
+        for (let j = 0; j < headerSourcesArr.length; j++) {
+          lineArr.push( lineObj[headerSourcesArr[j]] );
+        }
+        sortedArr.push(lineArr);
+      }
+      console.log("sortedArr", sortedArr);
+
+      normalizeTableMeasurements(tableId);
     }
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
