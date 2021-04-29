@@ -1652,6 +1652,11 @@ initLocalStorage('clientTable');
     }
   }
 
+  /**
+   * [startDragColumn відповідає за усю логіку перетягування колонок,
+   * містить вкладені функції]
+   * @param {[Event object]} event [об'єкт події]
+   */
   function startDragColumn(event) {
     let headerCell         = event.target.closest('.wjs-dbtable__header-cell'),
         tableElement       = event.target.closest('.wjs-dbtable'),
@@ -1663,7 +1668,7 @@ initLocalStorage('clientTable');
     let shiftX = event.clientX - headerCell.getBoundingClientRect().left,
         shiftY = event.clientY - headerCell.getBoundingClientRect().top;
 
-    let startX,startY,mirror,targetSource;
+    let startX,startY,mirror,target,targetSource;
     let isMouseUp = false;
 
     // перша колонка з чекбоксом - не "тягабельна"
@@ -1723,7 +1728,6 @@ initLocalStorage('clientTable');
       let x = mirror.getBoundingClientRect().left - 1,
           y = mirror.getBoundingClientRect().top;
 
-      let target;
       if ( document.elementFromPoint(x,y) ) {
         target = document.elementFromPoint(x,y).closest('.wjs-dbtable__header-cell');
       }
@@ -1815,14 +1819,13 @@ initLocalStorage('clientTable');
 
       // якщо відпускання мишки відбувається поза заголовками таблиці,
       // targetSource == null, перетягування не відбувається
-      console.log(source + '/' + targetSource);
       if (targetSource) {
         if (source == targetSource) {
           // тут змін нема, колонка все одно встане на своє місце
           return
         } else {
           for (let i = 0; i < headersArr.length; i++) {
-            if (headersArr[i].s != source && headersArr[i].s != targetSource) {
+             if (headersArr[i].s != source && headersArr[i].s != targetSource) {
               tempArr.push(headersArr[i]);
             } else if (headersArr[i].s == source) {
               continue
@@ -1835,16 +1838,33 @@ initLocalStorage('clientTable');
           localStorage.setItem( tableId, JSON.stringify(tableObj) );
         }
       } else {
+        // коли відпускання мишки відбувається поза областю заголовків,
+        // targetSource === null, а якщо над чекбоксом, то undefined.
+        if (targetSource === undefined) {
+          tempArr.push(headersArr[0]);
+          let tempArr2 = [];
+          for (let i = 1; i < headersArr.length; i++) {
+            if (headersArr[i].s == source) {
+              tempArr.push(headersArr[i]);
+            } else {
+              tempArr2.push(headersArr[i]);
+            }
+          }
+          tempArr = tempArr.concat(tempArr2);
+          tableObj.h = tempArr;
+          localStorage.setItem( tableId, JSON.stringify(tableObj) );
+        } else {
         // тут зміни не потрібні, бо дзеркало було відпущене за межеми області
-        // шапок
+        // заголовків
         return
+        }
       }
 
       buildTableHeader (tableId);
 
       // buildTableBody ({}) вимагає формування складного аргументу, простіше
       // вибрати наявний HTML та перетасувати його
-      let tbody        = tableElement.querySelector('.wjs-dbtable__tbody'),
+      let tbody = tableElement.querySelector('.wjs-dbtable__tbody'),
           bCellsArr    = tableElement.querySelectorAll('.wjs-dbtable__body-cell'),
           bCellsAmount = bCellsArr.length,
           hCellsArr    = tableElement.querySelectorAll('.wjs-dbtable__header-cell'),
