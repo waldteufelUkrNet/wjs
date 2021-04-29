@@ -1815,8 +1815,12 @@ initLocalStorage('clientTable');
 
       // якщо відпускання мишки відбувається поза заголовками таблиці,
       // targetSource == null, перетягування не відбувається
+      console.log(source + '/' + targetSource);
       if (targetSource) {
-        if (source == targetSource) {} else {
+        if (source == targetSource) {
+          // тут змін нема, колонка все одно встане на своє місце
+          return
+        } else {
           for (let i = 0; i < headersArr.length; i++) {
             if (headersArr[i].s != source && headersArr[i].s != targetSource) {
               tempArr.push(headersArr[i]);
@@ -1830,6 +1834,10 @@ initLocalStorage('clientTable');
           tableObj.h = tempArr;
           localStorage.setItem( tableId, JSON.stringify(tableObj) );
         }
+      } else {
+        // тут зміни не потрібні, бо дзеркало було відпущене за межеми області
+        // шапок
+        return
       }
 
       buildTableHeader (tableId);
@@ -1842,8 +1850,6 @@ initLocalStorage('clientTable');
           hCellsArr    = tableElement.querySelectorAll('.wjs-dbtable__header-cell'),
           hCellsAmount = hCellsArr.length;
 
-      // let t = bCellsArr[1].cloneNode(true);
-
       // формуємо масив з порядком колонок по атрибуту data-source
       let headerSourcesArr = [];
       let headerData = JSON.parse( localStorage.getItem('clientTable') ).h;
@@ -1853,34 +1859,32 @@ initLocalStorage('clientTable');
         }
       });
 
+      // кількість записів у таблиці
       let itemsAmount = bCellsAmount/hCellsAmount;
       let sortedArr = [];
 
       let counter;
       for (let i = 0; i < itemsAmount; i++) {
-
         // порядковий номер чарунки, з якої починається черговий рядок таблиці
         let start = counter || i;
         // порядковий номер чарунки, якою закінчується черговий рядок таблиці
         let end = start + hCellsAmount-1;
-
         counter = end + 1;
 
         // перебір конкретного рядочка таблиці
-        let lineObj = [];
+        let lineObj = {};
         for ( let j = start; j < end+1; j++) {
           let key = bCellsArr[j].dataset.source;
-          if (!key) key = 'checkbox';
+          if (!key) {
+            key = 'checkbox';
+          }
           lineObj[key] = bCellsArr[j];
         }
 
-        let lineArr = [];
         for (let j = 0; j < headerSourcesArr.length; j++) {
-          lineArr.push( lineObj[headerSourcesArr[j]] );
+          tbody.append( lineObj[headerSourcesArr[j]] );
         }
-        sortedArr.push(lineArr);
       }
-      console.log("sortedArr", sortedArr);
 
       normalizeTableMeasurements(tableId);
     }
