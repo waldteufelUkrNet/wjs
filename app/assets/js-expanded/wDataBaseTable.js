@@ -187,17 +187,18 @@ initLocalStorage('clientTable');
   function initLocalStorage(tableId) {
 
     // tableId = {
-    //   h: [      //  headers: [
-    //     {       //    {
-    //       n: "" //      name     : "id",
-    //       b: [] //      buttons  : ["search", "close", "sort"],
-    //       s: "" //      source   : "id",
-    //       d: "" //      display  : true
-    //       v: [] //      values   : ["status1", "satus2", ...]
-    //     }       //    }
-    //   ],        //  ],
-    //   cc: []    //  checkedCheckboxes : [1,2,3 ... n]
-    //   cf: {}    //  closedFilters : { filterGroup1: [filterName1, ...], ...}
+    //   h: [       //  headers: [
+    //     {        //    {
+    //       n:  "" //      name     : "id",
+    //       b:  [] //      buttons  : ["search", "close", "sort"],
+    //       s:  "" //      source   : "id",
+    //       d:  "" //      display  : true
+    //       v:  [] //      values   : ["status1", "satus2", ...]
+    //       mw: "" //      minWidth : number
+    //     }        //    }
+    //   ],         //  ],
+    //   cc: []     //  checkedCheckboxes : [1,2,3 ... n]
+    //   cf: {}     //  closedFilters : { filterGroup1: [filterName1, ...], ...}
     // };
 
     let tableObj = JSON.parse( localStorage.getItem(tableId) ) || {};
@@ -272,7 +273,9 @@ initLocalStorage('clientTable');
         innerScrollContent = innerContainer.querySelector('.wjs-scroll__content'),
         hCells             = tableElement.querySelectorAll('.wjs-dbtable__header-cell'),
         tbody              = tableElement.querySelector('.wjs-dbtable__tbody'),
-        bCells             = tableElement.querySelectorAll('.wjs-dbtable__body-cell');
+        bCells             = tableElement.querySelectorAll('.wjs-dbtable__body-cell'),
+        tableObj           = JSON.parse( localStorage.getItem(tableId) ),
+        headerData         = tableObj.h;
 
     /* ↓↓↓ outerContainer height ↓↓↓ */
       // розраховуємо точні розміри обгортки для таблиці, максимально-доступні у
@@ -327,6 +330,25 @@ initLocalStorage('clientTable');
       if ( condition ) {
         document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">Совпадения отсутствуют. Попробуйте упростить критерии поиска</p>';
       } else {
+
+        // збереження мінімальної ширини колонки (це щоб при пересорті не було
+        // стрибків)
+        headerData.forEach( item => {
+          let cell = theader.querySelector('.wjs-dbtable__header-cell[data-source="' + item.s + '"]')
+                     || theader.querySelector('.wjs-dbtable__header-cell_checkbox');
+          if (item.d) {
+            // compare
+            if (item.mw) {
+              if (item.mw > cell.offsetWidth) {
+                cell.style.minWidth = item.mw + 'px';
+              }
+            } else {
+              // set
+              item.mw = cell.offsetWidth;
+            }
+          }
+        } );
+
         let countWidth = 0;
         for (let i = 0; i < hCells.length; i++) {
           bCells[i].style.width = 'auto';
@@ -338,6 +360,19 @@ initLocalStorage('clientTable');
           }
           countWidth += hCells[i].offsetWidth;
         }
+
+        // повторна перевірка і збереження мінімальної ширини колонки
+        headerData.forEach( item => {
+          let cell = theader.querySelector('.wjs-dbtable__header-cell[data-source="' + item.s + '"]')
+                     || theader.querySelector('.wjs-dbtable__header-cell_checkbox');
+          if (item.d) {
+            if (item.mw < cell.offsetWidth) {
+              // set
+              item.mw = cell.offsetWidth;
+            }
+          }
+        } );
+        localStorage.setItem( tableId, JSON.stringify(tableObj) );
 
         if (countWidth > theader.clientWidth) {
           theader.style.width            = countWidth + 'px';
@@ -394,9 +429,9 @@ initLocalStorage('clientTable');
                    - theader.offsetHeight
                    - bottomScrollLineHeight;
 
-      innerContainer.style.height = height + 'px';
+      innerContainer.style.height     = height + 'px';
       innerScrollContent.style.height = height + 'px';
-      innerScrollContent.style.width = innerContainer.clientWidth + 'px';
+      innerScrollContent.style.width  = innerContainer.clientWidth + 'px';
     /* ↑↑↑ innerContainer height&width ↑↑↑ */
 
     wSetScroll( document.querySelector('#' + tableId + ' .wjs-scroll__content-wrapper .wjs-scroll'), {right:true,overvlowXHidden:true});
