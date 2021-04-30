@@ -272,6 +272,15 @@
       }
     }
   }
+  &__width-changer {
+    height: 100%;
+    width: 5px;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 100%;
+    cursor: col-resize;
+  }
 
   &__filters-list-wrapper {
     position: absolute;

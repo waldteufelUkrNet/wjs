@@ -171,8 +171,13 @@ initLocalStorage('clientTable');
   });
 
   document.querySelector('#clientTable').addEventListener('mousedown', function(event) {
+    // change column width
+    if ( event.target.closest('.wjs-dbtable__width-changer') ) {
+      startChangeColumnWidth(event);
+    }
+
     // drag'n'drop
-    if ( event.target.closest('.wjs-dbtable__header-cell') ) {
+    if ( !event.target.closest('.wjs-dbtable__width-changer') && event.target.closest('.wjs-dbtable__header-cell') ) {
       startDragColumn(event);
     }
   });
@@ -189,12 +194,13 @@ initLocalStorage('clientTable');
     // tableId = {
     //   h: [       //  headers: [
     //     {        //    {
-    //       n:  "" //      name     : "id",
-    //       b:  [] //      buttons  : ["search", "close", "sort"],
-    //       s:  "" //      source   : "id",
-    //       d:  "" //      display  : true
-    //       v:  [] //      values   : ["status1", "satus2", ...]
-    //       mw: "" //      minWidth : number
+    //       n:  "" //      name           : "id",
+    //       b:  [] //      buttons        : ["search", "close", "sort"],
+    //       s:  "" //      source         : "id",
+    //       d:  "" //      display        : true
+    //       v:  [] //      values         : ["status1", "satus2", ...]
+    //       mw: "" //      minWidth       : number
+    //       iw: "" //      impotrantWidth : number
     //     }        //    }
     //   ],         //  ],
     //   cc: []     //  checkedCheckboxes : [1,2,3 ... n]
@@ -520,7 +526,7 @@ initLocalStorage('clientTable');
           if ( item.b.includes('menu') ) {
             htmlStr += '<button class="wjs-dbtable__btn wjs-dbtable__btn_options" type="button" title="доп. опции"></button>';
           }
-          htmlStr += '</div>';
+          htmlStr += '</div><div class="wjs-dbtable__width-changer"></div>';
         }
 
         htmlStr += '</div>';
@@ -1942,6 +1948,59 @@ initLocalStorage('clientTable');
       }
 
       normalizeTableMeasurements(tableId);
+    }
+  }
+
+  function startChangeColumnWidth(event) {
+    console.log("startChangeColumnWidth");
+
+    let tableElement       = event.target.closest('.wjs-dbtable'),
+        tableId            = tableElement.getAttribute('id'),
+        currentCell        = event.target.closest('.wjs-dbtable__header-cell'),
+        currentCellSource  = currentCell.dataset.source,
+        columnCells        = tableElement.querySelectorAll('.wjs-dbtable__body-cell[data-source="' + currentCellSource + '"]'),
+
+        outerContainer     = tableElement.querySelector('.wjs-dbtable__table-wrapper.wjs-scroll'),
+        outerScrollContent = tableElement.querySelector('.wjs-dbtable__table-wrapper > .wjs-scroll__content-wrapper > .wjs-scroll__content'),
+        table              = tableElement.querySelector('.wjs-dbtable__table'),
+        theader            = table.querySelector('.wjs-dbtable__theader'),
+        innerContainer     = table.querySelector('.wjs-dbtable__inner-table-container.wjs-scroll'),
+        innerScrollContent = innerContainer.querySelector('.wjs-scroll__content'),
+        hCells             = tableElement.querySelectorAll('.wjs-dbtable__header-cell'),
+        tbody              = tableElement.querySelector('.wjs-dbtable__tbody'),
+        bCells             = tableElement.querySelectorAll('.wjs-dbtable__body-cell'),
+        tableObj           = JSON.parse( localStorage.getItem(tableId) ),
+        headerData         = tableObj.h,
+        startX             = event.pageX;
+
+    // заміряємо поточну ширину, скидаємо до мінімуму, заміряємо мінімальну і
+    // повертаємо попередні розміри
+    let currentWidth = currentCell.offsetWidth;
+    currentCell.style.width = 'auto';
+    currentCell.style.minWidth = 'auto';
+
+    let minWidth = currentCell.offsetWidth;
+    currentCell.style.width = currentWidth + 'px';
+    currentCell.style.minWidth = minWidth + 'px';
+
+    document.addEventListener('mousemove', changeColumnWidth);
+    document.addEventListener('mouseup', stopColumnWidth );
+
+    function changeColumnWidth(event) {
+      let deltaX          = event.pageX - startX,
+          calculatedWidth = currentWidth + deltaX;
+
+      if (calculatedWidth < minWidth) {
+        calculatedWidth = minWidth;
+      }
+
+      currentCell.style.width = calculatedWidth + 'px';
+      columnCells.forEach( item => {
+        item.style.width = calculatedWidth + 'px';
+      });
+    }
+    function stopColumnWidth() {
+      document.removeEventListener('mousemove', changeColumnWidth);
     }
   }
 /* ↑↑↑ functions declaration ↑↑↑ */

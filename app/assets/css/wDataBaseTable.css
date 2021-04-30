@@ -569,6 +569,16 @@ a, a:hover {
   background-color: grey;
 }
 
+.wjs-dbtable__width-changer {
+  height: 100%;
+  width: 5px;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 100%;
+  cursor: col-resize;
+}
+
 .wjs-dbtable__filters-list-wrapper {
   position: absolute;
   z-index: 1;
