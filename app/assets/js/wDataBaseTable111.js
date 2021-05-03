@@ -1,4 +1,4 @@
-"use strict";
+-"use strict";
 // wDataBaseTable
 ////////////////////////////////////////////////////////////////////////////////
 /* ↓↓↓ variables declaration ↓↓↓ */
@@ -361,19 +361,14 @@ initLocalStorage('clientTable');
 
         let countWidth = 0;
         for (let i = 0; i < hCells.length; i++) {
-
-          if (0) {
-            // якщо є iw
+          bCells[i].style.width = 'auto';
+          hCells[i].style.width = 'auto';
+          if (hCells[i].clientWidth > bCells[i].clientWidth) {
+            bCells[i].style.width = hCells[i].offsetWidth + 'px';
           } else {
-            bCells[i].style.width = 'auto';
-            hCells[i].style.width = 'auto';
-            if (hCells[i].clientWidth > bCells[i].clientWidth) {
-              bCells[i].style.width = hCells[i].offsetWidth + 'px';
-            } else {
-              hCells[i].style.width = bCells[i].offsetWidth + 'px';
-            }
-            countWidth += hCells[i].offsetWidth;
+            hCells[i].style.width = bCells[i].offsetWidth + 'px';
           }
+          countWidth += hCells[i].offsetWidth;
         }
 
         // повторна перевірка і збереження мінімальної ширини колонки
@@ -1961,7 +1956,6 @@ initLocalStorage('clientTable');
   }
 
   function startChangeColumnWidth(event) {
-    console.log("startChangeColumnWidth");
 
     let tableElement       = event.target.closest('.wjs-dbtable'),
         tableId            = tableElement.getAttribute('id'),
@@ -1978,8 +1972,7 @@ initLocalStorage('clientTable');
         hCells             = tableElement.querySelectorAll('.wjs-dbtable__header-cell'),
         tbody              = tableElement.querySelector('.wjs-dbtable__tbody'),
         bCells             = tableElement.querySelectorAll('.wjs-dbtable__body-cell'),
-        tableObj           = JSON.parse( localStorage.getItem(tableId) ),
-        headerData         = tableObj.h,
+
         startX             = event.pageX;
 
     // заміряємо поточну ширину, скидаємо до мінімуму, заміряємо мінімальну і

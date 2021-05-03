@@ -343,8 +343,12 @@ initLocalStorage('clientTable');
           let cell = theader.querySelector('.wjs-dbtable__header-cell[data-source="' + item.s + '"]')
                      || theader.querySelector('.wjs-dbtable__header-cell_checkbox');
           if (item.d) {
-            // compare
+            // if (item.iw) {
+            //   // iw - important width, утворюється при ручній зміні ширини колонки
+            //   cell.style.minWidth = item.iw + 'px';
+            // } else
             if (item.mw) {
+              // compare
               if (item.mw > cell.offsetWidth) {
                 cell.style.minWidth = item.mw + 'px';
               }
@@ -357,14 +361,19 @@ initLocalStorage('clientTable');
 
         let countWidth = 0;
         for (let i = 0; i < hCells.length; i++) {
-          bCells[i].style.width = 'auto';
-          hCells[i].style.width = 'auto';
-          if (hCells[i].clientWidth > bCells[i].clientWidth) {
-            bCells[i].style.width = hCells[i].offsetWidth + 'px';
+
+          if (0) {
+            // якщо є iw
           } else {
-            hCells[i].style.width = bCells[i].offsetWidth + 'px';
+            bCells[i].style.width = 'auto';
+            hCells[i].style.width = 'auto';
+            if (hCells[i].clientWidth > bCells[i].clientWidth) {
+              bCells[i].style.width = hCells[i].offsetWidth + 'px';
+            } else {
+              hCells[i].style.width = bCells[i].offsetWidth + 'px';
+            }
+            countWidth += hCells[i].offsetWidth;
           }
-          countWidth += hCells[i].offsetWidth;
         }
 
         // повторна перевірка і збереження мінімальної ширини колонки
@@ -1986,9 +1995,11 @@ initLocalStorage('clientTable');
     document.addEventListener('mousemove', changeColumnWidth);
     document.addEventListener('mouseup', stopColumnWidth );
 
+    let calculatedWidth;
     function changeColumnWidth(event) {
-      let deltaX          = event.pageX - startX,
-          calculatedWidth = currentWidth + deltaX;
+      let deltaX = event.pageX - startX;
+
+      calculatedWidth = currentWidth + deltaX;
 
       if (calculatedWidth < minWidth) {
         calculatedWidth = minWidth;
@@ -2001,6 +2012,21 @@ initLocalStorage('clientTable');
     }
     function stopColumnWidth() {
       document.removeEventListener('mousemove', changeColumnWidth);
+
+      let tableObj   = JSON.parse( localStorage.getItem(tableId) ),
+          headerData = tableObj.h;
+
+      for (let i = 0; i < headerData.length; i++) {
+        if (headerData[i].s == currentCellSource) {
+          headerData[i].iw = calculatedWidth;
+          break;
+        }
+      }
+      localStorage.setItem( tableId, JSON.stringify(tableObj) );
+
+      // normalizeTableMeasurements(tableId);
+
+      document.removeEventListener('mouseup', stopColumnWidth);
     }
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
