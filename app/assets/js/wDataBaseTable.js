@@ -329,7 +329,6 @@ initLocalStorage('clientTable');
       outerScrollContent.style.width = outerContainer.clientWidth + 'px';
       innerContainer.style.width     = outerContainer.clientWidth + 'px';
 
-      // зрівнюємо ширини чарунок тіла таблиці і чарунок шапки
       let condition = !!tableElement.querySelector('.wjs-dbtable__filter-item')
                        && getComputedStyle( tableElement.querySelector('.wjs-dbtable__label_filtered') ).display == 'none';
 
@@ -337,56 +336,49 @@ initLocalStorage('clientTable');
         document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">Совпадения отсутствуют. Попробуйте упростить критерии поиска</p>';
       } else {
 
-        // збереження мінімальної ширини колонки (це щоб при пересорті не було
-        // стрибків)
-        headerData.forEach( item => {
-          let cell = theader.querySelector('.wjs-dbtable__header-cell[data-source="' + item.s + '"]')
-                     || theader.querySelector('.wjs-dbtable__header-cell_checkbox');
-          if (item.d) {
-            // if (item.iw) {
-            //   // iw - important width, утворюється при ручній зміні ширини колонки
-            //   cell.style.minWidth = item.iw + 'px';
-            // } else
-            if (item.mw) {
-              // compare
-              if (item.mw > cell.offsetWidth) {
-                cell.style.minWidth = item.mw + 'px';
-              }
-            } else {
-              // set
-              item.mw = cell.offsetWidth;
-            }
-          }
-        } );
+        // перебір колонок і вирівнювання ширини чарунок тіла таблиці і шапки
+        // iw - important width, утворюється при ручній зміні ширини колонки
+        // mw - minimal width, утворюється при сортуванні, щоб не скакали
+        //      розміри колонки зі зміною контенту
+        // d - display, видимість колонки (фільтри)
 
         let countWidth = 0;
-        for (let i = 0; i < hCells.length; i++) {
+        headerData.forEach( (item, i) => {
 
-          if (0) {
-            // якщо є iw
-          } else {
-            bCells[i].style.width = 'auto';
-            hCells[i].style.width = 'auto';
-            if (hCells[i].clientWidth > bCells[i].clientWidth) {
-              bCells[i].style.width = hCells[i].offsetWidth + 'px';
-            } else {
-              hCells[i].style.width = bCells[i].offsetWidth + 'px';
+          if (item.d) { // якщо колонку видно
+            if (item.iw) { // якщо є фіксована ширина
+              hCells[i].style.width = item.iw + 'px';
+              tableElement.querySelectorAll('.wjs-dbtable__body-cell[data-source="' + item.s + '"]').forEach( item => {
+                item.style.width = item.iw + 'px';
+              });
+            } else { // якщо нема фіксованої ширини
+            console.log("else");
+              // порівняння розмірів чарунок шапки і тіла
+              bCells[i].style.width = 'auto';
+              hCells[i].style.width = 'auto';
+
+              if (hCells[i].clientWidth > bCells[i].clientWidth) {
+                bCells[i].style.width = hCells[i].offsetWidth + 'px';
+              } else {
+                hCells[i].style.width = bCells[i].offsetWidth + 'px';
+              }
+
+              // if (item.mw) { // якщо є мінімальна ширина
+              //   if (item.mw > hCells[i].offsetWidth) {
+              //     hCells[i].style.minWidth = item.mw + 'px';
+              //     bCells[i].style.minWidth = item.mw + 'px';
+              //   } else {
+              //     item.mw = hCells[i].offsetWidth;
+              //   }
+              // } else { // якщо нема мінімальної ширини
+              //   item.mw = hCells[i].offsetWidth;
+              //   hCells[i].style.minWidth = item.mw + 'px';
+              //   bCells[i].style.minWidth = item.mw + 'px';
+              // }
             }
             countWidth += hCells[i].offsetWidth;
           }
-        }
-
-        // повторна перевірка і збереження мінімальної ширини колонки
-        headerData.forEach( item => {
-          let cell = theader.querySelector('.wjs-dbtable__header-cell[data-source="' + item.s + '"]')
-                     || theader.querySelector('.wjs-dbtable__header-cell_checkbox');
-          if (item.d) {
-            if (item.mw < cell.offsetWidth) {
-              // set
-              item.mw = cell.offsetWidth;
-            }
-          }
-        } );
+        });
         localStorage.setItem( tableId, JSON.stringify(tableObj) );
 
         if (countWidth > theader.clientWidth) {
