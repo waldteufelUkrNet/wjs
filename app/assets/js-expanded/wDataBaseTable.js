@@ -349,6 +349,7 @@ initLocalStorage('clientTable');
             if (item.iw) { // якщо є фіксована ширина
               hCells[i].style.width = item.iw + 'px';
               tableElement.querySelectorAll('.wjs-dbtable__body-cell[data-source="' + item.s + '"]').forEach( item => {
+                item.style.overflow = 'hidden';
                 item.style.width = item.iw + 'px';
               });
             } else { // якщо нема фіксованої ширини
@@ -1953,7 +1954,6 @@ initLocalStorage('clientTable');
   }
 
   function startChangeColumnWidth(event) {
-    console.log("startChangeColumnWidth");
 
     let tableElement       = event.target.closest('.wjs-dbtable'),
         tableId            = tableElement.getAttribute('id'),
@@ -1984,6 +1984,8 @@ initLocalStorage('clientTable');
     currentCell.style.width = currentWidth + 'px';
     currentCell.style.minWidth = minWidth + 'px';
 
+    let parentsWidthWithoutCurrent = theader.clientWidth - currentWidth;
+
     document.addEventListener('mousemove', changeColumnWidth);
     document.addEventListener('mouseup', stopColumnWidth );
 
@@ -1992,6 +1994,8 @@ initLocalStorage('clientTable');
       let deltaX = event.pageX - startX;
 
       calculatedWidth = currentWidth + deltaX;
+      let newParentsWidth    = parentsWidthWithoutCurrent + calculatedWidth;
+      console.log(deltaX + ':' + newParentsWidth);
 
       if (calculatedWidth < minWidth) {
         calculatedWidth = minWidth;
@@ -2000,7 +2004,16 @@ initLocalStorage('clientTable');
       currentCell.style.width = calculatedWidth + 'px';
       columnCells.forEach( item => {
         item.style.width = calculatedWidth + 'px';
+        item.style.overflow = 'hidden';
       });
+
+      theader.style.width            = newParentsWidth + 'px';
+      tbody.style.width              = newParentsWidth + 'px';
+      table.style.width              = newParentsWidth + 'px';
+      // outerScrollContent.style.width = newParentsWidth + 'px';
+      innerContainer.style.width     = newParentsWidth + 'px';
+      wSetScroll(innerContainer, {right:true,overvlowXHidden:true});
+
     }
     function stopColumnWidth() {
       document.removeEventListener('mousemove', changeColumnWidth);
