@@ -2015,6 +2015,7 @@ initLocalStorage('clientTable');
       wSetScroll(innerContainer, {right:true,overvlowXHidden:true});
 
     }
+
     function stopColumnWidth() {
       document.removeEventListener('mousemove', changeColumnWidth);
 
@@ -2027,6 +2028,19 @@ initLocalStorage('clientTable');
           break;
         }
       }
+
+      let tempWidth;
+      columnCells.forEach( item => {
+        tempWidth += item.offsetWidth;
+      });
+
+      theader.style.width            = tempWidth + 'px';
+      tbody.style.width              = tempWidth + 'px';
+      table.style.width              = tempWidth + 'px';
+      // outerScrollContent.style.width = newParentsWidth + 'px';
+      innerContainer.style.width     = tempWidth + 'px';
+      wSetScroll(innerContainer, {right:true,overvlowXHidden:true});
+
       localStorage.setItem( tableId, JSON.stringify(tableObj) );
 
       // normalizeTableMeasurements(tableId);
