@@ -1972,7 +1972,6 @@ initLocalStorage('clientTable');
         currentCell        = event.target.closest('.wjs-dbtable__header-cell'),
         currentCellSource  = currentCell.dataset.source,
         columnCells        = tableElement.querySelectorAll('.wjs-dbtable__body-cell[data-source="' + currentCellSource + '"]'),
-
         outerContainer     = tableElement.querySelector('.wjs-dbtable__table-wrapper.wjs-scroll'),
         outerScrollContent = tableElement.querySelector('.wjs-dbtable__table-wrapper > .wjs-scroll__content-wrapper > .wjs-scroll__content'),
         table              = tableElement.querySelector('.wjs-dbtable__table'),
@@ -1982,7 +1981,7 @@ initLocalStorage('clientTable');
         tableObj           = JSON.parse( localStorage.getItem(tableId) ),
         headerData         = tableObj.h,
         startX             = event.pageX;
-
+ 
     // заміряємо поточну ширину, скидаємо до мінімуму, заміряємо мінімальну і
     // повертаємо попередні розміри
     let currentWidth = currentCell.offsetWidth;

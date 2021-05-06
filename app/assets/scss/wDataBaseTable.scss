@@ -14,6 +14,27 @@
     font-size             : 2em;
     padding               : 20px;
   }
+  &__big-search-wrapper {
+    margin: 0 auto 10px;
+    width: 300px;
+    display: flex;
+    // justify-content: space-between;
+    // align-items: center;
+    border: 1px solid grey;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  &__big-search-input {
+    flex-grow: 1;
+    height: 36px;
+    border: 1px solid transparent;
+  }
+  &__big-search-btn {
+    height: 36px;
+    margin: 0;
+    border: 1px solid transparent;
+    border-left: 1px solid grey;
+  }
   &__meta-data-wrapper {
     display               : grid;
     grid-template-columns : auto 1fr;

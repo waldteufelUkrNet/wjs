@@ -178,6 +178,35 @@ a, a:hover {
   padding: 20px;
 }
 
+.wjs-dbtable__big-search-wrapper {
+  margin: 0 auto 10px;
+  width: 300px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  border: 1px solid grey;
+  -webkit-border-radius: 4px;
+          border-radius: 4px;
+  overflow: hidden;
+}
+
+.wjs-dbtable__big-search-input {
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  height: 36px;
+  border: 1px solid transparent;
+}
+
+.wjs-dbtable__big-search-btn {
+  height: 36px;
+  margin: 0;
+  border: 1px solid transparent;
+  border-left: 1px solid grey;
+}
+
 .wjs-dbtable__meta-data-wrapper {
   display: grid;
   grid-template-columns: auto 1fr;
