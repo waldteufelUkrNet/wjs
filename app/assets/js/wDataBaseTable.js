@@ -136,6 +136,18 @@ initLocalStorage('clientTable');
     if ( event.target.closest('.wjs-dbtable__filter-close-btn') ) {
       handleFilterMarkerClicks(event.target);
     }
+
+    // show small search field
+    if ( event.target.closest('.wjs-dbtable__btn_search') ) {
+      openSmallSearchField(event.target)
+    }
+
+    // close small search field
+    if ( document.querySelector('.wjs-dbtable__small-search-input')
+         && !event.target.closest('.wjs-dbtable__small-search-input')
+         && !event.target.closest('.wjs-dbtable__btn_search') ) {
+      closeSmallSearchField('clientTable')
+    }
   });
 
   document.querySelector('#clientTable').addEventListener('change', function(event){
@@ -167,6 +179,13 @@ initLocalStorage('clientTable');
 
     if ( event.key.toLowerCase() == 'enter' ) {
       goToPage(event.target);
+    }
+
+  });
+
+  document.querySelector('#clientTable').addEventListener('input', function(event){
+    if ( event.target.closest('.wjs-dbtable__small-search-input') ) {
+      search_lightVers(event);
     }
   });
 
@@ -1981,7 +2000,7 @@ initLocalStorage('clientTable');
         tableObj           = JSON.parse( localStorage.getItem(tableId) ),
         headerData         = tableObj.h,
         startX             = event.pageX;
- 
+
     // заміряємо поточну ширину, скидаємо до мінімуму, заміряємо мінімальну і
     // повертаємо попередні розміри
     let currentWidth = currentCell.offsetWidth;
@@ -2046,6 +2065,53 @@ initLocalStorage('clientTable');
 
       document.removeEventListener('mouseup', stopChangeColumnWidth);
     }
+  }
+
+  /**
+   * [openSmallSearchField відкриває мале поле пошуку в загоговку таблиці]
+   * @param {[DOM-object]} btn [кнопка пошуку в заголовку таблиці]
+   */
+  function openSmallSearchField(btn) {
+    let tableId = btn.closest('.wjs-dbtable').getAttribute('id');
+
+    if ( btn.closest('.wjs-dbtable__header-cell').querySelector('.wjs-dbtable__small-search-input') ) {
+      closeSmallSearchField(tableId);
+      return
+    }
+
+    if ( document.querySelector('#' + tableId + ' .wjs-dbtable__small-search-input') ) {
+      closeSmallSearchField(tableId);
+    }
+
+    let hCell = btn.closest('.wjs-dbtable__header-cell'),
+        html  = '<input type="text" class="wjs-dbtable__small-search-input">';
+    hCell.insertAdjacentHTML('beforeEnd', html);
+    hCell.querySelector('.wjs-dbtable__small-search-input').focus();
+  }
+
+  /**
+   * [closeSmallSearchField закриває мале поле пошуку в загоговку таблиці]
+   * @param  {[String]} tableId [ідентифікатор таблиці]
+   */
+  function closeSmallSearchField(tableId) {
+    document.querySelector('#' + tableId + ' .wjs-dbtable__small-search-input').remove();
+  }
+
+  function search_lightVers(event) {
+    let tableId = event.target.closest('.wjs-dbtable').getAttribute('id'),
+        source  = event.target.closest('.wjs-dbtable__header-cell').dataset.source,
+        value   = event.target.value;
+
+    let data = [];
+    let dataLength = db[tableId].length;
+
+    db[tableId].forEach( item => {
+      if ( String(item[source]).toLowerCase().includes(value.toLowerCase()) ) {
+        data.push(item);
+      }
+    });
+    buildTableBody ({tableId, data, dataLength});
+    normalizeTableMeasurements(tableId);
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
