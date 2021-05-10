@@ -227,6 +227,8 @@ a, a:hover {
 
 .wjs-dbtable__label {
   position: relative;
+  height: 24px;
+  line-height: 24px;
 }
 
 .wjs-dbtable__label_filters {
@@ -249,6 +251,10 @@ a, a:hover {
   display: none;
 }
 
+.wjs-dbtable__label_selected span {
+  height: 44px;
+}
+
 .wjs-dbtable__label_filtered {
   display: none;
 }
@@ -257,11 +263,25 @@ a, a:hover {
   display: none;
 }
 
-.wjs-dbtable__items-amount, .wjs-dbtable__filtered-amount, .wjs-dbtable__selected-amount {
+.wjs-dbtable__label_founded {
+  display: none;
+}
+
+.wjs-dbtable__label_founded + .wjs-dbtable__founded-amount {
+  display: none;
+}
+
+.wjs-dbtable__label_founded span {
+  height: 44px;
+}
+
+.wjs-dbtable__items-amount, .wjs-dbtable__filtered-amount, .wjs-dbtable__selected-amount, .wjs-dbtable__founded-amount {
   text-align: right;
   justify-self: start;
   min-width: 55px;
   font-family: c;
+  height: 24px;
+  line-height: 24px;
 }
 
 .wjs-dbtable__items-amount {

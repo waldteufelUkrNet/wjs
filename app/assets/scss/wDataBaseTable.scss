@@ -53,6 +53,9 @@
   }
   &__label {
     position: relative;
+    height: 24px;
+    line-height: 24px;
+
     &_filters {
       display: none;
     }
@@ -67,6 +70,9 @@
       & + .wjs-dbtable__selected-amount {
         display: none;
       }
+      span {
+        height: 44px;
+      }
     }
     &_filtered {
       display: none;
@@ -74,14 +80,26 @@
         display: none;
       }
     }
+    &_founded {
+      display: none;
+      & + .wjs-dbtable__founded-amount {
+        display: none;
+      }
+      span {
+        height: 44px;
+      }
+    }
   }
   &__items-amount,
   &__filtered-amount,
-  &__selected-amount {
+  &__selected-amount,
+  &__founded-amount {
     text-align: right;
     justify-self: start;
     min-width: 55px;
     font-family: c;
+    height: 24px;
+    line-height: 24px;
   }
   &__items-amount {
     font-weight           : 900;

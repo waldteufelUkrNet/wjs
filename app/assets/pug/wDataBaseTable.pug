@@ -40,8 +40,12 @@ html(lang='ru')
         .wjs-dbtable__filtered-amount 0
         .wjs-dbtable__label.wjs-dbtable__label_selected
           span selected items:
-          button(type='button' title='снять все выделения').wjs-dbtable__uncheckAll
+          button(type='button' title='снять все выделения').wjs-dbtable__uncheckAll.wjs-dbtable__uncheckAll_selected
         .wjs-dbtable__selected-amount 0
+        .wjs-dbtable__label.wjs-dbtable__label_founded
+          span founded items:
+          button(type='button' title='снять все выделения').wjs-dbtable__uncheckAll.wjs-dbtable__uncheckAll_founded
+        .wjs-dbtable__founded-amount 0
       .wjs-dbtable__table-wrapper.wjs-scroll(data-scroll='bottom' data-scroll-hidden='vertical')
 
         .wjs-dbtable__loader

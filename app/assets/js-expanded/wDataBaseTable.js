@@ -111,8 +111,13 @@ initLocalStorage('clientTable');
     }
 
     // зняти усі пташки
-    if ( event.target.closest('.wjs-dbtable__uncheckAll') ) {
+    if ( event.target.closest('.wjs-dbtable__uncheckAll_selected') ) {
       uncheckAllCheckboxes(event.target);
+    }
+
+    // скинути пошук
+    if ( event.target.closest('.wjs-dbtable__uncheckAll_founded') ) {
+      closeSearch(event.target);
     }
 
     // sort
@@ -196,7 +201,9 @@ initLocalStorage('clientTable');
     }
 
     // drag'n'drop
-    if ( !event.target.closest('.wjs-dbtable__width-changer') && event.target.closest('.wjs-dbtable__header-cell') ) {
+    if ( !event.target.closest('.wjs-dbtable__width-changer')
+         && !event.target.closest('.wjs-dbtable__small-search-input')
+         && event.target.closest('.wjs-dbtable__header-cell') ) {
       startDragColumn(event);
     }
   });
@@ -352,7 +359,7 @@ initLocalStorage('clientTable');
                        && getComputedStyle( tableElement.querySelector('.wjs-dbtable__label_filtered') ).display == 'none';
 
       if ( condition ) {
-        document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">Совпадения отсутствуют. Попробуйте упростить критерии поиска</p>';
+        showMessageInsideBody(tableId, 'Совпадения отсутствуют. Попробуйте упростить критерии поиска');
       } else {
 
         // перебір колонок і вирівнювання ширини чарунок тіла таблиці і шапки
@@ -2098,9 +2105,12 @@ initLocalStorage('clientTable');
   }
 
   function search_lightVers(event) {
-    let tableId = event.target.closest('.wjs-dbtable').getAttribute('id'),
-        source  = event.target.closest('.wjs-dbtable__header-cell').dataset.source,
-        value   = event.target.value;
+    let tableElement = event.target.closest('.wjs-dbtable'),
+        tableId      = tableElement.getAttribute('id'),
+        source       = event.target.closest('.wjs-dbtable__header-cell').dataset.source,
+        label        = tableElement.querySelector('.wjs-dbtable__label.wjs-dbtable__label_founded'),
+        labelValue   = tableElement.querySelector('.wjs-dbtable__founded-amount'),
+        value        = event.target.value;
 
     let data = [];
     let dataLength = db[tableId].length;
@@ -2110,8 +2120,35 @@ initLocalStorage('clientTable');
         data.push(item);
       }
     });
-    buildTableBody ({tableId, data, dataLength});
+
+    if (data.length) {
+      label.style.display = 'block';
+      labelValue.style.display = 'block';
+      labelValue.innerHTML = data.length;
+
+      buildTableBody ({tableId, data, dataLength});
+      normalizeTableMeasurements(tableId);
+    } else {
+      labelValue.innerHTML = 0;
+      showMessageInsideBody(tableId, 'Совпадения отсутствуют. Попробуйте упростить критерии поиска');
+    }
+  }
+
+  function closeSearch(btn) {
+    console.log("btn", btn);
+    let tableElement   = btn.closest('.wjs-dbtable'),
+        tableId        = tableElement.getAttribute('id'),
+        label = tableElement.querySelector('.wjs-dbtable__label_founded');
+
+    label.style.display = 'none';
+    label.nextElementSibling.style.display = 'none';
+    buildTableBody ({tableId, data: db[tableId], dataLength: db[tableId].length});
     normalizeTableMeasurements(tableId);
   }
+
+  function showMessageInsideBody(tableId, message) {
+    document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">' + message + '</p>';
+  }
+
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
