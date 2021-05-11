@@ -98,8 +98,14 @@ initLocalStorage('clientTable');
           itemsAmount = btn.dataset.paginationperpage,
           startValue  = btn.dataset.paginationstart*itemsAmount;
 
-      if ( table.querySelector('.wjs-dbtable__filter-item') ) {
+      if ( +(table.querySelector('.wjs-dbtable__filtered-amount').innerHTML) ) {
         data = filterDB(tableId);
+      }
+
+      if ( +(table.querySelector('.wjs-dbtable__founded-amount').innerHTML) ) {
+        let source = table.querySelector('.wjs-dbtable__founded-amount').dataset.source,
+            value  = table.querySelector('.wjs-dbtable__founded-amount').dataset.value;
+        data = searchDB(tableId, value, source);
       }
 
       buildTableBody ({tableId, data, startValue, itemsAmount, dataLength: data.length});
@@ -182,7 +188,7 @@ initLocalStorage('clientTable');
       }
     }
 
-    if ( event.key.toLowerCase() == 'enter' ) {
+    if ( event.key.toLowerCase() == 'enter' && event.target.classList.contains('wjs-dbtable__go-to-page-input') ) {
       goToPage(event.target);
     }
 
@@ -657,7 +663,7 @@ initLocalStorage('clientTable');
 
           case 'phone':
             item = item + '<div class="wjs-dbtable__body-cell ' + styleClass + '" data-source="' + order[j] + '">\
-                             <a href="#" class="w-link w-monotype">' + tableData[i][order[j]] + '</a>\
+                             <a href="tel:' + tableData[i][order[j]] + '" class="w-link w-monotype" data-forhighlighting="' + tableData[i][order[j]] + '">' + tableData[i][order[j]] + '</a>\
                            </div>';
             break;
 
@@ -879,7 +885,6 @@ initLocalStorage('clientTable');
         btn         = document.querySelector('#' + tableId + ' .wjs-dbtable__page-btn[data-paginationperpage]'),
         itemsAmount = btn.dataset.paginationperpage,
         inputValue  = event.target.closest('.wjs-dbtable__go-to-page-wrapper').querySelector('.wjs-dbtable__go-to-page-input').value;
-
     if (!+inputValue ) return;
     let startValue  = (inputValue-1)*itemsAmount;
 
@@ -2112,42 +2117,67 @@ initLocalStorage('clientTable');
         labelValue   = tableElement.querySelector('.wjs-dbtable__founded-amount'),
         value        = event.target.value;
 
-    let data = [];
+    let data = searchDB(tableId, value, source);
     let dataLength = db[tableId].length;
 
-    db[tableId].forEach( item => {
-      if ( String(item[source]).toLowerCase().includes(value.toLowerCase()) ) {
-        data.push(item);
-      }
-    });
-
     if (data.length) {
-      label.style.display = 'block';
-      labelValue.style.display = 'block';
-      labelValue.innerHTML = data.length;
+
+      if (data.length == db[tableId].length) {
+        label.style.display = 'none';
+        labelValue.style.display = 'none';
+        labelValue.removeAttribute('data-source');
+        labelValue.removeAttribute('data-value');
+      } else {
+        label.style.display = 'block';
+        labelValue.style.display = 'block';
+        labelValue.innerHTML = data.length;
+        labelValue.setAttribute('data-source', source);
+        labelValue.setAttribute('data-value', value);
+      }
 
       buildTableBody ({tableId, data, dataLength});
       normalizeTableMeasurements(tableId);
+      if (value) {
+        highlightMatches(tableId, value);
+      }
     } else {
       labelValue.innerHTML = 0;
       showMessageInsideBody(tableId, 'Совпадения отсутствуют. Попробуйте упростить критерии поиска');
     }
   }
 
+  function searchDB(tableId, what, where) {
+    let data = [];
+    db[tableId].forEach( item => {
+      if ( String(item[where]).toLowerCase().includes(what.toLowerCase()) ) {
+        data.push(item);
+      }
+    });
+    return data;
+  }
+
   function closeSearch(btn) {
-    console.log("btn", btn);
-    let tableElement   = btn.closest('.wjs-dbtable'),
-        tableId        = tableElement.getAttribute('id'),
-        label = tableElement.querySelector('.wjs-dbtable__label_founded');
+    let tableElement = btn.closest('.wjs-dbtable'),
+        tableId      = tableElement.getAttribute('id'),
+        label        = tableElement.querySelector('.wjs-dbtable__label_founded'),
+        labelValue   = tableElement.querySelector('.wjs-dbtable__founded-amount');
 
     label.style.display = 'none';
     label.nextElementSibling.style.display = 'none';
+    labelValue.removeAttribute('data-source');
+    labelValue.removeAttribute('data-value');
+    labelValue.innerHTML = '';
     buildTableBody ({tableId, data: db[tableId], dataLength: db[tableId].length});
     normalizeTableMeasurements(tableId);
   }
 
   function showMessageInsideBody(tableId, message) {
     document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">' + message + '</p>';
+  }
+
+  function highlightMatches(tableId, matching) {
+    let elems = document.querySelectorAll('#' + tableId + ' [data-forhighlighting]');
+    elems.forEach();
   }
 
 /* ↑↑↑ functions declaration ↑↑↑ */
