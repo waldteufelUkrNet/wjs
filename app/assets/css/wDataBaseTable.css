@@ -142,6 +142,10 @@ a, a:hover {
   background-color: aliceblue;
 }
 
+.w-bgc-yellow {
+  background-color: yellow;
+}
+
 .w-link {
   color: #3a8fc8;
   cursor: pointer;

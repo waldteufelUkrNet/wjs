@@ -643,13 +643,13 @@ initLocalStorage('clientTable');
 
           case 'id':
             item = item + '<div class="wjs-dbtable__body-cell ' + styleClass + '" data-source="' + order[j] + '">\
-                             <a href="#" class="w-link">' + tableData[i][order[j]] + '</a>\
+                             <a href="#" class="w-link" data-forhighlighting="' + tableData[i][order[j]] + '">' + tableData[i][order[j]] + '</a>\
                            </div>';
             break;
 
           case 'clientName':
             item = item + '<div class="wjs-dbtable__body-cell ' + styleClass + '" data-source="' + order[j] + '">\
-                             <a href="#" class="w-link">' + tableData[i][order[j]] + '</a>\
+                             <a href="#" class="w-link" data-forhighlighting="' + tableData[i][order[j]] + '">' + tableData[i][order[j]] + '</a>\
                            </div>';
             break;
 
@@ -669,7 +669,7 @@ initLocalStorage('clientTable');
 
           case 'email':
             item = item + '<div class="wjs-dbtable__body-cell ' + styleClass + '" data-source="' + order[j] + '">\
-                             <a href="#" class="w-link">' + tableData[i][order[j]] + '</a>\
+                             <a href="#" class="w-link" data-forhighlighting="' + tableData[i][order[j]] + '">' + tableData[i][order[j]] + '</a>\
                            </div>';
             break;
 
@@ -2138,7 +2138,7 @@ initLocalStorage('clientTable');
       buildTableBody ({tableId, data, dataLength});
       normalizeTableMeasurements(tableId);
       if (value) {
-        highlightMatches(tableId, value);
+        highlightMatches(tableId, source, value);
       }
     } else {
       labelValue.innerHTML = 0;
@@ -2175,9 +2175,14 @@ initLocalStorage('clientTable');
     document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">' + message + '</p>';
   }
 
-  function highlightMatches(tableId, matching) {
-    let elems = document.querySelectorAll('#' + tableId + ' [data-forhighlighting]');
-    elems.forEach();
+  function highlightMatches(tableId, source, matching) {
+    let elems = document.querySelectorAll('#' + tableId + ' .wjs-dbtable__body-cell[data-source="' + source + '"] [data-forhighlighting]');
+    elems.forEach( item => {
+      let attr = item.dataset.forhighlighting;
+      let regexp = new RegExp(matching,'gui');
+      let result = attr.replace(regexp, '<span class="w-bgc-yellow">$&</span>');
+      item.innerHTML = result;
+    });
   }
 
 /* ↑↑↑ functions declaration ↑↑↑ */
