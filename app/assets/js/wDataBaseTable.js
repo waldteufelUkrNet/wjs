@@ -30,6 +30,8 @@ initLocalStorage('clientTable');
 /* ↓↓↓ build table ↓↓↓ */
   window.addEventListener('load', function(){
 
+    document.querySelector('#clientTable .wjs-dbtable__big-search-input').value = '';
+
     let tableObj = JSON.parse( localStorage.getItem('clientTable') );
     if (!tableObj.h.length) {
       // ls пустий, вантажимо заголовки таблиці
@@ -2086,6 +2088,15 @@ initLocalStorage('clientTable');
   }
 
   /**
+   * [showMessageInsideBody вивидить у тіло таблиці повідомлення замість колонок, якщо таблиця не може бути побудована]
+   * @param  {[String]} tableId [ідентифікатор таблиці]
+   * @param  {[String]} message [description]
+   */
+  function showMessageInsideBody(tableId, message) {
+    document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">' + message + '</p>';
+  }
+
+  /**
    * [openSmallSearchField відкриває мале поле пошуку в загоговку таблиці]
    * @param {[DOM-object]} btn [кнопка пошуку в заголовку таблиці]
    */
@@ -2113,6 +2124,25 @@ initLocalStorage('clientTable');
    */
   function closeSmallSearchField(tableId) {
     document.querySelector('#' + tableId + ' .wjs-dbtable__small-search-input').remove();
+  }
+
+  /**
+   * [closeSearch скидає пошук по БД]
+   * @param  {[DOM-Object]} btn [кнопка скидання пошуку]
+   */
+  function closeSearch(btn) {
+    let tableElement = btn.closest('.wjs-dbtable'),
+        tableId      = tableElement.getAttribute('id'),
+        label        = tableElement.querySelector('.wjs-dbtable__label_founded'),
+        labelValue   = tableElement.querySelector('.wjs-dbtable__founded-amount');
+
+    label.style.display = 'none';
+    label.nextElementSibling.style.display = 'none';
+    labelValue.removeAttribute('data-source');
+    labelValue.removeAttribute('data-value');
+    labelValue.innerHTML = '';
+    buildTableBody ({tableId, data: db[tableId], dataLength: db[tableId].length});
+    normalizeTableMeasurements(tableId);
   }
 
   /**
@@ -2205,7 +2235,6 @@ initLocalStorage('clientTable');
    * @return {[Array]}          [масив елементів, у яких є збіги]
    */
   function searchDB(tableId, what, where) {
-    console.log("what", what);
     let data = [];
     if (where) {
       // виклик з усіма аргументами - пошук у конкретній колонці
@@ -2233,34 +2262,6 @@ initLocalStorage('clientTable');
     }
 
     return data;
-  }
-
-  /**
-   * [closeSearch скидає пошук по БД]
-   * @param  {[DOM-Object]} btn [кнопка скидання пошуку]
-   */
-  function closeSearch(btn) {
-    let tableElement = btn.closest('.wjs-dbtable'),
-        tableId      = tableElement.getAttribute('id'),
-        label        = tableElement.querySelector('.wjs-dbtable__label_founded'),
-        labelValue   = tableElement.querySelector('.wjs-dbtable__founded-amount');
-
-    label.style.display = 'none';
-    label.nextElementSibling.style.display = 'none';
-    labelValue.removeAttribute('data-source');
-    labelValue.removeAttribute('data-value');
-    labelValue.innerHTML = '';
-    buildTableBody ({tableId, data: db[tableId], dataLength: db[tableId].length});
-    normalizeTableMeasurements(tableId);
-  }
-
-  /**
-   * [showMessageInsideBody вивидить у тіло таблиці повідомлення замість колонок, якщо таблиця не може бути побудована]
-   * @param  {[String]} tableId [ідентифікатор таблиці]
-   * @param  {[String]} message [description]
-   */
-  function showMessageInsideBody(tableId, message) {
-    document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">' + message + '</p>';
   }
 
   /**
