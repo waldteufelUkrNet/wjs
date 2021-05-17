@@ -104,10 +104,11 @@ initLocalStorage('clientTable');
         data = filterDB(tableId);
       }
 
+      // якщо включений пошук
       if ( +(table.querySelector('.wjs-dbtable__founded-amount').innerHTML) ) {
         let source = table.querySelector('.wjs-dbtable__founded-amount').dataset.source,
             value  = table.querySelector('.wjs-dbtable__founded-amount').dataset.value;
-        data = searchDB(tableId, value, source);
+        data = formDBAfterSearching(tableId, value, source);
       }
 
       buildTableBody ({tableId, data, startValue, itemsAmount, dataLength: data.length});
@@ -2145,11 +2146,38 @@ initLocalStorage('clientTable');
     normalizeTableMeasurements(tableId);
   }
 
+
+  function searchInDB(event) {
+    console.log("event", event);
+
+    let tableElement   = event.target.closest('.wjs-dbtable'),
+        tableId        = tableElement.getAttribute('id'),
+        label          = tableElement.querySelector('.wjs-dbtable__label.wjs-dbtable__label_founded'),
+        labelValue     = tableElement.querySelector('.wjs-dbtable__founded-amount'),
+        value          = event.target.value,
+        bigSearchInput = tableElement.querySelector('.wjs-dbtable__big-search-input'),
+        source         = '';
+
+    if ( event.target.closest('.wjs-dbtable__header-cell') ) {
+      source = event.target.closest('.wjs-dbtable__header-cell').dataset.source;
+    } else {
+      let hCellsWithSources = tableElement.querySelectorAll('.wjs-dbtable__header-cell .wjs-dbtable__btn_search');
+
+      for (let i = 0; i < hCellsWithSources.length; i++) {
+        source = 1;
+      }
+    }
+
+  }
+
+
   /**
    * [search_lightVers оброблює зміни в полі пошуку всередині заголовку колонки]
    * @param {[Event object]} event [об'єкт події]
    */
   function search_lightVers(event) {
+    searchInDB(event);
+    return
     let tableElement = event.target.closest('.wjs-dbtable'),
         tableId      = tableElement.getAttribute('id'),
         source       = event.target.closest('.wjs-dbtable__header-cell').dataset.source,
@@ -2157,7 +2185,7 @@ initLocalStorage('clientTable');
         labelValue   = tableElement.querySelector('.wjs-dbtable__founded-amount'),
         value        = event.target.value;
 
-    let data = searchDB(tableId, value, source);
+    let data = formDBAfterSearching(tableId, value, source);
     let dataLength = db[tableId].length;
 
     if (data.length) {
@@ -2191,13 +2219,15 @@ initLocalStorage('clientTable');
    * @param {[Event object]} event [об'єкт події]
    */
   function search_fullVers(event) {
+    searchInDB(event);
+    return
     let tableElement = event.target.closest('.wjs-dbtable'),
         tableId      = tableElement.getAttribute('id'),
         label        = tableElement.querySelector('.wjs-dbtable__label.wjs-dbtable__label_founded'),
         labelValue   = tableElement.querySelector('.wjs-dbtable__founded-amount'),
         value        = event.target.value;
 
-    let data = searchDB(tableId, value);
+    let data = formDBAfterSearching(tableId, value);
     let dataLength = db[tableId].length;
 
     if (data.length) {
@@ -2227,14 +2257,14 @@ initLocalStorage('clientTable');
   }
 
   /**
-   * [searchDB перебирає базу даних, у вказаному полі source шукає співпадіння
+   * [formDBAfterSearching перебирає базу даних, у вказаному полі source шукає співпадіння
    * і, якщо воно є, додає елемент до тимчасового масиву, який перебирається]
    * @param  {[String]} tableId [ідентифікатор таблиці]
    * @param  {[String]} what    [шуканий фрагмент, набраний в інпуті]
    * @param  {[String]} where   [source, вказує на колонку, в якій потрібно шукати збіги]
    * @return {[Array]}          [масив елементів, у яких є збіги]
    */
-  function searchDB(tableId, what, where) {
+  function formDBAfterSearching(tableId, what, where) {
     let data = [];
     if (where) {
       // виклик з усіма аргументами - пошук у конкретній колонці
