@@ -106,9 +106,8 @@ initLocalStorage('clientTable');
 
       // якщо включений пошук
       if ( +(table.querySelector('.wjs-dbtable__founded-amount').innerHTML) ) {
-        let source = table.querySelector('.wjs-dbtable__founded-amount').dataset.source,
-            value  = table.querySelector('.wjs-dbtable__founded-amount').dataset.value;
-        data = formDBAfterSearching(tableId, value, source);
+        let value = table.querySelector('.wjs-dbtable__big-search-input').dataset.value;
+        data = formDBAfterSearching(tableId, value);
       }
 
       buildTableBody ({tableId, data, startValue, itemsAmount, dataLength: data.length});
@@ -2149,7 +2148,10 @@ initLocalStorage('clientTable');
     normalizeTableMeasurements(tableId);
   }
 
-
+  /**
+   * [searchInDB обробляє зміни в полях пошуку по базі]
+   * @param {[Event object]} event [об'єкт події]
+   */
   function searchInDB(event) {
 
     let tableElement   = event.target.closest('.wjs-dbtable'),
@@ -2177,7 +2179,10 @@ initLocalStorage('clientTable');
       source = source.trim();
     }
 
-    let data = formDBAfterSearching(tableId, value, source);
+    bigSearchInput.setAttribute('data-source', source);
+    bigSearchInput.setAttribute('data-value', value);
+
+    let data = formDBAfterSearching(tableId, value);
 
     if (data.length) {
       if (data.length == db[tableId].length) {
@@ -2189,8 +2194,6 @@ initLocalStorage('clientTable');
         label.style.display = 'block';
         labelValue.style.display = 'block';
         labelValue.innerHTML = data.length;
-        bigSearchInput.setAttribute('data-source', source);
-        bigSearchInput.setAttribute('data-value', value);
       }
       buildTableBody ({tableId, data, dataLength});
       normalizeTableMeasurements(tableId);
@@ -2208,16 +2211,16 @@ initLocalStorage('clientTable');
    * і, якщо воно є, додає елемент до тимчасового масиву, який перебирається]
    * @param  {[String]} tableId [ідентифікатор таблиці]
    * @param  {[String]} what    [шуканий фрагмент, набраний в інпуті]
-   * @param  {[String]} where   [source, вказує на колонку, в якій потрібно шукати збіги]
    * @return {[Array]}          [масив елементів, у яких є збіги]
    */
-  function formDBAfterSearching(tableId, what, where) {
-    let data   = [],
-        source = where.split(' ');
+  function formDBAfterSearching(tableId, what) {
+    let data           = [],
+        bigSearchInput = document.querySelector('#' + tableId + ' .wjs-dbtable__big-search-input'),
+        where          = bigSearchInput.dataset.source.split(' ');
 
     for (let i = 0; i < db[tableId].length; i++) {
-      for (let j = 0; j < source.length; j++) {
-        if ( String(db[tableId][i][source[j]]).toLowerCase().includes(what.toLowerCase()) ) {
+      for (let j = 0; j < where.length; j++) {
+        if ( String(db[tableId][i][where[j]]).toLowerCase().includes(what.toLowerCase()) ) {
           data.push(db[tableId][i]);
           break
         }
