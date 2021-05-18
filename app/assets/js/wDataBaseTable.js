@@ -200,12 +200,12 @@ initLocalStorage('clientTable');
   document.querySelector('#clientTable').addEventListener('input', function(event){
     // пошук через інпут у заголовку таблиці
     if ( event.target.closest('.wjs-dbtable__small-search-input') ) {
-      search_lightVers(event);
+      searchInDB(event);
     }
 
     // пошук через лобальне поле пошуку
     if ( event.target.closest('.wjs-dbtable__big-search-input') ) {
-      search_fullVers(event);
+      searchInDB(event);
     }
   });
 
@@ -2103,6 +2103,7 @@ initLocalStorage('clientTable');
    */
   function openSmallSearchField(btn) {
     let tableId = btn.closest('.wjs-dbtable').getAttribute('id');
+    document.querySelector('#clientTable .wjs-dbtable__big-search-input').value = '';
 
     if ( btn.closest('.wjs-dbtable__header-cell').querySelector('.wjs-dbtable__small-search-input') ) {
       closeSmallSearchField(tableId);
@@ -2132,23 +2133,24 @@ initLocalStorage('clientTable');
    * @param  {[DOM-Object]} btn [кнопка скидання пошуку]
    */
   function closeSearch(btn) {
-    let tableElement = btn.closest('.wjs-dbtable'),
-        tableId      = tableElement.getAttribute('id'),
-        label        = tableElement.querySelector('.wjs-dbtable__label_founded'),
-        labelValue   = tableElement.querySelector('.wjs-dbtable__founded-amount');
+    let tableElement   = btn.closest('.wjs-dbtable'),
+        tableId        = tableElement.getAttribute('id'),
+        label          = tableElement.querySelector('.wjs-dbtable__label_founded'),
+        labelValue     = tableElement.querySelector('.wjs-dbtable__founded-amount'),
+        bigSearchInput = tableElement.querySelector('.wjs-dbtable__big-search-input');
 
     label.style.display = 'none';
     label.nextElementSibling.style.display = 'none';
-    labelValue.removeAttribute('data-source');
-    labelValue.removeAttribute('data-value');
+    bigSearchInput.removeAttribute('data-source');
+    bigSearchInput.removeAttribute('data-value');
     labelValue.innerHTML = '';
+    bigSearchInput.value = '';
     buildTableBody ({tableId, data: db[tableId], dataLength: db[tableId].length});
     normalizeTableMeasurements(tableId);
   }
 
 
   function searchInDB(event) {
-    console.log("event", event);
 
     let tableElement   = event.target.closest('.wjs-dbtable'),
         tableId        = tableElement.getAttribute('id'),
@@ -2156,99 +2158,44 @@ initLocalStorage('clientTable');
         labelValue     = tableElement.querySelector('.wjs-dbtable__founded-amount'),
         value          = event.target.value,
         bigSearchInput = tableElement.querySelector('.wjs-dbtable__big-search-input'),
-        source         = '';
+        source         = '',
+        dataLength     = db[tableId].length;
 
+    // формуємо source: якщо клік по заголовку колонки в таблиці, це одне
+    // значення, якщо клік по головному полю пошуку, source буде рядком зі
+    // значеннями, взятими з заголовків таблиці, в яких є кнопка пошуку,
+    // розділених пробілом. Замість масиву використовую рядок з пробілами, бо
+    // для сторінкування потрібно передати атрибут, в який масив не впишеш
     if ( event.target.closest('.wjs-dbtable__header-cell') ) {
       source = event.target.closest('.wjs-dbtable__header-cell').dataset.source;
     } else {
       let hCellsWithSources = tableElement.querySelectorAll('.wjs-dbtable__header-cell .wjs-dbtable__btn_search');
 
       for (let i = 0; i < hCellsWithSources.length; i++) {
-        source = 1;
+        source += hCellsWithSources[i].closest('.wjs-dbtable__header-cell').dataset.source + ' ';
       }
+      source = source.trim();
     }
 
-  }
-
-
-  /**
-   * [search_lightVers оброблює зміни в полі пошуку всередині заголовку колонки]
-   * @param {[Event object]} event [об'єкт події]
-   */
-  function search_lightVers(event) {
-    searchInDB(event);
-    return
-    let tableElement = event.target.closest('.wjs-dbtable'),
-        tableId      = tableElement.getAttribute('id'),
-        source       = event.target.closest('.wjs-dbtable__header-cell').dataset.source,
-        label        = tableElement.querySelector('.wjs-dbtable__label.wjs-dbtable__label_founded'),
-        labelValue   = tableElement.querySelector('.wjs-dbtable__founded-amount'),
-        value        = event.target.value;
-
     let data = formDBAfterSearching(tableId, value, source);
-    let dataLength = db[tableId].length;
 
     if (data.length) {
-
       if (data.length == db[tableId].length) {
         label.style.display = 'none';
         labelValue.style.display = 'none';
-        labelValue.removeAttribute('data-source');
-        labelValue.removeAttribute('data-value');
+        bigSearchInput.removeAttribute('data-source');
+        bigSearchInput.removeAttribute('data-value');
       } else {
         label.style.display = 'block';
         labelValue.style.display = 'block';
         labelValue.innerHTML = data.length;
-        labelValue.setAttribute('data-source', source);
-        labelValue.setAttribute('data-value', value);
+        bigSearchInput.setAttribute('data-source', source);
+        bigSearchInput.setAttribute('data-value', value);
       }
-
       buildTableBody ({tableId, data, dataLength});
       normalizeTableMeasurements(tableId);
       if (value) {
         highlightMatches(tableId, value, source);
-      }
-    } else {
-      labelValue.innerHTML = 0;
-      showMessageInsideBody(tableId, 'Совпадения отсутствуют. Попробуйте упростить критерии поиска');
-    }
-  }
-
-  /**
-   * [search_lightVers оброблює зміни в полі пошуку всередині заголовку колонки]
-   * @param {[Event object]} event [об'єкт події]
-   */
-  function search_fullVers(event) {
-    searchInDB(event);
-    return
-    let tableElement = event.target.closest('.wjs-dbtable'),
-        tableId      = tableElement.getAttribute('id'),
-        label        = tableElement.querySelector('.wjs-dbtable__label.wjs-dbtable__label_founded'),
-        labelValue   = tableElement.querySelector('.wjs-dbtable__founded-amount'),
-        value        = event.target.value;
-
-    let data = formDBAfterSearching(tableId, value);
-    let dataLength = db[tableId].length;
-
-    if (data.length) {
-
-      if (data.length == db[tableId].length) {
-        label.style.display = 'none';
-        labelValue.style.display = 'none';
-        labelValue.removeAttribute('data-source');
-        labelValue.removeAttribute('data-value');
-      } else {
-        label.style.display = 'block';
-        labelValue.style.display = 'block';
-        labelValue.innerHTML = data.length;
-        // labelValue.setAttribute('data-source', source);
-        labelValue.setAttribute('data-value', value);
-      }
-
-      buildTableBody ({tableId, data, dataLength});
-      normalizeTableMeasurements(tableId);
-      if (value) {
-        // highlightMatches(tableId, value, source);
       }
     } else {
       labelValue.innerHTML = 0;
@@ -2265,48 +2212,38 @@ initLocalStorage('clientTable');
    * @return {[Array]}          [масив елементів, у яких є збіги]
    */
   function formDBAfterSearching(tableId, what, where) {
-    let data = [];
-    if (where) {
-      // виклик з усіма аргументами - пошук у конкретній колонці
-      db[tableId].forEach( item => {
-        if ( String(item[where]).toLowerCase().includes(what.toLowerCase()) ) {
-          data.push(item);
-        }
-      });
-    } else {
-      // виклик без останнього аргумента - пошук у всій таблиці
-      let sources = [];
-      let searchBtns = document.querySelectorAll('#' + tableId + ' .wjs-dbtable__header-cell .wjs-dbtable__btn_search');
-      searchBtns.forEach( item => {
-        sources.push(item.closest('.wjs-dbtable__header-cell').dataset.source);
-      });
+    let data   = [],
+        source = where.split(' ');
 
-      for (let i = 0; i < db[tableId].length; i++) {
-        for (let j = 0; j < sources.length; j++) {
-          if ( String(db[tableId][i][sources[j]]).toLowerCase().includes(what.toLowerCase()) ) {
-            data.push(db[tableId][i]);
-            break
-          }
+    for (let i = 0; i < db[tableId].length; i++) {
+      for (let j = 0; j < source.length; j++) {
+        if ( String(db[tableId][i][source[j]]).toLowerCase().includes(what.toLowerCase()) ) {
+          data.push(db[tableId][i]);
+          break
         }
       }
     }
-
     return data;
   }
 
   /**
    * [highlightMatches підсвічує співпадіння в колонках таблиці]
-   * @param  {[String]} tableId [ідентифікатор таблиці]
-   * @param  {[String]} source   [тип колонки]
+   * @param  {[String]} tableId  [ідентифікатор таблиці]
+   * @param  {[String]} where    [тип колонки]
    * @param  {[String]} matching [співпадіння, шматок рядка, який треба підсвітити]
    */
-  function highlightMatches(tableId, matching, source) {
-    let elems = document.querySelectorAll('#' + tableId + ' .wjs-dbtable__body-cell[data-source="' + source + '"] [data-forhighlighting]');
-    elems.forEach( item => {
-      let attr = item.dataset.forhighlighting;
-      let regexp = new RegExp(matching,'gui');
-      let result = attr.replace(regexp, '<span class="w-bgc-yellow">$&</span>');
-      item.innerHTML = result;
+  function highlightMatches(tableId, matching, where) {
+    let source = where.split(' ');
+
+    source.forEach(function(item) {
+    let elems = document.querySelectorAll('#' + tableId + ' .wjs-dbtable__body-cell[data-source="' + item + '"] [data-forhighlighting]');
+
+      elems.forEach( function(item){
+        let attr = item.dataset.forhighlighting;
+        let regexp = new RegExp(matching,'gui');
+        let result = attr.replace(regexp, '<span class="w-bgc-yellow">$&</span>');
+        item.innerHTML = result;
+      });
     });
   }
 
