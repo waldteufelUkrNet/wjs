@@ -586,11 +586,18 @@ initLocalStorage('clientTable');
     theader.innerHTML = htmlStr;
 
     // підсвічування типу сортування
-    let activeHeaderCell = theader.querySelector('.wjs-dbtable__header-cell[data-source="id"]'),
-        activeSortButton = activeHeaderCell.querySelector('.wjs-dbtable__btn_sort');
-    activeSortButton.classList.add('wjs-dbtable__btn_sort_active_down');
+    // let activeHeaderCell;
+    // if ( theader.querySelector('.wjs-dbtable__header-cell[data-source="id"]') ) {
+    //   activeHeaderCell = theader.querySelector('.wjs-dbtable__header-cell[data-source="id"]');
+    // } else {
+    //   activeHeaderCell = theader.querySelector('.wjs-dbtable__btn_sort')
+    //                             .closest('.wjs-dbtable__header-cell');
+    // }
 
-    highlightMenuBtns(tableId);
+    // let activeSortButton = activeHeaderCell.querySelector('.wjs-dbtable__btn_sort');
+    // activeSortButton.classList.add('wjs-dbtable__btn_sort_active_down');
+
+    // highlightMenuBtns(tableId);
   }
 
   /**
@@ -607,7 +614,7 @@ initLocalStorage('clientTable');
         itemsAmount = params.itemsAmount;      // кількість відображуваних елементів на одній сторінці
 
     let headerData  = JSON.parse( localStorage.getItem(tableId) ).h,
-        tableData = data,
+        tableData   = data,
         tableBody   = document.querySelector('#' + tableId + ' .wjs-dbtable__tbody'),
         tableHeader = document.querySelector('#' + tableId + ' .wjs-dbtable__theader'),
         start       = startValue || 0,
