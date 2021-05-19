@@ -369,9 +369,9 @@ initLocalStorage('clientTable');
       outerScrollContent.style.width = outerContainer.clientWidth + 'px';
       innerContainer.style.width     = outerContainer.clientWidth + 'px';
 
-      let condition = !!tableElement.querySelector('.wjs-dbtable__filter-item')
-                       && getComputedStyle( tableElement.querySelector('.wjs-dbtable__label_filtered') ).display == 'none';
-
+      let condition = !!tableElement.querySelector('.wjs-dbtable__filter-item') // якщо присутній хоча б один маркер фільтра
+                       && getComputedStyle( tableElement.querySelector('.wjs-dbtable__label_filtered') ).display == 'none' // є позначка, яка вказує на кількість відфільтрованих елементів
+                       && !tableElement.querySelector('.wjs-dbtable__filters-list-wrapper'); // список фільтрів закритий
       if ( condition ) {
         showMessageInsideBody(tableId, 'Совпадения отсутствуют. Попробуйте упростить критерии поиска');
       } else {
@@ -401,28 +401,29 @@ initLocalStorage('clientTable');
             } else { // якщо нема фіксованої ширини
               // порівняння розмірів чарунок шапки і тіла
 
-              bCell.style.width = 'auto';
-              hCell.style.width = 'auto';
+              if (bCell) {
+                bCell.style.width = 'auto';
+                hCell.style.width = 'auto';
 
-              if (hCell.clientWidth > bCell.clientWidth) {
-                bCell.style.width = hCell.offsetWidth + 'px';
-              } else {
-                hCell.style.width = bCell.offsetWidth + 'px';
-              }
+                if (hCell.clientWidth > bCell.clientWidth) {
+                  bCell.style.width = hCell.offsetWidth + 'px';
+                } else {
+                  hCell.style.width = bCell.offsetWidth + 'px';
+                }
 
-              if (item.mw) { // якщо є мінімальна ширина
-                if (item.mw > hCell.offsetWidth) {
+                if (item.mw) { // якщо є мінімальна ширина
+                  if (item.mw > hCell.offsetWidth) {
+                    hCell.style.minWidth = item.mw + 'px';
+                    bCell.style.minWidth = item.mw + 'px';
+                  } else {
+                    item.mw = hCell.offsetWidth;
+                  }
+                } else { // якщо нема мінімальної ширини
+                  item.mw = hCell.offsetWidth;
                   hCell.style.minWidth = item.mw + 'px';
                   bCell.style.minWidth = item.mw + 'px';
-                } else {
-                  item.mw = hCell.offsetWidth;
                 }
-              } else { // якщо нема мінімальної ширини
-                item.mw = hCell.offsetWidth;
-                hCell.style.minWidth = item.mw + 'px';
-                bCell.style.minWidth = item.mw + 'px';
               }
-
             }
             countWidth += hCell.offsetWidth;
           }
@@ -1142,9 +1143,12 @@ initLocalStorage('clientTable');
       label.style.display = 'block';
       labelValue.style.display = 'block';
       labelValue.innerHTML = tempSet.size;
-      normalizeTableMeasurements(tableId);
+    } else {
+      label.style.display = 'none';
+      labelValue.style.display = 'none';
+      labelValue.innerHTML = 0;
     }
-
+    normalizeTableMeasurements(tableId);
     return checkedArr;
   }
 
@@ -1674,9 +1678,11 @@ initLocalStorage('clientTable');
     let filteredDB = filterDB(tableId);
 
     if (filteredDB.length == 0) {
-      document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">Совпадения отсутствуют. Попробуйте упростить критерии поиска</p>';
+      showMessageInsideBody(tableId, 'Совпадения отсутствуют. Попробуйте упростить критерии поиска');
+        filteredAmount.innerHTML = 0;
+        filteredAmount.style.display = 'none';
+        filteredAmountLabel.style.display = 'none';
     } else {
-
       if (filteredDB.length == db[tableId].length) {
         filteredAmount.innerHTML = 0;
         filteredAmount.style.display = 'none';
@@ -1726,7 +1732,7 @@ initLocalStorage('clientTable');
     let filteredDB = filterDB(tableId);
 
     if (filteredDB.length == 0) {
-      document.querySelector('#' + tableId + ' .wjs-dbtable__tbody').innerHTML = '<p style="padding: 20px">Совпадения отсутствуют. Попробуйте упростить критерии поиска</p>';
+      showMessageInsideBody(tableId, 'Совпадения отсутствуют. Попробуйте упростить критерии поиска');
     } else {
 
       if (filteredDB.length == db[tableId].length) {
