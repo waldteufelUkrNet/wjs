@@ -1,3 +1,4 @@
+
 "use strict";
 // wDataBaseTable
 ////////////////////////////////////////////////////////////////////////////////
@@ -161,6 +162,10 @@ initLocalStorage('clientTable');
          && !event.target.closest('.wjs-dbtable__btn_search') ) {
       closeSmallSearchField('clientTable')
     }
+
+    if ( event.target.closest('.wjs-dbtable__resetLS') ) {
+      resetLS(event.target);
+    }
   });
 
   document.querySelector('#clientTable').addEventListener('change', function(event){
@@ -252,6 +257,7 @@ initLocalStorage('clientTable');
     if ( !('h' in tableObj) ) tableObj.h = [];
     if ( !('cc' in tableObj) ) tableObj.cc = [];
     if ( !('cf' in tableObj) ) tableObj.cf = {};
+    if ( !('s' in tableObj) ) tableObj.s = {};
 
     localStorage.setItem( tableId, JSON.stringify(tableObj) );
   }
@@ -529,16 +535,16 @@ initLocalStorage('clientTable');
 
   /**
    * [buildTableHeader відповідає за динамічну побудову шапки таблиці]
-   * @param  {[String]} tableId [ідентифікатор таблиці]
+   * @param  {[String]} tableId    [ідентифікатор таблиці]
+   * @param  {[String]} sortSource [передається при drug'n'drop для підсвітки кнопки сортування]
+   * @param  {[String]} sortType   [передається при drug'n'drop для підсвітки кнопки сортування]
    */
-  function buildTableHeader (tableId) {
+  function buildTableHeader (tableId, sortSource, sortType) {
+    let tableObj = JSON.parse( localStorage.getItem(tableId) ),
+        table    = document.querySelector('#' + tableId),
+        theader  = table.querySelector('.wjs-dbtable__theader'),
+        htmlStr  = '';
 
-    let tableObj = JSON.parse( localStorage.getItem(tableId) );
-
-    let table   = document.querySelector('#' + tableId);
-    let theader = table.querySelector('.wjs-dbtable__theader');
-
-    let htmlStr = '';
     for (let item of tableObj.h ) {
       // якщо колонка виключена - не відображати
       if (!item.d) continue;
@@ -586,18 +592,15 @@ initLocalStorage('clientTable');
     theader.innerHTML = htmlStr;
 
     // підсвічування типу сортування
-    // let activeHeaderCell;
-    // if ( theader.querySelector('.wjs-dbtable__header-cell[data-source="id"]') ) {
-    //   activeHeaderCell = theader.querySelector('.wjs-dbtable__header-cell[data-source="id"]');
-    // } else {
-    //   activeHeaderCell = theader.querySelector('.wjs-dbtable__btn_sort')
-    //                             .closest('.wjs-dbtable__header-cell');
-    // }
+    if (sortSource && sortType) {
+      theader.querySelector('.wjs-dbtable__header-cell[data-source="' + sortSource + '"] .wjs-dbtable__btn_sort')
+             .classList.add('wjs-dbtable__btn_sort_active_' + sortType);
+    } else if ( theader.querySelector('.wjs-dbtable__header-cell[data-source="id"]') ) {
+      theader.querySelector('.wjs-dbtable__header-cell[data-source="id"] .wjs-dbtable__btn_sort')
+             .classList.add('wjs-dbtable__btn_sort_active_down');
+    }
 
-    // let activeSortButton = activeHeaderCell.querySelector('.wjs-dbtable__btn_sort');
-    // activeSortButton.classList.add('wjs-dbtable__btn_sort_active_down');
-
-    // highlightMenuBtns(tableId);
+    highlightMenuBtns(tableId);
   }
 
   /**
@@ -1191,8 +1194,9 @@ initLocalStorage('clientTable');
     let tableElement = btn.closest('.wjs-dbtable'),
         tableId      = tableElement.getAttribute('id'),
         sortBtns     = tableElement.querySelectorAll('.wjs-dbtable__header-cell .wjs-dbtable__btn_sort'),
-        sortSource   = btn.closest('.wjs-dbtable__header-cell').dataset.source;
-    let sortType;
+        sortSource   = btn.closest('.wjs-dbtable__header-cell').dataset.source,
+        tableObj     = JSON.parse( localStorage.getItem(tableId) ),
+        sortType;
 
     // visualisation
     if ( btn.classList.contains('wjs-dbtable__btn_sort_active_down') ) {
@@ -1962,7 +1966,19 @@ initLocalStorage('clientTable');
         }
       }
 
-      buildTableHeader (tableId);
+      let activeSortButton, sortType;
+
+      if ( document.querySelector('#' + tableId + ' .wjs-dbtable__btn_sort_active_down') ) {
+        activeSortButton = document.querySelector('#' + tableId + ' .wjs-dbtable__btn_sort_active_down');
+        sortType = 'down';
+      } else {
+        activeSortButton = document.querySelector('#' + tableId + ' .wjs-dbtable__btn_sort_active_up');
+        sortType = 'up';
+      }
+
+      let sortSource = activeSortButton.closest('.wjs-dbtable__header-cell').dataset.source;
+
+      buildTableHeader (tableId, sortSource, sortType);
 
       // buildTableBody ({}) вимагає формування складного аргументу, простіше
       // вибрати наявний HTML та перетасувати його
@@ -2263,5 +2279,13 @@ initLocalStorage('clientTable');
     });
   }
 
+  function resetLS(btn) {
+    let tableElement = btn.closest('.wjs-dbtable'),
+        tableId      = tableElement.getAttribute('id');
+
+    localStorage.removeItem(tableId);
+    initLocalStorage(tableId);
+    location.href = location.href;
+  }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////

@@ -227,6 +227,7 @@ a, a:hover {
   grid-template-columns: auto 1fr;
   grid-gap: 6px 12px;
   padding-bottom: 10px;
+  position: relative;
 }
 
 .wjs-dbtable__label {
@@ -389,6 +390,30 @@ a, a:hover {
   background-position: center center;
   cursor: pointer;
   margin-right: 1px;
+}
+
+.wjs-dbtable__resetLS {
+  position: absolute;
+  right: 3px;
+  bottom: 10px;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  border: 1px solid grey;
+  -webkit-border-radius: 3px;
+          border-radius: 3px;
+  padding: 0 6px;
+  min-width: 26px;
+  height: 26px;
+  -webkit-box-shadow: 1px 1px 3px grey;
+          box-shadow: 1px 1px 3px grey;
+}
+
+.wjs-dbtable__resetLS:hover {
+  -webkit-box-shadow: none;
+          box-shadow: none;
 }
 
 .wjs-dbtable__table-wrapper {
