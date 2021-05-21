@@ -426,10 +426,38 @@
     border-right          : 1px solid lightgrey;
     border-bottom         : 1px solid lightgrey;
     padding               : 11px 12px 3px;
+    position: relative;
     // overflow              : hidden;
     &_checkbox {
       padding             : 6px 7px 3px;
       width               : 40px !important;
+    }
+  }
+  &__copy-btn {
+    position: absolute;
+    right: 3px;
+    top: 50%;
+    transform: translate(0,-50%);
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid grey;
+    border-radius: 3px;
+    padding: 0;
+    width: 26px;
+    height: 26px;
+    box-shadow: 1px 1px 3px grey;
+    opacity: .35;
+    &:hover {
+      box-shadow: none;
+      opacity: 1;
+    }
+    svg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      fill: dodgerblue;
+      height: 16px;
     }
   }
 

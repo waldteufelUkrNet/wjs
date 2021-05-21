@@ -163,8 +163,14 @@ initLocalStorage('clientTable');
       closeSmallSearchField('clientTable')
     }
 
+    // reset settings
     if ( event.target.closest('.wjs-dbtable__resetLS') ) {
       resetLS(event.target);
+    }
+
+    // copy cell data to clipboard
+    if ( event.target.closest('.wjs-dbtable__copy-btn') ) {
+      copyDataToClipboard(event.target);
     }
   });
 
@@ -638,6 +644,10 @@ initLocalStorage('clientTable');
     tableHeader.style.gridTemplateColumns = 'repeat(' + (order.length - 1) + ', auto) 1fr';
     tableBody.style.gridTemplateColumns = 'repeat(' + (order.length - 1) + ', auto) 1fr';
 
+    let copyBtnHtml = '<button type="button" class="wjs-dbtable__copy-btn" title="скопировать ячейку в буфер обмена">\
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M433.941 65.941l-51.882-51.882A48 48 0 0 0 348.118 0H176c-26.51 0-48 21.49-48 48v48H48c-26.51 0-48 21.49-48 48v320c0 26.51 21.49 48 48 48h224c26.51 0 48-21.49 48-48v-48h80c26.51 0 48-21.49 48-48V99.882a48 48 0 0 0-14.059-33.941zM266 464H54a6 6 0 0 1-6-6V150a6 6 0 0 1 6-6h74v224c0 26.51 21.49 48 48 48h96v42a6 6 0 0 1-6 6zm128-96H182a6 6 0 0 1-6-6V54a6 6 0 0 1 6-6h106v88c0 13.255 10.745 24 24 24h88v202a6 6 0 0 1-6 6zm6-256h-64V48h9.632c1.591 0 3.117.632 4.243 1.757l48.368 48.368a6 6 0 0 1 1.757 4.243V112z"/></svg>\
+                       </button>';
+
     for (let i = start; i < end; i++) {
       let item = '';
       let styleClass = 'w-bgc-aliceblue';
@@ -662,14 +672,16 @@ initLocalStorage('clientTable');
 
           case 'id':
             item = item + '<div class="wjs-dbtable__body-cell ' + styleClass + '" data-source="' + order[j] + '">\
-                             <a href="#" class="w-link" data-forhighlighting="' + tableData[i][order[j]] + '">' + tableData[i][order[j]] + '</a>\
-                           </div>';
+                             <a href="#" class="w-link" data-forhighlighting="' + tableData[i][order[j]] + '">' + tableData[i][order[j]] + '</a>'
+                        + copyBtnHtml +
+                          '</div>';
             break;
 
           case 'clientName':
             item = item + '<div class="wjs-dbtable__body-cell ' + styleClass + '" data-source="' + order[j] + '">\
-                             <a href="#" class="w-link" data-forhighlighting="' + tableData[i][order[j]] + '">' + tableData[i][order[j]] + '</a>\
-                           </div>';
+                             <a href="#" class="w-link" data-forhighlighting="' + tableData[i][order[j]] + '">' + tableData[i][order[j]] + '</a>'
+                        + copyBtnHtml +
+                           '</div>';
             break;
 
           case 'networkStatus':
@@ -682,14 +694,16 @@ initLocalStorage('clientTable');
 
           case 'phone':
             item = item + '<div class="wjs-dbtable__body-cell ' + styleClass + '" data-source="' + order[j] + '">\
-                             <a href="tel:' + tableData[i][order[j]] + '" class="w-link w-monotype" data-forhighlighting="' + tableData[i][order[j]] + '">' + tableData[i][order[j]] + '</a>\
-                           </div>';
+                             <a href="tel:' + tableData[i][order[j]] + '" class="w-link w-monotype" data-forhighlighting="' + tableData[i][order[j]] + '">' + tableData[i][order[j]] + '</a>'
+                        + copyBtnHtml +
+                          '</div>';
             break;
 
           case 'email':
             item = item + '<div class="wjs-dbtable__body-cell ' + styleClass + '" data-source="' + order[j] + '">\
-                             <a href="#" class="w-link" data-forhighlighting="' + tableData[i][order[j]] + '">' + tableData[i][order[j]] + '</a>\
-                           </div>';
+                             <a href="#" class="w-link" data-forhighlighting="' + tableData[i][order[j]] + '">' + tableData[i][order[j]] + '</a>'
+                        + copyBtnHtml +
+                          '</div>';
             break;
 
           case 'verification':
@@ -2279,6 +2293,10 @@ initLocalStorage('clientTable');
     });
   }
 
+  /**
+   * [resetLS вичищає збережені налаштування в ls, перезавантажує сторінку]
+   * @param  {[DOM-Object]} btn [кнопка скидання налаштувань]
+   */
   function resetLS(btn) {
     let tableElement = btn.closest('.wjs-dbtable'),
         tableId      = tableElement.getAttribute('id');
@@ -2286,6 +2304,23 @@ initLocalStorage('clientTable');
     localStorage.removeItem(tableId);
     initLocalStorage(tableId);
     location.href = location.href;
+  }
+
+  /**
+   * [copyDataToClipboard копіює дані з чарунки (ім'я, телефон, пошту тощо')]
+   * @param {[DOM-Object]} elem [елемент, на якому спрацював клік]
+   */
+  function copyDataToClipboard(elem) {
+    let btn  = elem.closest('.wjs-dbtable__copy-btn'),
+        cell = btn.closest('.wjs-dbtable__body-cell'),
+        data = cell.querySelector('a').dataset.forhighlighting,
+        tempInput = '<input type="text" id="clipboard"  value="' + data + '">';
+
+    cell.insertAdjacentHTML('beforeEnd', tempInput);
+    document.querySelector('#clipboard').select();
+    document.execCommand('copy');
+    document.querySelector('#clipboard').remove();
+
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////

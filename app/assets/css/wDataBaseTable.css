@@ -752,11 +752,52 @@ a, a:hover {
   border-right: 1px solid lightgrey;
   border-bottom: 1px solid lightgrey;
   padding: 11px 12px 3px;
+  position: relative;
 }
 
 .wjs-dbtable__body-cell_checkbox {
   padding: 6px 7px 3px;
   width: 40px !important;
+}
+
+.wjs-dbtable__copy-btn {
+  position: absolute;
+  right: 3px;
+  top: 50%;
+  -webkit-transform: translate(0, -50%);
+      -ms-transform: translate(0, -50%);
+          transform: translate(0, -50%);
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  border: 1px solid grey;
+  -webkit-border-radius: 3px;
+          border-radius: 3px;
+  padding: 0;
+  width: 26px;
+  height: 26px;
+  -webkit-box-shadow: 1px 1px 3px grey;
+          box-shadow: 1px 1px 3px grey;
+  opacity: .35;
+}
+
+.wjs-dbtable__copy-btn:hover {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  opacity: 1;
+}
+
+.wjs-dbtable__copy-btn svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  fill: dodgerblue;
+  height: 16px;
 }
 
 .wjs-dbtable__pagination-wrapper {
