@@ -97,10 +97,12 @@ initLocalStorage('clientTable');
       let table       = event.target.closest('.wjs-dbtable'),
           tableId     = table.getAttribute('id'),
           data        = db[tableId],
+          dataLength  = data.length,
           btn         = event.target.closest('.wjs-dbtable__page-btn'),
           itemsAmount = btn.dataset.paginationperpage,
           startValue  = btn.dataset.paginationstart*itemsAmount;
 
+      // якщо включені фільтри
       if ( +(table.querySelector('.wjs-dbtable__filtered-amount').innerHTML) ) {
         data = filterDB(tableId);
       }
@@ -111,7 +113,7 @@ initLocalStorage('clientTable');
         data = formDBAfterSearching(tableId, value);
       }
 
-      buildTableBody ({tableId, data, startValue, itemsAmount, dataLength: data.length});
+      buildTableBody ({tableId, data, startValue, itemsAmount, dataLength});
       normalizeTableMeasurements(tableId);
     }
     // pagination 2
@@ -213,7 +215,7 @@ initLocalStorage('clientTable');
       searchInDB(event);
     }
 
-    // пошук через лобальне поле пошуку
+    // пошук через глобальне поле пошуку
     if ( event.target.closest('.wjs-dbtable__big-search-input') ) {
       searchInDB(event);
     }
@@ -913,15 +915,30 @@ initLocalStorage('clientTable');
    * @param {[DOM-елемент]} target [елемент, на якому спрацювала подія]
    */
   function goToPage(target) {
-    let tableId     = event.target.closest('.wjs-dbtable').getAttribute('id'),
-        data        = db[tableId],
-        btn         = document.querySelector('#' + tableId + ' .wjs-dbtable__page-btn[data-paginationperpage]'),
-        itemsAmount = btn.dataset.paginationperpage,
-        inputValue  = event.target.closest('.wjs-dbtable__go-to-page-wrapper').querySelector('.wjs-dbtable__go-to-page-input').value;
-    if (!+inputValue ) return;
-    let startValue  = (inputValue-1)*itemsAmount;
+    let tableElement = event.target.closest('.wjs-dbtable'),
+        tableId      = tableElement.getAttribute('id'),
+        data         = db[tableId],
+        dataLength   = data.length,
+        btn          = tableElement.querySelector('.wjs-dbtable__page-btn[data-paginationperpage]'),
+        itemsAmount  = btn.dataset.paginationperpage,
+        inputValue   = event.target.closest('.wjs-dbtable__go-to-page-wrapper').querySelector('.wjs-dbtable__go-to-page-input').value;
 
-    buildTableBody ({tableId, data, startValue, itemsAmount, dataLength: data.length});
+    if (!+inputValue ) return;
+
+    let startValue   = (inputValue-1)*itemsAmount;
+
+    // якщо включені фільтри
+    if ( +(tableElement.querySelector('.wjs-dbtable__filtered-amount').innerHTML) ) {
+      data = filterDB(tableId);
+    }
+
+    // якщо включений пошук
+    if ( +(tableElement.querySelector('.wjs-dbtable__founded-amount').innerHTML) ) {
+      let value = tableElement.querySelector('.wjs-dbtable__big-search-input').dataset.value;
+      data = formDBAfterSearching(tableId, value);
+    }
+
+    buildTableBody ({tableId, data, startValue, itemsAmount, dataLength});
     normalizeTableMeasurements(tableId);
   }
 
@@ -2225,10 +2242,21 @@ initLocalStorage('clientTable');
     bigSearchInput.setAttribute('data-source', source);
     bigSearchInput.setAttribute('data-value', value);
 
-    let data = formDBAfterSearching(tableId, value);
+    let data;
+    let filteredDataLength;
+    if (value) {
+      data = formDBAfterSearching(tableId, value);
+    } else if ( +(tableElement.querySelector('.wjs-dbtable__filtered-amount').innerHTML) ) {
+      data = filterDB(tableId);
+      filteredDataLength = data.length;
+    } else {
+      data = db[tableId];
+    }
 
     if (data.length) {
-      if (data.length == db[tableId].length) {
+      if (data.length == db[tableId].length
+         || (data.length == filteredDataLength && !value) ) {
+
         label.style.display = 'none';
         labelValue.style.display = 'none';
         bigSearchInput.removeAttribute('data-source');
@@ -2323,4 +2351,11 @@ initLocalStorage('clientTable');
 
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
+
+  function changeItemInfo(tableId, itemId, source, info) {
+    console.log("tableId", tableId);
+    console.log("itemId", itemId);
+    console.log("source", source);
+    console.log("info", info);
+  }
 ////////////////////////////////////////////////////////////////////////////////

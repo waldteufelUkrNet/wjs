@@ -34,17 +34,7 @@
     font-size: 1em;
     padding-top: 0;
   }
-  &__big-search-btn {
-    background-image    : url('../img/search.png');
-    background-size     : 20px 20px;
-    background-position : center center;
-    background-repeat   : no-repeat;
-    height              : 30px;
-    width               : 30px;
-    border              : 1px solid transparent;
-    border-left         : 1px solid grey;
-    cursor              : pointer;
-  }
+
   &__meta-data-wrapper {
     display               : grid;
     grid-template-columns : auto 1fr;
