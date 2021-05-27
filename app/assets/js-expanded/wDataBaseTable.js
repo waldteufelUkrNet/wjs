@@ -2313,9 +2313,9 @@ initLocalStorage('clientTable');
     let elems = document.querySelectorAll('#' + tableId + ' .wjs-dbtable__body-cell[data-source="' + item + '"] [data-forhighlighting]');
 
       elems.forEach( function(item){
-        let attr = item.dataset.forhighlighting;
-        let regexp = new RegExp(matching,'gui');
-        let result = attr.replace(regexp, '<span class="w-bgc-yellow">$&</span>');
+        let attr   = item.dataset.forhighlighting,
+            regexp = new RegExp(matching,'gui'),
+            result = attr.replace(regexp, '<span class="w-bgc-yellow">$&</span>');
         item.innerHTML = result;
       });
     });
@@ -2350,12 +2350,77 @@ initLocalStorage('clientTable');
     document.querySelector('#clipboard').remove();
 
   }
-/* ↑↑↑ functions declaration ↑↑↑ */
 
-  function changeItemInfo(tableId, itemId, source, info) {
-    console.log("tableId", tableId);
-    console.log("itemId", itemId);
-    console.log("source", source);
-    console.log("info", info);
+  /**
+   * [changeItemInfo функція для бек-енду, оновлює інформацію в таблиці по
+   * конкретному елементу: змінює бд і за потреби змінює html]
+   * @param  {[String]} tableId   [ідентифікатор таблиці]
+   * @param  {[Number]} itemId    [ідентифікатор елемента]
+   * @param  {[String]} source    [ключ властивості елемента]
+   * @param  {[String]} data      [значення властивості елемента]
+   * @param  {[String]} outerHtml [розмітка чарунки таблиці]
+   */
+  function changeItemInfo(tableId, itemId, source, data, outerHtml) {
+
+  /*
+  приклад перевірки через консоль:
+  let myOuterHtml = '<div class="wjs-dbtable__body-cell w-lime w-bgc-aliceblue" data-source="networkStatus">online</div>';
+  changeItemInfo("clientTable", 4, "networkStatus", "online", myOuterHtml);
+  */
+
+    // зберегти зміни в db[tableId]
+    for (let i = 0; i < db[tableId].length; i++) {
+      if ( db[tableId][i].id == itemId ) {
+        let item = db[tableId][i];
+        item[source] = data;
+        break
+      }
+    }
+
+    // якщо такий елемент відображається на сторінці - змінити html
+    if ( document.querySelector('#' + tableId + ' .wjs-dbtable__body-cell[data-source="id"] a[data-forhighlighting="' + itemId + '"]') ) {
+
+      let cellWithId = document.querySelector('#' + tableId + ' .wjs-dbtable__body-cell[data-source="id"] a[data-forhighlighting="' + itemId + '"]').closest('.wjs-dbtable__body-cell');
+
+      let nextCell = cellWithId;
+      let targetCell;
+
+      // шукаємо вперед до кінця рядка
+      do {
+        nextCell = nextCell.nextElementSibling;
+        if (nextCell.dataset.source == source) {
+          targetCell = nextCell;
+          break;
+        }
+      } while ( !nextCell.classList.contains('wjs-dbtable__body-cell_checkbox') )
+
+      // якщо не знайшли до кінця рядка, шукаємо до початку
+      if (!targetCell) {
+        do {
+          nextCell = nextCell.previousElementSibling;
+          if (nextCell.dataset.source == source) {
+            targetCell = nextCell;
+            break;
+          }
+        } while ( !nextCell.classList.contains('wjs-dbtable__body-cell_checkbox') )
+      }
+
+      // якщо не знайшли і в сторону початку - значить колонка виключена
+      if (!targetCell) return;
+
+      // якщо потрібно - додаємо клас з кольором тла рядка таблиці
+      let bgClass;
+      if (cellWithId.classList.length) {
+        for (let i = 0; i < cellWithId.classList.length; i++) {
+          if (cellWithId.classList[i].startsWith('w-bgc-')) {
+            bgClass = cellWithId.classList[i];
+          }
+        }
+      }
+
+      let correctedHTML = outerHtml.replace('class="', 'class="' + bgClass + ' ');
+      targetCell.outerHTML = correctedHTML;
+    }
   }
+/* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
