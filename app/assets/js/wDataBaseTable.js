@@ -2362,11 +2362,11 @@ initLocalStorage('clientTable');
    */
   function changeItemInfo(tableId, itemId, source, data, outerHtml) {
 
-  /*
-  приклад перевірки через консоль:
-  let myOuterHtml = '<div class="wjs-dbtable__body-cell w-lime w-bgc-aliceblue" data-source="networkStatus">online</div>';
-  changeItemInfo("clientTable", 4, "networkStatus", "online", myOuterHtml);
-  */
+    /*
+    приклад перевірки через консоль:
+    let myOuterHtml = '<div class="wjs-dbtable__body-cell w-lime w-bgc-aliceblue" data-source="networkStatus">online</div>';
+    changeItemInfo("clientTable", 4, "networkStatus", "online", myOuterHtml);
+    */
 
     // зберегти зміни в db[tableId]
     for (let i = 0; i < db[tableId].length; i++) {
@@ -2421,6 +2421,50 @@ initLocalStorage('clientTable');
       let correctedHTML = outerHtml.replace('class="', 'class="' + bgClass + ' ');
       targetCell.outerHTML = correctedHTML;
     }
+  }
+
+  /**
+   * [addItemToDB функція для бек-енду, додає елемент в базу даних]
+   * @param {[String]} tableId [ідентифікатор таблиці]
+   * @param {[Object]} item    [елемент бд]
+   */
+  function addItemToDB(tableId, item) {
+
+    /*
+    приклад перевірки через консоль:
+    let testItem = {
+      "checkbox": true,
+      "id": 1001,
+      "clientName": "Loving Elouise",
+      "networkStatus": "offline",
+      "status": "Not intrested",
+      "specStatus": "new",
+      "phone": 54542626832,
+      "email": "elouise.love@uncallower.edu",
+      "company": "LeadBolid",
+      "platform": "CFD",
+      "verification": "полная верификация",
+      "country": "Marshall Islands",
+      "language": "língua portuguesa",
+      "currency": "USD",
+      "money": 18173,
+      "deposits": "без депозитов",
+      "activity": "не активен",
+      "isTradeAble": "не доступна",
+      "accountType": "business",
+      "lastNote": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia quaerat voluptatum nisi sapiente veritatis quam sunt pariatur at, quidem, officiis.",
+      "dateRegistration": 1569616311677,
+      "lastActivity": 1603542148318,
+      "dateLastNote": 1606274117107,
+      "broker": "Diana Gornaya",
+      "brokerPosition": "retention",
+      "brokerTeam": "RetTeam_1"
+    };
+    addItemToDB('clientTable', testItem);
+    */
+
+    db[tableId].push(item);
+    document.querySelector('#' + tableId + ' .wjs-dbtable__items-amount').innerHTML = db[tableId].length;
   }
 /* ↑↑↑ functions declaration ↑↑↑ */
 ////////////////////////////////////////////////////////////////////////////////
