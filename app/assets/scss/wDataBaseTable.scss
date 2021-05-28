@@ -417,7 +417,11 @@
     border-bottom         : 1px solid lightgrey;
     padding               : 11px 12px 3px;
     position: relative;
-    // overflow              : hidden;
+    &:hover {
+      .wjs-dbtable__copy-btn {
+        opacity: .35;
+      }
+    }
     &_checkbox {
       padding             : 6px 7px 3px;
       width               : 40px !important;
@@ -436,10 +440,11 @@
     width: 26px;
     height: 26px;
     box-shadow: 1px 1px 3px grey;
-    opacity: .35;
+    opacity: 0;
+    transition: opacity .3s;
     &:hover {
       box-shadow: none;
-      opacity: 1;
+      opacity: 1 !important;
     }
     svg {
       position: absolute;

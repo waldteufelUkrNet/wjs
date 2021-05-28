@@ -742,6 +742,10 @@ a, a:hover {
   position: relative;
 }
 
+.wjs-dbtable__body-cell:hover .wjs-dbtable__copy-btn {
+  opacity: .35;
+}
+
 .wjs-dbtable__body-cell_checkbox {
   padding: 6px 7px 3px;
   width: 40px !important;
@@ -767,13 +771,16 @@ a, a:hover {
   height: 26px;
   -webkit-box-shadow: 1px 1px 3px grey;
           box-shadow: 1px 1px 3px grey;
-  opacity: .35;
+  opacity: 0;
+  -webkit-transition: opacity .3s;
+  -o-transition: opacity .3s;
+  transition: opacity .3s;
 }
 
 .wjs-dbtable__copy-btn:hover {
   -webkit-box-shadow: none;
           box-shadow: none;
-  opacity: 1;
+  opacity: 1 !important;
 }
 
 .wjs-dbtable__copy-btn svg {
