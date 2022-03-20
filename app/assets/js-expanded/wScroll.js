@@ -109,6 +109,8 @@ function wSetScroll(elem, params = {}) {
 
         thumbB.style.width = lineB.clientWidth*content.clientWidth/content.scrollWidth + 'px';
       }
+    } else {
+      wRemoveScrollLine('gorizontal');
     }
 
     // додавання полос прокрутки по вертикалі
@@ -138,6 +140,8 @@ function wSetScroll(elem, params = {}) {
 
         thumbR.style.height = lineR.clientHeight*content.clientHeight/content.scrollHeight + 'px';
       }
+    } else {
+      wRemoveScrollLine('vertical');
     }
   /* ↑↑↑ ДОДАВАННЯ ПОЛОС ПРОКРУТКИ ↑↑↑ */
 
@@ -313,6 +317,24 @@ function wSetScroll(elem, params = {}) {
                 </div>\
                ';
     container.insertAdjacentHTML('afterBegin', html);
+  }
+
+  function wRemoveScrollLine(name) {
+    if (name == 'vertical') {
+      if ( container.querySelector('.wjs-scroll__wrapper_right') ) {
+        container.querySelector('.wjs-scroll__wrapper_right').remove();
+      }
+      if ( container.querySelector('.wjs-scroll__wrapper_left') ) {
+        container.querySelector('.wjs-scroll__wrapper_left').remove();
+      }
+    } else if (name == 'gorizontal') {
+      if ( container.querySelector('.wjs-scroll__wrapper_top') ) {
+        container.querySelector('.wjs-scroll__wrapper_top').remove();
+      }
+      if ( container.querySelector('.wjs-scroll__wrapper_bottomleft') ) {
+        container.querySelector('.wjs-scroll__wrapper_bottomleft').remove();
+      }
+    }
   }
 }
 /* ↑↑↑ functions declaration ↑↑↑ */
